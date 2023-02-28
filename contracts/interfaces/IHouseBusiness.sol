@@ -89,20 +89,11 @@ interface IHouseBusiness {
     // all house histories
     function houseHistories(uint256) external view returns (History[] calldata);
 
-    // All APY types
-    function APYtypes(uint256) external view returns (uint256);
-
-    // APY
-    function APYConfig(uint256) external view returns (uint256);
-
     // map members
     function allMembers(address) external view returns (bool);
 
     // map house's token id to house
-    function allMembers(uint256) external view returns (House calldata);
-
-    // map house's token id to house
-    function allowedList(uint256, address) external view returns (bool);
+    function allHouses(uint256) external view returns (House calldata);
 
     // check if token name exists
     // mapping(string => bool) external tokenNameExists;
@@ -263,4 +254,10 @@ interface IHouseBusiness {
     function getRoyalty() external view returns (uint256);
 
     function setRoyalty(uint256 _royalty) external;
+
+    function ownerOf(uint256 tokenId) external returns (address);
+
+    function getTokenPrice(uint256 tokenId) external view returns (uint256);
+
+    function setHouseStakedStatus(uint256 tokenId, bool status) external;
 }

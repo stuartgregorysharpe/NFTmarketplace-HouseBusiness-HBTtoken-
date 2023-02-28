@@ -39,8 +39,8 @@
       ]
     },
     "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\HouseBusiness.sol": {
-      "lastModificationDate": 1676840209635,
-      "contentHash": "2363184aa22447988a08860491c37ed6",
+      "lastModificationDate": 1677532675399,
+      "contentHash": "67bf56640d9c36965bcc99c2af5f96f9",
       "sourceName": "contracts/HouseBusiness.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -71,6 +71,7 @@
         "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "./interfaces/IStaking.sol",
         "./interfaces/IContract.sol"
       ],
       "versionPragmas": [
@@ -580,8 +581,8 @@
       ]
     },
     "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IHouseBusiness.sol": {
-      "lastModificationDate": 1676822974050,
-      "contentHash": "9e416fa6a378ffbc8581249abf7fdb06",
+      "lastModificationDate": 1677524741858,
+      "contentHash": "e3e83a5767653e2192b4e8025ebd1c9b",
       "sourceName": "contracts/interfaces/IHouseBusiness.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -728,6 +729,84 @@
         "HouseBusinessToken",
         "IERC20",
         "IERC20Metadata"
+      ]
+    },
+    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IStaking.sol": {
+      "lastModificationDate": 1677524094863,
+      "contentHash": "f1746ae67fd827f2c4f707d27c8500c9",
+      "sourceName": "contracts/interfaces/IStaking.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 5
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IStaking"
+      ]
+    },
+    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\Staking.sol": {
+      "lastModificationDate": 1677525803755,
+      "contentHash": "879e42445953a88ba45f41814b972141",
+      "sourceName": "contracts/Staking.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 5
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "./interfaces/IHouseBusiness.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "HouseStaking"
       ]
     }
   }

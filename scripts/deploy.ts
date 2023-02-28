@@ -2,17 +2,23 @@ import hre, { ethers, network } from 'hardhat';
 import fs from 'fs';
 
 import { verify, writeAddr } from './util';
-import { HouseBusiness, MainCleanContract } from '../typechain/pulse';
+import { HouseBusiness, HouseBusinessToken, HouseStaking, MainCleanContract } from '../typechain/pulse';
 
 const addressFile = './contract_addresses/address.md';
 async function main() {
   console.log('Starting deployments');
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
-  const tokenAddress = '0x509Ee0d083DdF8AC028f2a56731412edD63223B9'; // usdt
+  const tokenAddress = '0x27C1F4539Fd2CcE5394Ea11fA8554937A587d684'; // usdt
+
+  const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
+  // const token = (await tokenFactory.deploy()) as HouseBusinessToken;
+  // await token.deployed();
+  const token = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
+  console.log('This is the token address: ', token.address);
 
   const HouseNFTFactory = await ethers.getContractFactory('HouseBusiness');
-  const HouseNFT = (await HouseNFTFactory.deploy(tokenAddress)) as HouseBusiness;
+  const HouseNFT = (await HouseNFTFactory.deploy(token.address)) as HouseBusiness;
   await HouseNFT.deployed();
   console.log('This is the House NFT address: ', HouseNFT.address);
 
@@ -21,7 +27,18 @@ async function main() {
   await CContract.deployed();
   console.log('This is the CContract address: ', CContract.address);
 
+  const StakingFactory = await ethers.getContractFactory('HouseStaking');
+  const StakingContract = (await StakingFactory.deploy(HouseNFT.address, token.address)) as HouseStaking;
+  await StakingContract.deployed();
+  console.log('This is the Staking contract address: ', StakingContract.address);
+
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
+  await tx.wait();
+
+  tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
+  await tx.wait();
+
+  tx = await token.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
   if (fs.existsSync(addressFile)) {
@@ -29,7 +46,7 @@ async function main() {
   }
 
   fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
-  writeAddr(addressFile, network.name, tokenAddress, 'ERC-20');
+  writeAddr(addressFile, network.name, token.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
   writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
 
@@ -38,8 +55,9 @@ async function main() {
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  await verify(HouseNFT.address, [tokenAddress]);
+  await verify(HouseNFT.address, [token.address]);
   await verify(CContract.address, [HouseNFT.address]);
+  await verify(StakingContract.address, [HouseNFT.address, token.address]);
 
   console.log('All done');
 }

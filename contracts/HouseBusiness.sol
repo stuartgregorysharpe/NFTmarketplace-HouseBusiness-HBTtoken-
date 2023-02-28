@@ -6,6 +6,7 @@ pragma experimental ABIEncoderV2;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
+import './interfaces/IStaking.sol';
 import './interfaces/IContract.sol';
 
 contract HouseBusiness is ERC721, ERC721URIStorage {
@@ -15,8 +16,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     string public collectionNameSymbol;
     // total number of houses minted
     uint256 public houseCounter;
-    // total number of staked nft
-    uint256 public stakedCounter;
+
     // total number of solded nft
     uint256 public soldedCounter;
     // total number of history type
@@ -27,8 +27,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     uint256 public minPrice;
     // max house nft price
     uint256 public maxPrice;
-    // token panalty
-    uint256 public penalty;
     // token royalty
     uint256 public royalty;
     // CleanContract address
@@ -47,17 +45,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool nftPayable;
         bool staked;
         bool soldstatus;
-    }
-    // Staking NFT struct
-    struct StakedNft {
-        address owner;
-        uint256 tokenId;
-        uint256 startedDate;
-        uint256 endDate;
-        uint256 claimDate;
-        uint256 stakingType;
-        uint256 perSecRewards;
-        bool stakingStatus;
     }
     // House history struct
     struct History {
@@ -86,37 +73,27 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     HistoryType[] historyTypes;
     // all house histories
     mapping(uint256 => History[]) houseHistories;
-    // All APY types
-    uint256[] APYtypes;
-    // APY
-    mapping(uint256 => uint256) APYConfig;
     // map members
     mapping(address => bool) public allMembers;
     // map house's token id to house
     mapping(uint256 => House) public allHouses;
     // map house's token id to house
     mapping(uint256 => mapping(address => bool)) public allowedList;
+
+    // HouseStaking contract address
+    address stakingContractAddress;
+
     // check if token name exists
     // mapping(string => bool) public tokenNameExists;
     // check if token URI exists
     // mapping(string => bool) public tokenURIExists;
     // All Staked NFTs
-    mapping(address => StakedNft[]) stakedNfts;
 
     constructor(address _tokenAddress) ERC721('HouseBusiness', 'HUBS') {
         collectionName = name();
         collectionNameSymbol = symbol();
         allMembers[msg.sender] = true;
-        penalty = 20;
         royalty = 8;
-        APYtypes.push(1);
-        APYConfig[1] = 6;
-        APYtypes.push(6);
-        APYConfig[6] = 8;
-        APYtypes.push(12);
-        APYConfig[12] = 10;
-        APYtypes.push(24);
-        APYConfig[24] = 12;
         historyTypes.push(HistoryType(hTypeCounter++, 'Construction', false, false, false, false, false, false, false));
         historyTypes.push(HistoryType(hTypeCounter++, 'Floorplan', true, true, true, true, false, false, false));
         historyTypes.push(HistoryType(hTypeCounter++, 'Pictures', true, true, true, true, false, false, false));
@@ -169,6 +146,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function setCContractAddress(address addr) external {
         onlyMember();
         cContract = IMainCleanContract(addr);
+    }
+
+    function setStakingContractAddress(address addr) external {
+        onlyMember();
+        stakingContractAddress = addr;
     }
 
     function setPayable(
@@ -269,18 +251,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
         History[] storage histories = houseHistories[_tokenId];
         History memory _houseHistory;
-        if (isCompare(houseImg, '') == false) {
-            _houseHistory.houseImg = houseImg;
-        }
-        if (isCompare(houseBrand, '') == false) {
-            _houseHistory.houseBrand = houseBrand;
-        }
-        if (isCompare(brandType, '') == false) {
-            _houseHistory.brandType = brandType;
-        }
-        if (yearField != 0) {
-            _houseHistory.yearField = yearField;
-        }
+        _houseHistory.houseImg = houseImg;
+        _houseHistory.houseBrand = houseBrand;
+        _houseHistory.brandType = brandType;
+        _houseHistory.yearField = yearField;
         _houseHistory.hID = newHistoryType;
         _houseHistory.history = _history;
         _houseHistory.desc = _desc;
@@ -305,18 +279,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 yearField
     ) public {
         History storage _houseHistory = houseHistories[_tokenId][historyIndex];
-        if (isCompare(houseImg, '') == false) {
-            _houseHistory.houseImg = houseImg;
-        }
-        if (isCompare(houseBrand, '') == false) {
-            _houseHistory.houseBrand = houseBrand;
-        }
-        if (isCompare(brandType, '') == false) {
-            _houseHistory.brandType = brandType;
-        }
-        if (yearField != 0) {
-            _houseHistory.yearField = yearField;
-        }
+        _houseHistory.houseImg = houseImg;
+        _houseHistory.houseBrand = houseBrand;
+        _houseHistory.brandType = brandType;
+        _houseHistory.yearField = yearField;
         _houseHistory.history = _history;
         _houseHistory.desc = _desc;
     }
@@ -391,9 +357,23 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         }
     }
 
+    /**
+     * @dev disconnects contract from house history
+     */
+    function disconnectContract(
+        uint256 tokenId,
+        uint256 hIndex,
+        uint256 contractId
+    ) external {
+        require(ownerOf(tokenId) == msg.sender, 'owner');
+        History storage history = houseHistories[tokenId][hIndex];
+        require(history.contractId == contractId, 'id');
+        history.contractId = 0;
+    }
+
     // by a token by passing in the token's id
     function buyHouseNft(uint256 tokenId) public payable {
-        House storage house = allHouses[tokenId];
+        House memory house = allHouses[tokenId];
 
         // check if owner call this request
         require(house.currentOwner != msg.sender, 'CBON');
@@ -415,24 +395,17 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // _toOwner.transfer(house.price - _price);
         // _toThis.transfer(_price);
 
-        address payable sendTo = payable(house.currentOwner);
+        address payable sendTo = payable(house.previousOwner);
         // send token's worth of ethers to the owner
         sendTo.transfer(house.price);
 
-        // update the token's previous owner
-        house.previousOwner = house.currentOwner;
-        // update the token's current owner
-        house.currentOwner = msg.sender;
         // Set Payable
-        house.nftPayable = false;
-        // update the how many times this token was transfered
-        house.numberOfTransfers += 1;
+        allHouses[tokenId].nftPayable = false;
         // ++ soldedCounter
         if (house.soldstatus == false) {
-            house.soldstatus = true;
+            allHouses[tokenId].soldstatus = true;
             soldedCounter++;
         }
-        _transferHistoryContracts(tokenId, house.previousOwner, msg.sender);
     }
 
     // by a token by passing in the token's id
@@ -440,20 +413,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
 
-        House storage house = allHouses[tokenId];
-        // check if owner call this request
-        require(house.currentOwner == msg.sender, 'OWS');
         // transfer the token from owner to the caller of the function (buyer)
-        _transfer(house.currentOwner, receiver, house.tokenId);
-        // update the token's previous owner
-        house.previousOwner = house.currentOwner;
-        // update the token's current owner
-        house.currentOwner = receiver;
-        // update the how many times this token was transfered
-        house.numberOfTransfers += 1;
+        _transfer(msg.sender, receiver, tokenId);
 
         // Transfer ownership of connected contracts
-        _transferHistoryContracts(tokenId, house.previousOwner, msg.sender);
     }
 
     // change token price by token id
@@ -533,176 +496,20 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         payable(msg.sender).transfer(_amountEth);
     }
 
-    // Devide number
-    function calcDiv(uint256 a, uint256 b) external pure returns (uint256) {
-        return (a - (a % b)) / b;
-    }
-
-    function setAPYConfig(uint256 _type, uint256 Apy) external {
-        APYConfig[_type] = Apy;
-        APYtypes.push(_type);
-    }
-
-    function getAllAPYTypes() public view returns (uint256[] memory) {
-        return APYtypes;
-    }
-
-    // stake House Nft
-    // function stake(uint256 _tokenId, uint256 _stakingType) external {
-    //     StakedNft[] memory cStakedNfts = stakedNfts[msg.sender];
-    //     bool status = true;
-    //     for (uint256 i = 0; i < cStakedNfts.length; i++) {
-    //         if (cStakedNfts[i].tokenId == _tokenId) {
-    //             status = false;
-    //         }
-    //     }
-    //     require(status == true, 'You have already staked this House Nft');
-
-    //     House storage house = allHouses[_tokenId];
-    //     // check if owner call this request
-    //     require(house.currentOwner == msg.sender, 'OOCST');
-    //     // _stakingType should be one, six, twelve, twentytwo
-    //     require(APYConfig[_stakingType] > 0, 'Staking type should be specify.');
-    //     // transfer the token from owner to the caller of the function (buyer)
-    //     _transfer(house.currentOwner, address(this), house.tokenId);
-    //     // update the token's previous owner
-    //     house.previousOwner = house.currentOwner;
-    //     // update the token's current owner
-    //     house.currentOwner = address(this);
-    //     // update the how many times this token was transfered
-    //     house.numberOfTransfers += 1;
-    //     // commit staked
-    //     house.staked = true;
-
-    //     StakedNft memory simpleStakedNft;
-    //     simpleStakedNft.owner = msg.sender;
-    //     simpleStakedNft.tokenId = _tokenId;
-    //     simpleStakedNft.startedDate = block.timestamp;
-    //     simpleStakedNft.endDate = block.timestamp + (24 * 3600 * 366 * APYConfig[_stakingType]) / 12;
-    //     simpleStakedNft.claimDate = block.timestamp;
-    //     simpleStakedNft.stakingType = _stakingType;
-    //     uint256 dayToSec = 365 * 24 * 60 * 60;
-    //     simpleStakedNft.perSecRewards = this.calcDiv(house.price, dayToSec);
-    //     simpleStakedNft.stakingStatus = true;
-    //     stakedCounter++;
-    //     stakedNfts[msg.sender].push(simpleStakedNft);
-    // }
-
-    // Unstake House Nft
-    // function unstake(uint256 _tokenId) external {
-    //     StakedNft[] memory cStakedNfts = stakedNfts[msg.sender];
-    //     bool status = true;
-    //     for (uint256 i = 0; i < cStakedNfts.length; i++) {
-    //         if (cStakedNfts[i].tokenId == _tokenId) {
-    //             status = false;
-    //         }
-    //     }
-    //     require(status == false, 'NS');
-    //     StakedNft memory unstakingNft;
-    //     uint256 counter;
-    //     for (uint256 i = 0; i < stakedNfts[msg.sender].length; i++) {
-    //         if (stakedNfts[msg.sender][i].tokenId == _tokenId) {
-    //             unstakingNft = stakedNfts[msg.sender][i];
-    //             counter = i;
-    //         }
-    //     }
-    //     if (stakingFinished(_tokenId) == false) {
-    //         uint256 claimAmount = totalRewards(msg.sender);
-    //         _token.transfer(msg.sender, (claimAmount * (100 - penalty)) / 100);
-    //     } else {
-    //         claimRewards(msg.sender);
-    //     }
-    //     House storage house = allHouses[_tokenId];
-    //     // check if owner call this request
-    //     require(unstakingNft.owner == msg.sender, 'OCUT');
-    //     // transfer the token from owner to the caller of the function (buyer)
-    //     _transfer(address(this), msg.sender, house.tokenId);
-    //     // update the token's previous owner
-    //     house.previousOwner = address(this);
-    //     // update the token's current owner
-    //     house.currentOwner = msg.sender;
-    //     // update the how many times this token was transfered
-    //     house.numberOfTransfers += 1;
-    //     // commit ustaked
-    //     house.staked = false;
-    //     stakedCounter--;
-    //     delete stakedNfts[msg.sender][counter];
-    // }
-
-    // function stakingFinished(uint256 _tokenId) public view returns (bool) {
-    //     StakedNft memory stakingNft;
-    //     for (uint256 i = 0; i < stakedNfts[msg.sender].length; i++) {
-    //         if (stakedNfts[msg.sender][i].tokenId == _tokenId) {
-    //             stakingNft = stakedNfts[msg.sender][i];
-    //         }
-    //     }
-    //     return block.timestamp < stakingNft.endDate;
-    // }
-
-    // Claim Rewards
-    // function totalRewards(address _rewardOwner) public view returns (uint256) {
-    //     StakedNft[] memory allmyStakingNfts = stakedNfts[_rewardOwner];
-    //     uint256 allRewardAmount = 0;
-    //     for (uint256 i = 0; i < allmyStakingNfts.length; i++) {
-    //         if (allmyStakingNfts[i].stakingStatus == true) {
-    //             uint256 stakingType = allmyStakingNfts[i].stakingType;
-    //             uint256 expireDate = allmyStakingNfts[i].startedDate + 60 * 60 * 24 * 30 * stakingType;
-    //             uint256 _timestamp;
-    //             if (block.timestamp <= expireDate) {
-    //                 _timestamp = block.timestamp;
-    //             } else {
-    //                 _timestamp = expireDate;
-    //             }
-    //             allRewardAmount += this.calcDiv(
-    //                 (allHouses[allmyStakingNfts[i].tokenId].price *
-    //                     APYConfig[stakingType] *
-    //                     (_timestamp - allmyStakingNfts[i].claimDate)) / 100,
-    //                 (365 * 24 * 60 * 60)
-    //             );
-    //         }
-    //     }
-    //     return allRewardAmount;
-    // }
-
-    // Claim Rewards
-    // function claimRewards(address _stakedNFTowner) public {
-    //     StakedNft[] memory allmyStakingNfts = stakedNfts[_stakedNFTowner];
-    //     uint256 allRewardAmount = 0;
-    //     for (uint256 i = 0; i < allmyStakingNfts.length; i++) {
-    //         if (allmyStakingNfts[i].stakingStatus == true) {
-    //             uint256 stakingType = allmyStakingNfts[i].stakingType;
-    //             uint256 expireDate = allmyStakingNfts[i].startedDate + 60 * 60 * 24 * 30 * stakingType;
-    //             uint256 _timestamp;
-    //             if (block.timestamp <= expireDate) {
-    //                 _timestamp = block.timestamp;
-    //             } else {
-    //                 _timestamp = expireDate;
-    //             }
-    //             allRewardAmount += this.calcDiv(
-    //                 (allHouses[allmyStakingNfts[i].tokenId].price *
-    //                     APYConfig[stakingType] *
-    //                     (_timestamp - allmyStakingNfts[i].claimDate)) / 100,
-    //                 (365 * 24 * 60 * 60)
-    //             );
-    //             stakedNfts[_stakedNFTowner][i].claimDate = _timestamp;
-    //         }
-    //     }
-    //     if (allRewardAmount != 0) {
-    //         _token.transfer(_stakedNFTowner, allRewardAmount);
-    //     }
-    // }
-
-    // Gaddress _rewardOwneret All staked Nfts
-    function getAllMyStakedNFTs() public view returns (StakedNft[] memory) {
-        return stakedNfts[msg.sender];
-    }
-
-    function isCompare(string memory a, string memory b) private pure returns (bool) {
-        if (keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b))) {
-            return true;
-        } else {
-            return false;
-        }
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal override {
+        House storage house = allHouses[tokenId];
+        // update the token's previous owner
+        house.previousOwner = house.currentOwner;
+        // update the token's current owner
+        house.currentOwner = to;
+        // update the how many times this token was transfered
+        house.numberOfTransfers += 1;
+        _transferHistoryContracts(tokenId, from, to);
     }
 
     // Get Overall total information
@@ -716,28 +523,19 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         )
     {
         onlyMember();
-        return (houseCounter, stakedCounter, soldedCounter);
+        return (houseCounter, IStaking(stakingContractAddress).stakeCounter(), soldedCounter);
     }
 
-    // Get All APYs
-    function getAllAPYs() public view returns (uint256[] memory, uint256[] memory) {
-        uint256[] memory apyCon = new uint256[](APYtypes.length);
-        uint256[] memory apys = new uint256[](APYtypes.length);
-        for (uint256 i = 0; i < APYtypes.length; i++) {
-            apys[i] = APYtypes[i];
-            apyCon[i] = APYConfig[APYtypes[i]];
-        }
-        return (apys, apyCon);
+    // Returns price of a house with `tokenId`
+    function getTokenPrice(uint256 tokenId) external view returns (uint256) {
+        require(msg.sender == stakingContractAddress, 'sc');
+        return allHouses[tokenId].price;
     }
 
-    // Penalty
-    function getPenalty() public view returns (uint256) {
-        return penalty;
-    }
-
-    function setPenalty(uint256 _penalty) public {
-        onlyMember();
-        penalty = _penalty;
+    // Sets house staked status
+    function setHouseStakedStatus(uint256 tokenId, bool status) external {
+        require(msg.sender == stakingContractAddress, 'sc');
+        allHouses[tokenId].staked = status;
     }
 
     // Royalty
