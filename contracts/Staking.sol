@@ -204,4 +204,13 @@ contract HouseStaking {
         require(IHouseBusiness(houseNFTAddress).allMembers(msg.sender), 'member');
         penalty = _penalty;
     }
+
+    function updateAPYConfig (uint _type, uint APY) external {
+        require(IHouseBusiness(houseNFTAddress).allMembers(msg.sender), 'member');
+        for (uint i = 0; i < APYtypes.length; i++){
+            if (APYtypes[i] == _type){
+                APYConfig[_type] = APY;
+            }
+        }
+    }
 }

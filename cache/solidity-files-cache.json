@@ -39,8 +39,8 @@
       ]
     },
     "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\HouseBusiness.sol": {
-      "lastModificationDate": 1677532675399,
-      "contentHash": "67bf56640d9c36965bcc99c2af5f96f9",
+      "lastModificationDate": 1677783807797,
+      "contentHash": "ac9f43abc67f99c56c6f622bf069289a",
       "sourceName": "contracts/HouseBusiness.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -732,8 +732,8 @@
       ]
     },
     "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IStaking.sol": {
-      "lastModificationDate": 1677524094863,
-      "contentHash": "f1746ae67fd827f2c4f707d27c8500c9",
+      "lastModificationDate": 1677782707091,
+      "contentHash": "760acc9c31109d0a26cffcfc66cac914",
       "sourceName": "contracts/interfaces/IStaking.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -769,8 +769,8 @@
       ]
     },
     "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\Staking.sol": {
-      "lastModificationDate": 1677525803755,
-      "contentHash": "879e42445953a88ba45f41814b972141",
+      "lastModificationDate": 1677706367409,
+      "contentHash": "24378332dbf2fc6f93a760a13fd988d4",
       "sourceName": "contracts/Staking.sol",
       "solcConfig": {
         "version": "0.8.7",

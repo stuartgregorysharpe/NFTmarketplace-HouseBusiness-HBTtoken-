@@ -3,5 +3,5 @@
 pragma solidity ^0.8.0;
 
 interface IStaking {
-    function stakeCounter() external view returns (uint256);
+    function stakedCounter() external view returns (uint256);
 }

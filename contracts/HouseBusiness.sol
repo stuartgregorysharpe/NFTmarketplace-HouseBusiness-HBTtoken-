@@ -28,7 +28,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // max house nft price
     uint256 public maxPrice;
     // token royalty
-    uint256 public royalty;
+    uint256 public royaltyCreator;
+    uint256 public royaltyMarket;
     // CleanContract address
     IMainCleanContract cContract;
     // define house struct
@@ -40,6 +41,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address currentOwner;
         address previousOwner;
         address buyer;
+        address creator;
         uint256 price;
         uint256 numberOfTransfers;
         bool nftPayable;
@@ -93,7 +95,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         collectionName = name();
         collectionNameSymbol = symbol();
         allMembers[msg.sender] = true;
-        royalty = 8;
+        royaltyCreator = 6;
+        royaltyMarket = 2;
         historyTypes.push(HistoryType(hTypeCounter++, 'Construction', false, false, false, false, false, false, false));
         historyTypes.push(HistoryType(hTypeCounter++, 'Floorplan', true, true, true, true, false, false, false));
         historyTypes.push(HistoryType(hTypeCounter++, 'Pictures', true, true, true, true, false, false, false));
@@ -203,6 +206,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         simpleHouse.tokenType = _tokenType;
         simpleHouse.currentOwner = msg.sender;
         simpleHouse.previousOwner = address(0);
+        simpleHouse.creator = msg.sender;
         simpleHouse.price = _price;
         simpleHouse.numberOfTransfers = 0;
         simpleHouse.nftPayable = false;
@@ -394,10 +398,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // uint _price = house.price * royalty / 100;
         // _toOwner.transfer(house.price - _price);
         // _toThis.transfer(_price);
-
         address payable sendTo = payable(house.previousOwner);
+        address payable creator = payable(house.creator);
         // send token's worth of ethers to the owner
-        sendTo.transfer(house.price);
+        sendTo.transfer((house.price * 100 * (100 - royaltyCreator - royaltyMarket)) / 10000);
+        creator.transfer((house.price * 100 * royaltyCreator) / 10000);
 
         // Set Payable
         allHouses[tokenId].nftPayable = false;
@@ -523,7 +528,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         )
     {
         onlyMember();
-        return (houseCounter, IStaking(stakingContractAddress).stakeCounter(), soldedCounter);
+        return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
     }
 
     // Returns price of a house with `tokenId`
@@ -538,13 +543,21 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         allHouses[tokenId].staked = status;
     }
 
-    // Royalty
-    function getRoyalty() public view returns (uint256) {
-        return royalty;
+    function getRoyaltyCreator() public view returns (uint256) {
+        return royaltyCreator;
     }
 
-    function setRoyalty(uint256 _royalty) public {
+    function setRoyaltyCreator(uint256 _royalty) public {
         onlyMember();
-        royalty = _royalty;
+        royaltyCreator = _royalty;
+    }
+
+    function getRoyaltyMarket() public view returns (uint256) {
+        return royaltyMarket;
+    }
+
+    function setRoyaltyMarket(uint256 _royalty) public {
+        onlyMember();
+        royaltyMarket = _royalty;
     }
 }
