@@ -207,11 +207,7 @@ contract MainCleanContract {
     }
 
     // send sign notification
-    function sendNotify(
-        address _notifyReceiver,
-        string memory _notifyContent,
-        uint256 ccID
-    ) external {
+    function sendNotify(address _notifyReceiver, string memory _notifyContent, uint256 ccID) external {
         CleanContract storage cContract = allCleanContracts[ccID];
         require(cContract.contractSigner != address(0), 'Please add contract signer.');
         Notify[] storage notifies = allNotifies[cContract.contractSigner];
@@ -282,11 +278,7 @@ contract MainCleanContract {
     /**
      * @dev modifies ownership of `contractId` from `from` to `to`
      */
-    function transferContractOwnership(
-        uint256 contractId,
-        address from,
-        address to
-    ) external {
+    function transferContractOwnership(uint256 contractId, address from, address to) external {
         require(msg.sender == houseNFTAddress, 'only house contract');
 
         uint256[] memory contracts = allContractsByOwner[from];

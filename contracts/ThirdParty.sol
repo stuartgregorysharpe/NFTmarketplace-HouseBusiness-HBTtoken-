@@ -46,19 +46,10 @@ contract ThirdParty {
     }
 
     function addCategory(string memory _newCategory, uint[] memory _properties) public {
-        allCategories.push(Category(
-            categoryCounter++, 
-            _newCategory,
-            _properties,
-            true
-        ));
+        allCategories.push(Category(categoryCounter++, _newCategory, _properties, true));
     }
 
-    function editCategory(
-        uint _categoryID,
-        string memory _editCategory,
-        uint[] memory _properties
-    ) public {
+    function editCategory(uint _categoryID, string memory _editCategory, uint[] memory _properties) public {
         Category storage cartegory = allCategories[_categoryID];
         cartegory.cartegoryName = _editCategory;
         cartegory.properties = _properties;
@@ -69,17 +60,17 @@ contract ThirdParty {
         delete allPackages[_categoryID];
     }
 
-    function getAllProperties() public view returns(Property[] memory) {
+    function getAllProperties() public view returns (Property[] memory) {
         uint propertyNum;
-        for(uint i = 0 ; i < allProperties.length ; i++) {
-            if(isCompare((allProperties[i].propertyName), "") == false) {
+        for (uint i = 0; i < allProperties.length; i++) {
+            if (isCompare((allProperties[i].propertyName), '') == false) {
                 propertyNum++;
             }
         }
         Property[] memory allProperty = new Property[](propertyNum);
         propertyNum = 0;
-        for(uint i = 0 ; i < allProperties.length ; i++) {
-            if(isCompare((allProperties[i].propertyName), "") != true) {
+        for (uint i = 0; i < allProperties.length; i++) {
+            if (isCompare((allProperties[i].propertyName), '') != true) {
                 allProperty[propertyNum++] = allProperties[i];
             }
         }
@@ -88,30 +79,21 @@ contract ThirdParty {
 
     // Property
     function addProperty(string memory _propertyName) public {
-        if(allProperties.length > 0) {
+        if (allProperties.length > 0) {
             bool flag = false;
-            for(uint i = 0 ; i < allProperties.length ; i++) {
-                if(isCompare(allProperties[i].propertyName, _propertyName) == true) {
+            for (uint i = 0; i < allProperties.length; i++) {
+                if (isCompare(allProperties[i].propertyName, _propertyName) == true) {
                     flag = true;
                 }
             }
             require(flag == false, "can't add same property");
-            allProperties.push(Property({
-                propertyID: allProperties.length,
-                propertyName: _propertyName
-            }));
+            allProperties.push(Property({ propertyID: allProperties.length, propertyName: _propertyName }));
         } else {
-            allProperties.push(Property({
-                propertyID: allProperties.length,
-                propertyName: _propertyName
-            }));
+            allProperties.push(Property({ propertyID: allProperties.length, propertyName: _propertyName }));
         }
     }
 
-    function editProperty(
-        uint _propertyID,
-        string memory _propertyName
-    ) public {
+    function editProperty(uint _propertyID, string memory _propertyName) public {
         allProperties[_propertyID].propertyName = _propertyName;
     }
 
@@ -120,14 +102,8 @@ contract ThirdParty {
     }
 
     // Packages
-    function getPackagesByCategory(uint _categoryID)
-        public
-        view
-        returns (Package[] memory)
-    {
-        Package[] memory packages = new Package[](
-            allPackages[_categoryID].length
-        );
+    function getPackagesByCategory(uint _categoryID) public view returns (Package[] memory) {
+        Package[] memory packages = new Package[](allPackages[_categoryID].length);
         for (uint i = 0; i < allPackages[_categoryID].length; i++) {
             packages[i] = allPackages[_categoryID][i];
         }
@@ -143,15 +119,7 @@ contract ThirdParty {
         bool[] memory _propertyVisible
     ) public {
         allPackages[_categoryID].push(
-            Package(
-                _categoryID,
-                packageCounter++,
-                _packageName,
-                _price,
-                _period,
-                _dataLimit,
-                _propertyVisible
-            )
+            Package(_categoryID, packageCounter++, _packageName, _price, _period, _dataLimit, _propertyVisible)
         );
     }
 

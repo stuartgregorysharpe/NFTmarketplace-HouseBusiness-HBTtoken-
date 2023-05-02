@@ -4,18 +4,26 @@ pragma solidity ^0.8.0;
 
 interface IERC20 {
     function totalSupply() external view returns (uint256);
+
     function balanceOf(address account) external view returns (uint256);
+
     function transfer(address recipient, uint256 amount) external returns (bool);
+
     function allowance(address owner, address spender) external view returns (uint256);
+
     function approve(address spender, uint256 amount) external returns (bool);
+
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
 interface IERC20Metadata is IERC20 {
     function name() external view returns (string memory);
+
     function symbol() external view returns (string memory);
+
     function decimals() external view returns (uint8);
 }
 
@@ -31,22 +39,22 @@ abstract contract Context {
 }
 
 contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) private _balances;
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
     uint256 private _totalSupply;
-    string private _name = "House Business Token";
-    string private _symbol = "HBT";
+    string private _name = 'House Business Token';
+    string private _symbol = 'HBT';
     uint8 private _decimals = 18;
     address private _owner;
 
-    constructor () {
+    constructor() {
         _owner = msg.sender;
         _totalSupply += 100000000000000000000000000;
         _balances[msg.sender] += 100000000000000000000000000;
     }
 
-    modifier onlyOwner {
-        require(msg.sender == _owner, "Only owner can run this event");
+    modifier onlyOwner() {
+        require(msg.sender == _owner, 'Only owner can run this event');
         _;
     }
 
@@ -88,7 +96,7 @@ contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        require(currentAllowance >= amount, 'ERC20: transfer amount exceeds allowance');
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -101,20 +109,20 @@ contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
 
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(currentAllowance >= subtractedValue, 'ERC20: decreased allowance below zero');
         _approve(_msgSender(), spender, currentAllowance - subtractedValue);
 
         return true;
     }
 
     function _transfer(address sender, address recipient, uint256 amount) internal virtual {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
+        require(sender != address(0), 'ERC20: transfer from the zero address');
+        require(recipient != address(0), 'ERC20: transfer to the zero address');
 
         _beforeTokenTransfer(sender, recipient, amount);
 
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(senderBalance >= amount, 'ERC20: transfer amount exceeds balance');
         _balances[sender] = senderBalance - amount;
         _balances[recipient] += amount;
 
@@ -128,12 +136,12 @@ contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
     }
 
     function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
+        require(account != address(0), 'ERC20: burn from the zero address');
 
         _beforeTokenTransfer(account, address(0), amount);
 
         uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        require(accountBalance >= amount, 'ERC20: burn amount exceeds balance');
         _balances[account] = accountBalance - amount;
         _totalSupply -= amount;
 
@@ -141,12 +149,12 @@ contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
     }
 
     function _approve(address owner, address spender, uint256 amount) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        require(owner != address(0), 'ERC20: approve from the zero address');
+        require(spender != address(0), 'ERC20: approve to the zero address');
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }

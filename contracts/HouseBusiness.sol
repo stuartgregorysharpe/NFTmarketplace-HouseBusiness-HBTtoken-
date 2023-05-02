@@ -105,8 +105,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         historyTypes.push(HistoryType(hTypeCounter++, 'Airconditioning', true, true, true, true, true, true, false));
         historyTypes.push(HistoryType(hTypeCounter++, 'Sonneboiler', true, true, true, true, true, true, true));
         historyTypes.push(HistoryType(hTypeCounter++, 'Housepainter', false, false, false, false, false, false, true));
-        minPrice = 10**17;
-        maxPrice = 10**18;
+        minPrice = 10 ** 17;
+        maxPrice = 10 ** 18;
         _token = IERC20(_tokenAddress);
     }
 
@@ -156,11 +156,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         stakingContractAddress = addr;
     }
 
-    function setPayable(
-        uint256 tokenId,
-        address _buyer,
-        bool nftPayable
-    ) public {
+    function setPayable(uint256 tokenId, address _buyer, bool nftPayable) public {
         // require that token should exist
         require(_exists(tokenId));
         // get the token's owner
@@ -344,11 +340,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     /**
      * @dev transfer ownership of connected contracts
      */
-    function _transferHistoryContracts(
-        uint256 tokenId,
-        address from,
-        address to
-    ) private {
+    function _transferHistoryContracts(uint256 tokenId, address from, address to) private {
         History[] memory histories = houseHistories[tokenId];
         uint256 length = histories.length;
 
@@ -364,11 +356,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     /**
      * @dev disconnects contract from house history
      */
-    function disconnectContract(
-        uint256 tokenId,
-        uint256 hIndex,
-        uint256 contractId
-    ) external {
+    function disconnectContract(uint256 tokenId, uint256 hIndex, uint256 contractId) external {
         require(ownerOf(tokenId) == msg.sender, 'owner');
         History storage history = houseHistories[tokenId][hIndex];
         require(history.contractId == contractId, 'id');
@@ -501,12 +489,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         payable(msg.sender).transfer(_amountEth);
     }
 
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 batchSize
-    ) internal override {
+    function _afterTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override {
         House storage house = allHouses[tokenId];
         // update the token's previous owner
         house.previousOwner = house.currentOwner;
@@ -518,15 +501,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Get Overall total information
-    function getTotalInfo()
-        public
-        view
-        returns (
-            uint256,
-            uint256,
-            uint256
-        )
-    {
+    function getTotalInfo() public view returns (uint256, uint256, uint256) {
         onlyMember();
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
     }
