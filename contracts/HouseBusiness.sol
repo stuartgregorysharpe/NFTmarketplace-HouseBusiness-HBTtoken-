@@ -401,6 +401,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         }
     }
 
+    function sellHouseNft(uint256 tokenId) public payable {
+        
+    }
+
     // by a token by passing in the token's id
     function sendToken(address receiver, uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
