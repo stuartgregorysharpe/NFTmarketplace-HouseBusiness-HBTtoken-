@@ -170,8 +170,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
-        string memory initialDesc,
-        uint256 _price
+        string memory initialDesc
+        // uint256 _price
     ) public payable {
         // check if a token exists with the above token id => incremented counter
         require(!_exists(houseCounter + 1), 'NIE!');
@@ -180,7 +180,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // check if the token name already exists or not
         // require(!tokenNameExists[_name], "House Nft name have already exist!");
         // check if the otken price is zero or not
-        require(_price >= minPrice && _price <= maxPrice, 'NPIW.');
+        // require(_price >= minPrice && _price <= maxPrice, 'NPIW.');
         // make passed token URI as exists
         // tokenURIExists[_tokenURI] = true;
         // make token name passed as exists
@@ -198,12 +198,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             tokenId: houseCounter,
             tokenName: _name,
             tokenURI: _tokenURI,
+            tokenType: _tokenType,
             currentOwner: msg.sender,
             previousOwner: address(0),
             buyer: address(0),
             creator: msg.sender,
-            price: _price,
-            numberOfTransfer: 0,
+            price: 0,
+            numberOfTransfers: 0,
             nftPayable: false,
             staked: false,
             soldStatus: false
@@ -382,11 +383,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // transfer the token from owner to the caller of the function (buyer)
         _transfer(house.currentOwner, msg.sender, house.tokenId);
         // transfer
-        // address payable _toOwner = payable(house.currentOwner);
-        // address payable _toThis = payable(address(this));
-        // uint _price = house.price * royalty / 100;
-        // _toOwner.transfer(house.price - _price);
-        // _toThis.transfer(_price);
         address payable sendTo = payable(house.previousOwner);
         address payable creator = payable(house.creator);
         // send token's worth of ethers to the owner
@@ -402,7 +398,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         }
     }
 
-    function sellHouseNft(uint256 tokenId) public payable {}
+    function changeHousePrice(uint256 tokenId, uint256 newPrice) public {
+        House memory house = allHouses[tokenId];
+        require(house.currentOwner == msg.sender, 'Onwer can change nft price');
+        require(newPrice > 0, "Price must be greater than zero");
+        house.price = newPrice;
+    }
 
     // by a token by passing in the token's id
     function sendToken(address receiver, uint256 tokenId) public payable {

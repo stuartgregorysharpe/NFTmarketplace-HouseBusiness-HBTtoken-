@@ -1,16 +1,16 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\Contract.sol": {
-      "lastModificationDate": 1676840189319,
-      "contentHash": "3e0bae4433e60358a436d38cd2369b7d",
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\Contract.sol": {
+      "lastModificationDate": 1683040998212,
+      "contentHash": "fd155ec678fcff7c096f7e1c9b8cc77a",
       "sourceName": "contracts/Contract.sol",
       "solcConfig": {
         "version": "0.8.7",
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -26,8 +26,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -38,16 +37,16 @@
         "MainCleanContract"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\HouseBusiness.sol": {
-      "lastModificationDate": 1677783807797,
-      "contentHash": "ac9f43abc67f99c56c6f622bf069289a",
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\HouseBusiness.sol": {
+      "lastModificationDate": 1683141877590,
+      "contentHash": "6a54b2cbbe82c63d6b7169fac0254ae1",
       "sourceName": "contracts/HouseBusiness.sol",
       "solcConfig": {
         "version": "0.8.7",
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -63,8 +62,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -81,8 +79,8 @@
         "HouseBusiness"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
-      "lastModificationDate": 1676620356729,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
+      "lastModificationDate": 1683138449996,
       "contentHash": "ad7c2d0af148c8f9f097d65deeb4da6b",
       "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
@@ -90,7 +88,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -106,8 +104,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -118,8 +115,8 @@
         "IERC20"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\ERC721.sol": {
-      "lastModificationDate": 1676620351037,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\ERC721.sol": {
+      "lastModificationDate": 1683138442522,
       "contentHash": "190f627b9302b9602d3a313e28205cc5",
       "sourceName": "@openzeppelin/contracts/token/ERC721/ERC721.sol",
       "solcConfig": {
@@ -127,7 +124,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -143,8 +140,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -163,8 +159,8 @@
         "ERC721"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\extensions\\ERC721URIStorage.sol": {
-      "lastModificationDate": 1676620351857,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\extensions\\ERC721URIStorage.sol": {
+      "lastModificationDate": 1683138442675,
       "contentHash": "8af32effd0536e2971ff8496812a5016",
       "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       "solcConfig": {
@@ -172,7 +168,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -188,8 +184,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -202,16 +197,16 @@
         "ERC721URIStorage"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IContract.sol": {
-      "lastModificationDate": 1676840057285,
-      "contentHash": "0d92623c58777276018ab7ef732df35e",
-      "sourceName": "contracts/interfaces/IContract.sol",
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\interfaces\\IStaking.sol": {
+      "lastModificationDate": 1682994167273,
+      "contentHash": "760acc9c31109d0a26cffcfc66cac914",
+      "sourceName": "contracts/interfaces/IStaking.sol",
       "solcConfig": {
         "version": "0.8.7",
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -227,8 +222,43 @@
                 "ast"
               ]
             }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IStaking"
+      ]
+    },
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\interfaces\\IContract.sol": {
+      "lastModificationDate": 1682994167272,
+      "contentHash": "0d92623c58777276018ab7ef732df35e",
+      "sourceName": "contracts/interfaces/IContract.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
           },
-          "libraries": {}
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
         }
       },
       "imports": [],
@@ -239,8 +269,8 @@
         "IMainCleanContract"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721.sol": {
-      "lastModificationDate": 1676620357028,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721.sol": {
+      "lastModificationDate": 1683138453379,
       "contentHash": "eb7e61db29f31d88b3c1cef1b063d338",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
       "solcConfig": {
@@ -248,7 +278,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -264,8 +294,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -278,8 +307,8 @@
         "IERC721"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721Receiver.sol": {
-      "lastModificationDate": 1676620360009,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721Receiver.sol": {
+      "lastModificationDate": 1683138453439,
       "contentHash": "c22d4395e33763de693fd440c6fd10e1",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
       "solcConfig": {
@@ -287,7 +316,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -303,8 +332,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -315,8 +343,8 @@
         "IERC721Receiver"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\extensions\\IERC721Metadata.sol": {
-      "lastModificationDate": 1676620358378,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\extensions\\IERC721Metadata.sol": {
+      "lastModificationDate": 1683138453420,
       "contentHash": "efbc0d15b80a74e34dbe8da0f3e879bb",
       "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol",
       "solcConfig": {
@@ -324,7 +352,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -340,8 +368,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -354,8 +381,8 @@
         "IERC721Metadata"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\Address.sol": {
-      "lastModificationDate": 1676620342142,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\Address.sol": {
+      "lastModificationDate": 1683138436892,
       "contentHash": "f31ad6fc4bbf9c06203987220156a6ba",
       "sourceName": "@openzeppelin/contracts/utils/Address.sol",
       "solcConfig": {
@@ -363,7 +390,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -379,8 +406,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -391,8 +417,8 @@
         "Address"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
-      "lastModificationDate": 1676620343544,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
+      "lastModificationDate": 1683138438744,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
@@ -400,7 +426,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -416,8 +442,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -428,8 +453,8 @@
         "Context"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\Strings.sol": {
-      "lastModificationDate": 1676620369390,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\Strings.sol": {
+      "lastModificationDate": 1683138456009,
       "contentHash": "396031251978f8febfd90cb62cb240ec",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -437,7 +462,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -453,8 +478,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -467,8 +491,8 @@
         "Strings"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\ERC165.sol": {
-      "lastModificationDate": 1676620350057,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\ERC165.sol": {
+      "lastModificationDate": 1683138441435,
       "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
       "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
       "solcConfig": {
@@ -476,7 +500,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -492,8 +516,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -506,8 +529,8 @@
         "ERC165"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\IERC165.sol": {
-      "lastModificationDate": 1676620356508,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\IERC165.sol": {
+      "lastModificationDate": 1683138448186,
       "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
@@ -515,7 +538,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -531,8 +554,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -543,8 +565,8 @@
         "IERC165"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\node_modules\\@openzeppelin\\contracts\\utils\\math\\Math.sol": {
-      "lastModificationDate": 1676620366192,
+    "E:\\WORK\\House Business\\Off-smartcontract\\node_modules\\@openzeppelin\\contracts\\utils\\math\\Math.sol": {
+      "lastModificationDate": 1683138455038,
       "contentHash": "b9c58920ce74d6dc819161786112e7ee",
       "sourceName": "@openzeppelin/contracts/utils/math/Math.sol",
       "solcConfig": {
@@ -552,7 +574,7 @@
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -568,8 +590,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [],
@@ -580,204 +601,16 @@
         "Math"
       ]
     },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IHouseBusiness.sol": {
-      "lastModificationDate": 1677524741858,
-      "contentHash": "e3e83a5767653e2192b4e8025ebd1c9b",
-      "sourceName": "contracts/interfaces/IHouseBusiness.sol",
-      "solcConfig": {
-        "version": "0.8.7",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 5
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IHouseBusiness"
-      ]
-    },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IPRC20.sol": {
-      "lastModificationDate": 1672158132192,
-      "contentHash": "4ea20c90b868637612ef498eae41dd78",
-      "sourceName": "contracts/interfaces/IPRC20.sol",
-      "solcConfig": {
-        "version": "0.8.7",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 5
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IPRC20"
-      ]
-    },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\ThirdParty.sol": {
-      "lastModificationDate": 1676491658631,
-      "contentHash": "bc072f257d27fd2b54251726faea1661",
-      "sourceName": "contracts/ThirdParty.sol",
-      "solcConfig": {
-        "version": "0.8.7",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 5
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "ThirdParty"
-      ]
-    },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\TokenContract.sol": {
-      "lastModificationDate": 1676491658631,
-      "contentHash": "91425a388ea3d5edfb169d0e19184767",
-      "sourceName": "contracts/TokenContract.sol",
-      "solcConfig": {
-        "version": "0.8.7",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 5
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Context",
-        "HouseBusinessToken",
-        "IERC20",
-        "IERC20Metadata"
-      ]
-    },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\interfaces\\IStaking.sol": {
-      "lastModificationDate": 1677782707091,
-      "contentHash": "760acc9c31109d0a26cffcfc66cac914",
-      "sourceName": "contracts/interfaces/IStaking.sol",
-      "solcConfig": {
-        "version": "0.8.7",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 5
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IStaking"
-      ]
-    },
-    "E:\\Dev\\2023\\2023-02-16-blockbaas-offero\\offero-smartcontracts\\contracts\\Staking.sol": {
-      "lastModificationDate": 1677706367409,
-      "contentHash": "24378332dbf2fc6f93a760a13fd988d4",
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\Staking.sol": {
+      "lastModificationDate": 1683141711967,
+      "contentHash": "7236fddadbe40d9dea92c752f7dd9bc4",
       "sourceName": "contracts/Staking.sol",
       "solcConfig": {
         "version": "0.8.7",
         "settings": {
           "optimizer": {
             "enabled": true,
-            "runs": 5
+            "runs": 200
           },
           "outputSelection": {
             "*": {
@@ -793,8 +626,7 @@
                 "ast"
               ]
             }
-          },
-          "libraries": {}
+          }
         }
       },
       "imports": [
@@ -807,6 +639,153 @@
       ],
       "artifacts": [
         "HouseStaking"
+      ]
+    },
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\interfaces\\IHouseBusiness.sol": {
+      "lastModificationDate": 1682994167272,
+      "contentHash": "e3e83a5767653e2192b4e8025ebd1c9b",
+      "sourceName": "contracts/interfaces/IHouseBusiness.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IHouseBusiness"
+      ]
+    },
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\interfaces\\IPRC20.sol": {
+      "lastModificationDate": 1682994167272,
+      "contentHash": "4ea20c90b868637612ef498eae41dd78",
+      "sourceName": "contracts/interfaces/IPRC20.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IPRC20"
+      ]
+    },
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\ThirdParty.sol": {
+      "lastModificationDate": 1682995515292,
+      "contentHash": "82d8d09a6e5549f0d96914cd6ae6de3b",
+      "sourceName": "contracts/ThirdParty.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ThirdParty"
+      ]
+    },
+    "E:\\WORK\\House Business\\Off-smartcontract\\contracts\\TokenContract.sol": {
+      "lastModificationDate": 1682995519056,
+      "contentHash": "82c3aad515b56021ab95bd6add815795",
+      "sourceName": "contracts/TokenContract.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context",
+        "HouseBusinessToken",
+        "IERC20",
+        "IERC20Metadata"
       ]
     }
   }
