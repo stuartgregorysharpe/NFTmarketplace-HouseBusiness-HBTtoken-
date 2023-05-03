@@ -59,63 +59,56 @@ contract HouseStaking {
 
     // stake House Nft
     function stake(uint256 _tokenId, uint256 _stakingType) external {
-        require(IERC721(houseNFTAddress).ownerOf(_tokenId) != address(this), 'You have already staked this House Nft');
+        IERC721 houseNFT = IERC721(houseNFTAddress);
+        IHouseBusiness houseBusiness = IHouseBusiness(houseNFTAddress);
 
-        // _stakingType should be one, six, twelve, twentytwo
+        require(houseNFT.ownerOf(_tokenId) != address(this), 'You have already staked this House Nft');
         require(APYConfig[_stakingType] > 0, 'Staking type should be specify.');
-        // transfer the token from owner to the caller of the function (buyer)
-        IERC721(houseNFTAddress).transferFrom(msg.sender, address(this), _tokenId);
 
-        StakedNft memory simpleStakedNft;
-        simpleStakedNft.owner = msg.sender;
-        simpleStakedNft.tokenId = _tokenId;
-        simpleStakedNft.startedDate = block.timestamp;
+        houseNFT.transferFrom(msg.sender, address(this), _tokenId);
 
-        simpleStakedNft.endDate = block.timestamp + (24 * 3600 * 366 * APYConfig[_stakingType]) / 12;
-        simpleStakedNft.claimDate = block.timestamp;
-        simpleStakedNft.stakingType = _stakingType;
-        uint256 dayToSec = 365 * 24 * 60 * 60;
-        uint256 price = IHouseBusiness(houseNFTAddress).getTokenPrice(_tokenId);
-        simpleStakedNft.perSecRewards = this.calcDiv(price, dayToSec);
-        simpleStakedNft.stakingStatus = true;
-        stakedCounter++;
-        stakedNfts[msg.sender].push(simpleStakedNft);
+        uint256 price = houseBusiness.getTokenPrice(_tokenId);
 
-        IHouseBusiness(houseNFTAddress).setHouseStakedStatus(_tokenId, true);
+        stakedNfts[msg.sender].push(
+            StakedNft(
+                msg.sender,
+                _tokenId,
+                block.timestamp,
+                block.timestamp + (APYConfig[_stakingType] * 31536000) / 12,
+                block.timestamp,
+                _stakingType,
+                this.calcDiv(price, 31536000),
+                true
+            )
+        );
+
+        houseBusiness.setHouseStakedStatus(_tokenId, true);
     }
 
     // Unstake House Nft
     function unstake(uint256 _tokenId) external {
-        StakedNft[] memory cStakedNfts = stakedNfts[msg.sender];
-        bool status = true;
-        for (uint256 i = 0; i < cStakedNfts.length; i++) {
-            if (cStakedNfts[i].tokenId == _tokenId) {
-                status = false;
-            }
-        }
-        require(status == false, 'NS');
+        require(_tokenId > 0, 'Invalid Token ID');
         StakedNft memory unstakingNft;
         uint256 counter;
         for (uint256 i = 0; i < stakedNfts[msg.sender].length; i++) {
             if (stakedNfts[msg.sender][i].tokenId == _tokenId) {
                 unstakingNft = stakedNfts[msg.sender][i];
+                delete stakedNfts[msg.sender][i];
                 counter = i;
+                break;
             }
         }
-        if (stakingFinished(_tokenId) == false) {
-            uint256 claimAmount = totalRewards(msg.sender);
-            IERC20(tokenAddress).transfer(msg.sender, (claimAmount * (100 - penalty)) / 100);
-        } else {
-            claimRewards(msg.sender);
-        }
-        // check if owner call this request
         require(unstakingNft.owner == msg.sender, 'OCUT');
-        // transfer the token from owner to the caller of the function (buyer)
+
+        // conditional execution
+        (stakingFinished(_tokenId) == false)
+            ? IERC20(tokenAddress).transfer(msg.sender, (totalRewards(msg.sender) * (100 - penalty)) / 100)
+            : claimRewards(msg.sender);
+
         IERC721(houseNFTAddress).transferFrom(address(this), msg.sender, _tokenId);
-        // commit ustaked
+
         IHouseBusiness(houseNFTAddress).setHouseStakedStatus(_tokenId, false);
         stakedCounter--;
-        delete stakedNfts[msg.sender][counter];
     }
 
     function stakingFinished(uint256 _tokenId) public view returns (bool) {
@@ -131,49 +124,52 @@ contract HouseStaking {
     // Claim Rewards
     function totalRewards(address _rewardOwner) public view returns (uint256) {
         StakedNft[] memory allmyStakingNfts = stakedNfts[_rewardOwner];
+        IHouseBusiness houseBusiness = IHouseBusiness(houseNFTAddress);
         uint256 allRewardAmount = 0;
+
         for (uint256 i = 0; i < allmyStakingNfts.length; i++) {
-            if (allmyStakingNfts[i].stakingStatus == true) {
-                uint256 stakingType = allmyStakingNfts[i].stakingType;
-                uint256 expireDate = allmyStakingNfts[i].startedDate + 60 * 60 * 24 * 30 * stakingType;
-                uint256 _timestamp;
-                uint256 price = IHouseBusiness(houseNFTAddress).getTokenPrice(allmyStakingNfts[i].tokenId);
-                if (block.timestamp <= expireDate) {
-                    _timestamp = block.timestamp;
-                } else {
-                    _timestamp = expireDate;
-                }
+            StakedNft memory stakingNft = allmyStakingNfts[i];
+            if (stakingNft.stakingStatus == true) {
+                uint256 stakingType = stakingNft.stakingType;
+                uint256 expireDate = stakingNft.startedDate + 2592000 * stakingType;
+
+                uint256 _timestamp = (block.timestamp <= expireDate) ? block.timestamp : expireDate;
+                uint256 price = houseBusiness.getTokenPrice(stakingNft.tokenId);
+
                 allRewardAmount += this.calcDiv(
-                    (price * APYConfig[stakingType] * (_timestamp - allmyStakingNfts[i].claimDate)) / 100,
+                    (price * APYConfig[stakingType] * (_timestamp - stakingNft.claimDate)) / 100,
                     (365 * 24 * 60 * 60)
                 );
             }
         }
+
         return allRewardAmount;
     }
 
     // Claim Rewards
     function claimRewards(address _stakedNFTowner) public {
-        StakedNft[] memory allmyStakingNfts = stakedNfts[_stakedNFTowner];
+        StakedNft[] storage allmyStakingNfts = stakedNfts[_stakedNFTowner];
+        IHouseBusiness houseBusiness = IHouseBusiness(houseNFTAddress);
         uint256 allRewardAmount = 0;
+
         for (uint256 i = 0; i < allmyStakingNfts.length; i++) {
-            if (allmyStakingNfts[i].stakingStatus == true) {
-                uint256 stakingType = allmyStakingNfts[i].stakingType;
-                uint256 expireDate = allmyStakingNfts[i].startedDate + 60 * 60 * 24 * 30 * stakingType;
-                uint256 _timestamp;
-                uint256 price = IHouseBusiness(houseNFTAddress).getTokenPrice(allmyStakingNfts[i].tokenId);
-                if (block.timestamp <= expireDate) {
-                    _timestamp = block.timestamp;
-                } else {
-                    _timestamp = expireDate;
-                }
-                allRewardAmount += this.calcDiv(
-                    (price * APYConfig[stakingType] * (_timestamp - allmyStakingNfts[i].claimDate)) / 100,
+            StakedNft storage stakingNft = allmyStakingNfts[i];
+            if (stakingNft.stakingStatus == true) {
+                uint256 stakingType = stakingNft.stakingType;
+                uint256 expireDate = stakingNft.startedDate + 2592000 * stakingType;
+
+                uint256 _timestamp = (block.timestamp <= expireDate) ? block.timestamp : expireDate;
+                uint256 price = houseBusiness.getTokenPrice(stakingNft.tokenId);
+
+                uint256 stakedReward = this.calcDiv(
+                    (price * APYConfig[stakingType] * (_timestamp - stakingNft.claimDate)) / 100,
                     (365 * 24 * 60 * 60)
                 );
-                stakedNfts[_stakedNFTowner][i].claimDate = _timestamp;
+                allRewardAmount += stakedReward;
+                stakingNft.claimDate = _timestamp;
             }
         }
+
         if (allRewardAmount != 0) {
             IERC20(tokenAddress).transfer(_stakedNFTowner, allRewardAmount);
         }

@@ -46,7 +46,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 numberOfTransfers;
         bool nftPayable;
         bool staked;
-        bool soldstatus;
+        bool soldStatus;
     }
     // House history struct
     struct History {
@@ -92,8 +92,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // All Staked NFTs
 
     constructor(address _tokenAddress) ERC721('HouseBusiness', 'HUBS') {
-        collectionName = name();
-        collectionNameSymbol = symbol();
+        (collectionName, collectionNameSymbol) = (name(), symbol());
         allMembers[msg.sender] = true;
         royaltyCreator = 6;
         royaltyMarket = 2;
@@ -163,8 +162,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address tokenOwner = ownerOf(tokenId);
         // check that token's owner should be equal to the caller of the function
         require(tokenOwner == msg.sender, 'Only owner can call this func.');
-        allHouses[tokenId].nftPayable = nftPayable;
         allHouses[tokenId].buyer = _buyer;
+        allHouses[tokenId].nftPayable = nftPayable;
     }
 
     function mintHouse(
@@ -195,26 +194,34 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // set token URI (bind token id with the passed in token URI)
         _setTokenURI(houseCounter, _tokenURI);
 
-        House storage simpleHouse = allHouses[houseCounter];
-        simpleHouse.tokenId = houseCounter;
-        simpleHouse.tokenName = _name;
-        simpleHouse.tokenURI = _tokenURI;
-        simpleHouse.tokenType = _tokenType;
-        simpleHouse.currentOwner = msg.sender;
-        simpleHouse.previousOwner = address(0);
-        simpleHouse.creator = msg.sender;
-        simpleHouse.price = _price;
-        simpleHouse.numberOfTransfers = 0;
-        simpleHouse.nftPayable = false;
-        simpleHouse.staked = false;
-        simpleHouse.soldstatus = false;
+        allHouses[houseCounter] = House({
+            tokenId: houseCounter,
+            tokenName: _name,
+            tokenURI: _tokenURI,
+            currentOwner: msg.sender,
+            previousOwner: address(0),
+            buyer: address(0),
+            creator: msg.sender,
+            price: _price,
+            numberOfTransfer: 0,
+            nftPayable: false,
+            staked: false,
+            soldStatus: false
+        });
 
         // new house history push into the House struct
-        History[] storage histories = houseHistories[houseCounter];
-        History memory simpleHistory;
-        simpleHistory.hID = 0;
-        simpleHistory.history = initialDesc;
-        histories.push(simpleHistory);
+        houseHistories[houseCounter].push(
+            History({
+                hID: 0,
+                contractId: houseCounter,
+                houseImg: '',
+                houseBrand: '',
+                desc: '',
+                history: initialDesc,
+                brandType: '',
+                yearField: 0
+            })
+        );
     }
 
     // Add allow list
@@ -250,16 +257,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(cContract.getContractById(contractId).owner == msg.sender, 'cowner');
 
         History[] storage histories = houseHistories[_tokenId];
-        History memory _houseHistory;
-        _houseHistory.houseImg = houseImg;
-        _houseHistory.houseBrand = houseBrand;
-        _houseHistory.brandType = brandType;
-        _houseHistory.yearField = yearField;
-        _houseHistory.hID = newHistoryType;
-        _houseHistory.history = _history;
-        _houseHistory.desc = _desc;
-        _houseHistory.contractId = contractId;
-
+        History memory _houseHistory = History({
+            houseImg: houseImg,
+            houseBrand: houseBrand,
+            brandType: brandType,
+            yearField: yearField,
+            hID: newHistoryType,
+            history: _history,
+            desc: _desc,
+            contractId: contractId
+        });
         histories.push(_houseHistory);
     }
 
@@ -341,11 +348,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
      * @dev transfer ownership of connected contracts
      */
     function _transferHistoryContracts(uint256 tokenId, address from, address to) private {
-        History[] memory histories = houseHistories[tokenId];
-        uint256 length = histories.length;
+        History[] storage histories = houseHistories[tokenId];
 
         unchecked {
-            for (uint256 i = 0; i < length; ++i) {
+            for (uint256 i = 0; i < histories.length; ++i) {
                 if (histories[i].contractId > 0) {
                     cContract.transferContractOwnership(histories[i].contractId, from, to);
                 }
@@ -370,12 +376,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // check if owner call this request
         require(house.currentOwner != msg.sender, 'CBON');
         // price sent in to buy should be equal to or more than the token's price
-        require(house.nftPayable == true, 'NNP');
-        // check if buyer added
-        if (house.buyer != address(0)) {
-            require(msg.sender == house.buyer, 'OBCB');
-        }
-        // price sent in to buy should be equal to or more than the token's price
+        require(house.nftPayable && (house.buyer == address(0) || house.buyer == msg.sender), 'NNP/OBCB');
         require(msg.value >= house.price, 'PIW');
 
         // transfer the token from owner to the caller of the function (buyer)
@@ -389,17 +390,19 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address payable sendTo = payable(house.previousOwner);
         address payable creator = payable(house.creator);
         // send token's worth of ethers to the owner
-        sendTo.transfer((house.price * 100 * (100 - royaltyCreator - royaltyMarket)) / 10000);
-        creator.transfer((house.price * 100 * royaltyCreator) / 10000);
+        sendTo.transfer((house.price * (100 - royaltyCreator - royaltyMarket)) / 100);
+        creator.transfer((house.price * royaltyCreator) / 100);
 
         // Set Payable
-        allHouses[tokenId].nftPayable = false;
+        house.nftPayable = false;
         // ++ soldedCounter
-        if (house.soldstatus == false) {
-            allHouses[tokenId].soldstatus = true;
+        if (!house.soldStatus) {
+            house.soldStatus = true;
             soldedCounter++;
         }
     }
+
+    function sellHouseNft(uint256 tokenId) public payable {}
 
     // by a token by passing in the token's id
     function sendToken(address receiver, uint256 tokenId) public payable {
@@ -414,27 +417,21 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // change token price by token id
     function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) external {
-        // require caller of the function is not an empty address
-        require(msg.sender != address(0));
-        // require that token should exist
-        require(_exists(_tokenId));
-        // get the token's owner
-        address tokenOwner = ownerOf(_tokenId);
-        // check that token's owner should be equal to the caller of the function
-        require(tokenOwner == msg.sender, 'OOCC');
-        // check if the otken price is zero or not
-        require(_newPrice >= minPrice && _newPrice <= maxPrice, 'PII');
-        // get that token from all houses mapping and create a memory of it defined as (struct => House)
-        House storage house = allHouses[_tokenId];
-        // update token's price with new price
-        house.price = _newPrice;
+      require(_exists(_tokenId), 'TNE');
+      require(ownerOf(_tokenId) == msg.sender, 'OOCC/RO');
+      House memory house = allHouses[_tokenId];
+      require(_newPrice >= minPrice && _newPrice <= maxPrice, 'PII');
+      house.price = _newPrice;
+      allHouses[_tokenId] = house;
     }
 
     // get all houses NFT
     function getAllHouses() external view returns (House[] memory) {
         House[] memory tempHouses = new House[](houseCounter);
-        for (uint256 i = 0; i < houseCounter; i++) {
-            tempHouses[i] = allHouses[i + 1];
+        uint256 index = 0;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            tempHouses[i] = allHouses[i];
+            index++;
         }
         return tempHouses;
     }
@@ -442,16 +439,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // get all payable houses NFT
     function getAllPayableHouses() external view returns (House[] memory) {
         uint256 iNum;
-        for (uint256 i = 0; i < houseCounter; i++) {
-            if (allHouses[i + 1].nftPayable == true && allHouses[i + 1].staked == false) {
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
                 iNum++;
             }
         }
         House[] memory tempHouses = new House[](iNum);
         iNum = 0;
-        for (uint256 i = 0; i < houseCounter; i++) {
-            if (allHouses[i + 1].nftPayable == true && allHouses[i + 1].staked == false) {
-                tempHouses[iNum] = allHouses[i + 1];
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
+                tempHouses[iNum] = allHouses[i];
                 iNum++;
             }
         }
@@ -461,16 +458,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // get all my houses NFT
     function getAllMyHouses() external view returns (House[] memory) {
         uint256 iNum;
-        for (uint256 i = 0; i < houseCounter; i++) {
-            if (allHouses[i + 1].currentOwner == msg.sender) {
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].currentOwner == msg.sender) {
                 iNum++;
             }
         }
         House[] memory tempHouses = new House[](iNum);
         iNum = 0;
-        for (uint256 i = 0; i < houseCounter; i++) {
-            if (allHouses[i + 1].currentOwner == msg.sender) {
-                tempHouses[iNum] = allHouses[i + 1];
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].currentOwner == msg.sender) {
+                tempHouses[iNum] = allHouses[i];
                 iNum++;
             }
         }
