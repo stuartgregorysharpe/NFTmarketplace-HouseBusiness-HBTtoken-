@@ -101,9 +101,11 @@ contract HouseStaking {
         require(unstakingNft.owner == msg.sender, 'OCUT');
 
         // conditional execution
-        (stakingFinished(_tokenId) == false)
-            ? IERC20(tokenAddress).transfer(msg.sender, (totalRewards(msg.sender) * (100 - penalty)) / 100)
-            : claimRewards(msg.sender);
+        if (stakingFinished(_tokenId) == false) {
+            IERC20(tokenAddress).transfer(msg.sender, (totalRewards(msg.sender) * (100 - penalty)) / 100);
+        } else {
+            claimRewards(msg.sender);
+        }
 
         IERC721(houseNFTAddress).transferFrom(address(this), msg.sender, _tokenId);
 
