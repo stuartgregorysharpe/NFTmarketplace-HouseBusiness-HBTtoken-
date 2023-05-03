@@ -203,7 +203,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             previousOwner: address(0),
             buyer: address(0),
             creator: msg.sender,
-            price: _price,
+            price: 0,
             numberOfTransfer: 0,
             nftPayable: false,
             staked: false,
