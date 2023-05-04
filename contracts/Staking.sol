@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
@@ -101,9 +103,11 @@ contract HouseStaking {
         require(unstakingNft.owner == msg.sender, 'OCUT');
 
         // conditional execution
-        (stakingFinished(_tokenId) == false)
-            ? IERC20(tokenAddress).transfer(msg.sender, (totalRewards(msg.sender) * (100 - penalty)) / 100)
-            : claimRewards(msg.sender);
+        if (stakingFinished(_tokenId) == false) {
+            IERC20(tokenAddress).transfer(msg.sender, (totalRewards(msg.sender) * (100 - penalty)) / 100);
+        } else {
+            claimRewards(msg.sender);
+        }
 
         IERC721(houseNFTAddress).transferFrom(address(this), msg.sender, _tokenId);
 
