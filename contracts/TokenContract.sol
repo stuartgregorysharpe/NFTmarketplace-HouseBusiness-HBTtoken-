@@ -45,12 +45,13 @@ contract HouseBusinessToken is Context, IERC20, IERC20Metadata {
     string private _name = 'House Business Token';
     string private _symbol = 'HBT';
     uint8 private _decimals = 18;
+    uint256 initialSupply = 10 ** 26;
     address private _owner;
 
     constructor() {
         _owner = msg.sender;
-        _totalSupply += 100000000000000000000000000;
-        _balances[msg.sender] += 100000000000000000000000000;
+        _totalSupply = initialSupply;
+        _balances[msg.sender] = initialSupply;
     }
 
     modifier onlyOwner() {

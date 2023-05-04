@@ -175,13 +175,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
-    function setCContractAddress(address addr) external {
-        onlyMember();
+    modifier onlyMember() {
+        require(allMembers[msg.sender], "Only Member");
+        _;
+    }
+
+    function setCContractAddress(address addr) external onlyMember {
         cContract = IMainCleanContract(addr);
     }
 
-    function setStakingContractAddress(address addr) external {
-        onlyMember();
+    function setStakingContractAddress(address addr) external onlyMember {
         stakingContractAddress = addr;
     }
 
@@ -257,16 +260,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // withdraw token
-    function withdrawToken(uint256 _amountToken) external payable {
-        onlyMember();
+    function withdrawToken(uint256 _amountToken) external payable onlyMember {
         _token.transfer(msg.sender, _amountToken);
 
         emit TokenWithdrawn(msg.sender, _amountToken, block.timestamp);
     }
 
     // withdraw ETH
-    function withdrawETH(uint256 _amountEth) external payable {
-        onlyMember();
+    function withdrawETH(uint256 _amountEth) external payable onlyMember {
         payable(msg.sender).transfer(_amountEth);
 
         emit EthWithdrawn(msg.sender, _amountEth, block.timestamp);
@@ -286,8 +287,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HouseStakedStatusSet(tokenId, status, block.timestamp);
     }
 
-    function setMinMaxHousePrice(uint256 _min, uint256 _max) public {
-        onlyMember();
+    function setMinMaxHousePrice(uint256 _min, uint256 _max) public onlyMember {
         minPrice = _min;
         maxPrice = _max;
     }
@@ -300,13 +300,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return allMembers[msg.sender];
     }
 
-    function addMember(address _newMember) public {
-        onlyMember();
+    function addMember(address _newMember) public onlyMember {
         allMembers[_newMember] = true;
     }
 
-    function removeMember(address _newMember) public {
-        onlyMember();
+    function removeMember(address _newMember) public onlyMember {
         allMembers[_newMember] = false;
     }
 
@@ -476,8 +474,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool _brandTypeNeed,
         bool _yearNeed,
         bool _checkMark
-    ) public {
-        onlyMember();
+    ) public onlyMember {
         HistoryType storage newHistory = historyTypes[_historyIndex];
         newHistory.hID = _historyIndex;
         newHistory.hLabel = _label;
@@ -505,8 +502,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Remove History Type
-    function removeHistoryType(uint256 _hIndex) public {
-        onlyMember();
+    function removeHistoryType(uint256 _hIndex) public onlyMember {
         delete historyTypes[_hIndex];
 
         emit HistoryTypeRemoved(msg.sender, _hIndex, block.timestamp);
@@ -569,15 +565,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // Transfer ownership of connected contracts
     }
 
-    function setRoyaltyCreator(uint256 _royalty) public {
-        onlyMember();
+    function setRoyaltyCreator(uint256 _royalty) public onlyMember {
         royaltyCreator = _royalty;
 
         emit RoyaltyCreatorSet(msg.sender, _royalty, block.timestamp);
     }
 
-    function setRoyaltyMarket(uint256 _royalty) public {
-        onlyMember();
+    function setRoyaltyMarket(uint256 _royalty) public onlyMember {
         royaltyMarket = _royalty;
 
         emit RoyaltyMarketSet(msg.sender, _royalty, block.timestamp);
@@ -613,22 +607,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         }
     }
     // Get Overall total information
-    function getTotalInfo() public view returns (uint256, uint256, uint256) {
-        onlyMember();
+    function getTotalInfo() public view onlyMember returns (uint256, uint256, uint256) {
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
-    }
-
-    function getRoyaltyCreator() public view returns (uint256) {
-        return royaltyCreator;
-    }
-
-    function getRoyaltyMarket() public view returns (uint256) {
-        return royaltyMarket;
-    }
-
-
-    function onlyMember() private view {
-        require(allMembers[msg.sender], 'OM1');
     }
 
     function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
@@ -650,10 +630,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             aHistoryTypes[i] = historyTypes[i];
         }
         return aHistoryTypes;
-    }
-
-    function getMinMaxNFT() public view returns (uint256, uint256) {
-        return (minPrice, maxPrice);
     }
 
     // get owner of the token
