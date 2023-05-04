@@ -6,14 +6,16 @@ import { HouseBusiness, HouseBusinessToken, HouseStaking, MainCleanContract } fr
 
 const addressFile = './contract_addresses/address.md';
 async function main() {
+  if (network.name !== 'goerli') {
+    console.log('main net')
+    return;
+  }
   console.log('Starting deployments');
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
   const tokenAddress = '0x27C1F4539Fd2CcE5394Ea11fA8554937A587d684'; // usdt
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
-  // const token = (await tokenFactory.deploy()) as HouseBusinessToken;
-  // await token.deployed();
   const token = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
   console.log('This is the token address: ', token.address);
 
