@@ -177,7 +177,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     modifier onlyMember() {
-        require(allMembers[msg.sender], "Only Member");
+        require(allMembers[msg.sender], 'Only Member');
         _;
     }
 
@@ -188,6 +188,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function setStakingContractAddress(address addr) external onlyMember {
         stakingContractAddress = addr;
     }
+
     // Sets house staked status
     function setHouseStakedStatus(uint256 tokenId, bool status) external {
         require(msg.sender == stakingContractAddress, 'sc');
@@ -280,7 +281,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
-        string memory initialDesc 
+        string memory initialDesc
     ) public {
         // check if a token exists with the above token id => incremented counter
         require(!_exists(houseCounter + 1), 'NIE!');
@@ -464,11 +465,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     function changeHousePrice(uint256 tokenId, uint256 newPrice) public {
-        require(allHouses[tokenId].currentOwner == msg.sender, 'Only the owner can change the price and tokenId must exist');
+        require(
+            allHouses[tokenId].currentOwner == msg.sender,
+            'Only the owner can change the price and tokenId must exist'
+        );
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
-    
+
         allHouses[tokenId].price = newPrice;
-    
+
         emit HousePriceChanged(tokenId, msg.sender, newPrice);
     }
 
@@ -523,7 +527,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
-    
+
     function _afterTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override {
         House storage house = allHouses[tokenId];
         // update the token's previous owner
@@ -534,6 +538,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         house.numberOfTransfers += 1;
         _transferHistoryContracts(tokenId, from, to);
     }
+
     /**
      * @dev transfer ownership of connected contracts
      */
@@ -562,42 +567,28 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // get all payable houses NFT
     function getAllPayableHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                iNum++;
+        House[] memory allPayableHouse;
+        uint256 j = 0;
+        for (uint256 i = 0; i < houseCounter; i++) {
+            House storage temp_house = allHouses[i];
+            if (temp_house[i].nftPayable == true && allHouses[i].staked == false) {
+                allPayableHouse[j++] = temp_house;
             }
         }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-
-    
-        return tempHouses;
+        return allPayableHouse;
     }
-    
+
     // get all my houses NFT
     function getAllMyHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                iNum++;
+        House[] memory allMyHouse;
+        uint256 j = 0;
+        for (uint256 i = 0; i < houseCounter; i++) {
+            House storage temp_house = allHouses[i];
+            if (temp_house[i].currentOwner == msg.sender) {
+                allMyHouse[j++] = temp_house;
             }
         }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-        return tempHouses;
+        return allMyHouse;
     }
 
     // Returns price of a house with `tokenId`
@@ -605,7 +596,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(msg.sender == stakingContractAddress, 'sc');
         return allHouses[tokenId].price;
     }
-    
+
     // Get Overall total information
     function getTotalInfo() public view onlyMember returns (uint256, uint256, uint256) {
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
