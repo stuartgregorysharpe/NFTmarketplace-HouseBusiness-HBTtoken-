@@ -1,7 +1,4 @@
-import { ethers, network } from 'hardhat';
-import fs from 'fs';
-import hre from 'hardhat';
-import { verify, writeAddr } from './util';
+import { verify } from './util';
 
 async function main() {
   const HexAddress = '0x2BEd9CE54334825245dA8fD4d145312f1749BC8D';

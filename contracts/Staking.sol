@@ -116,7 +116,7 @@ contract HouseStaking {
         IHouseBusiness(houseNFTAddress).setHouseStakedStatus(_tokenId, false);
         stakedCounter--;
 
-        emit NFTUnstaked(msg.sender, _tokenId, unstakingNft.stakedAt);
+        emit NFTUnstaked(msg.sender, _tokenId, unstakingNft.startedDate);
     }
 
     function updateAPYConfig(uint _type, uint APY) external {
