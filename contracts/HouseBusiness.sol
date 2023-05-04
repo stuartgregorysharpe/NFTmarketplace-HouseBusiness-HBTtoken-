@@ -175,8 +175,115 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
-    function onlyMember() private view {
-        require(allMembers[msg.sender], 'OM1');
+    function setCContractAddress(address addr) external {
+        onlyMember();
+        cContract = IMainCleanContract(addr);
+    }
+
+    function setStakingContractAddress(address addr) external {
+        onlyMember();
+        stakingContractAddress = addr;
+    }
+
+    /**
+     * @dev disconnects contract from house history
+     */
+    function disconnectContract(uint256 tokenId, uint256 hIndex, uint256 contractId) external {
+        require(ownerOf(tokenId) == msg.sender, 'owner');
+        History storage history = houseHistories[tokenId][hIndex];
+        require(history.contractId == contractId, 'id');
+        history.contractId = 0;
+
+        emit ContractDisconnected(msg.sender, tokenId, hIndex, contractId, block.timestamp);
+    }
+
+    // change token price by token id
+    function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) external {
+        require(_exists(_tokenId), 'TNE');
+        require(ownerOf(_tokenId) == msg.sender, 'OOCC/RO');
+        House memory house = allHouses[_tokenId];
+        require(_newPrice >= minPrice && _newPrice <= maxPrice, 'PII');
+        house.price = _newPrice;
+        allHouses[_tokenId] = house;
+    }
+
+    // get all houses NFT
+    function getAllHouses() external view returns (House[] memory) {
+        House[] memory tempHouses = new House[](houseCounter);
+        uint256 index = 0;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            tempHouses[i] = allHouses[i];
+            index++;
+        }
+        return tempHouses;
+    }
+
+    // get all payable houses NFT
+    function getAllPayableHouses() external view returns (House[] memory) {
+        uint256 iNum;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
+                iNum++;
+            }
+        }
+        House[] memory tempHouses = new House[](iNum);
+        iNum = 0;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
+                tempHouses[iNum] = allHouses[i];
+                iNum++;
+            }
+        }
+        return tempHouses;
+    }
+
+    // get all my houses NFT
+    function getAllMyHouses() external view returns (House[] memory) {
+        uint256 iNum;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].currentOwner == msg.sender) {
+                iNum++;
+            }
+        }
+        House[] memory tempHouses = new House[](iNum);
+        iNum = 0;
+        for (uint256 i = 1; i < houseCounter; i++) {
+            if (allHouses[i].currentOwner == msg.sender) {
+                tempHouses[iNum] = allHouses[i];
+                iNum++;
+            }
+        }
+        return tempHouses;
+    }
+
+    // withdraw token
+    function withdrawToken(uint256 _amountToken) external payable {
+        onlyMember();
+        _token.transfer(msg.sender, _amountToken);
+
+        emit TokenWithdrawn(msg.sender, _amountToken, block.timestamp);
+    }
+
+    // withdraw ETH
+    function withdrawETH(uint256 _amountEth) external payable {
+        onlyMember();
+        payable(msg.sender).transfer(_amountEth);
+
+        emit EthWithdrawn(msg.sender, _amountEth, block.timestamp);
+    }
+
+    // Returns price of a house with `tokenId`
+    function getTokenPrice(uint256 tokenId) external view returns (uint256) {
+        require(msg.sender == stakingContractAddress, 'sc');
+        return allHouses[tokenId].price;
+    }
+
+    // Sets house staked status
+    function setHouseStakedStatus(uint256 tokenId, bool status) external {
+        require(msg.sender == stakingContractAddress, 'sc');
+        allHouses[tokenId].staked = status;
+
+        emit HouseStakedStatusSet(tokenId, status, block.timestamp);
     }
 
     function setMinMaxHousePrice(uint256 _min, uint256 _max) public {
@@ -201,24 +308,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function removeMember(address _newMember) public {
         onlyMember();
         allMembers[_newMember] = false;
-    }
-
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
-
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
-    function setCContractAddress(address addr) external {
-        onlyMember();
-        cContract = IMainCleanContract(addr);
-    }
-
-    function setStakingContractAddress(address addr) external {
-        onlyMember();
-        stakingContractAddress = addr;
     }
 
     function setPayable(uint256 tokenId, address _buyer, bool nftPayable) public {
@@ -300,11 +389,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit AllowListRemoved(msg.sender, _tokenId, allowed, block.timestamp);
     }
 
-    // Confirm is allowed list
-    function checkAllowedList(uint256 _tokenId, address allowed) public view returns (bool) {
-        return allowedList[_tokenId][allowed];
-    }
-
     // Add history of house
     function addHistory(
         uint256 _tokenId,
@@ -348,10 +432,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
     }
 
-    function getHistory(uint256 _tokenId) public view returns (History[] memory) {
-        return houseHistories[_tokenId];
-    }
-
     // Edit history of house
     function editHistory(
         uint256 _tokenId,
@@ -383,15 +463,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             yearField,
             block.timestamp
         );
-    }
-
-    // Get History Type
-    function getHistoryType() public view returns (HistoryType[] memory) {
-        HistoryType[] memory aHistoryTypes = new HistoryType[](historyTypes.length);
-        for (uint256 i = 0; i < historyTypes.length; i++) {
-            aHistoryTypes[i] = historyTypes[i];
-        }
-        return aHistoryTypes;
     }
 
     // Add Or Edit History Type
@@ -439,43 +510,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         delete historyTypes[_hIndex];
 
         emit HistoryTypeRemoved(msg.sender, _hIndex, block.timestamp);
-    }
-
-    function getMinMaxNFT() public view returns (uint256, uint256) {
-        return (minPrice, maxPrice);
-    }
-
-    // get owner of the token
-    function getTokenOwner(uint256 _tokenId) public view returns (address) {
-        address _tokenOwner = ownerOf(_tokenId);
-        return _tokenOwner;
-    }
-
-    /**
-     * @dev transfer ownership of connected contracts
-     */
-    function _transferHistoryContracts(uint256 tokenId, address from, address to) private {
-        History[] storage histories = houseHistories[tokenId];
-
-        unchecked {
-            for (uint256 i = 0; i < histories.length; ++i) {
-                if (histories[i].contractId > 0) {
-                    cContract.transferContractOwnership(histories[i].contractId, from, to);
-                }
-            }
-        }
-    }
-
-    /**
-     * @dev disconnects contract from house history
-     */
-    function disconnectContract(uint256 tokenId, uint256 hIndex, uint256 contractId) external {
-        require(ownerOf(tokenId) == msg.sender, 'owner');
-        History storage history = houseHistories[tokenId][hIndex];
-        require(history.contractId == contractId, 'id');
-        history.contractId = 0;
-
-        emit ContractDisconnected(msg.sender, tokenId, hIndex, contractId, block.timestamp);
     }
 
     // by a token by passing in the token's id
@@ -535,81 +569,25 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // Transfer ownership of connected contracts
     }
 
-    // change token price by token id
-    function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) external {
-        require(_exists(_tokenId), 'TNE');
-        require(ownerOf(_tokenId) == msg.sender, 'OOCC/RO');
-        House memory house = allHouses[_tokenId];
-        require(_newPrice >= minPrice && _newPrice <= maxPrice, 'PII');
-        house.price = _newPrice;
-        allHouses[_tokenId] = house;
-    }
-
-    // get all houses NFT
-    function getAllHouses() external view returns (House[] memory) {
-        House[] memory tempHouses = new House[](houseCounter);
-        uint256 index = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            tempHouses[i] = allHouses[i];
-            index++;
-        }
-        return tempHouses;
-    }
-
-    // get all payable houses NFT
-    function getAllPayableHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                iNum++;
-            }
-        }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-        return tempHouses;
-    }
-
-    // get all my houses NFT
-    function getAllMyHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                iNum++;
-            }
-        }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-        return tempHouses;
-    }
-
-    // withdraw token
-    function withdrawToken(uint256 _amountToken) external payable {
+    function setRoyaltyCreator(uint256 _royalty) public {
         onlyMember();
-        _token.transfer(msg.sender, _amountToken);
+        royaltyCreator = _royalty;
 
-        emit TokenWithdrawn(msg.sender, _amountToken, block.timestamp);
+        emit RoyaltyCreatorSet(msg.sender, _royalty, block.timestamp);
     }
 
-    // withdraw ETH
-    function withdrawETH(uint256 _amountEth) external payable {
+    function setRoyaltyMarket(uint256 _royalty) public {
         onlyMember();
-        payable(msg.sender).transfer(_amountEth);
+        royaltyMarket = _royalty;
 
-        emit EthWithdrawn(msg.sender, _amountEth, block.timestamp);
+        emit RoyaltyMarketSet(msg.sender, _royalty, block.timestamp);
     }
 
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    
     function _afterTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override {
         House storage house = allHouses[tokenId];
         // update the token's previous owner
@@ -620,46 +598,67 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         house.numberOfTransfers += 1;
         _transferHistoryContracts(tokenId, from, to);
     }
+    /**
+     * @dev transfer ownership of connected contracts
+     */
+    function _transferHistoryContracts(uint256 tokenId, address from, address to) private {
+        History[] storage histories = houseHistories[tokenId];
 
+        unchecked {
+            for (uint256 i = 0; i < histories.length; ++i) {
+                if (histories[i].contractId > 0) {
+                    cContract.transferContractOwnership(histories[i].contractId, from, to);
+                }
+            }
+        }
+    }
     // Get Overall total information
     function getTotalInfo() public view returns (uint256, uint256, uint256) {
         onlyMember();
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
     }
 
-    // Returns price of a house with `tokenId`
-    function getTokenPrice(uint256 tokenId) external view returns (uint256) {
-        require(msg.sender == stakingContractAddress, 'sc');
-        return allHouses[tokenId].price;
-    }
-
-    // Sets house staked status
-    function setHouseStakedStatus(uint256 tokenId, bool status) external {
-        require(msg.sender == stakingContractAddress, 'sc');
-        allHouses[tokenId].staked = status;
-
-        emit HouseStakedStatusSet(tokenId, status, block.timestamp);
-    }
-
     function getRoyaltyCreator() public view returns (uint256) {
         return royaltyCreator;
-    }
-
-    function setRoyaltyCreator(uint256 _royalty) public {
-        onlyMember();
-        royaltyCreator = _royalty;
-
-        emit RoyaltyCreatorSet(msg.sender, _royalty, block.timestamp);
     }
 
     function getRoyaltyMarket() public view returns (uint256) {
         return royaltyMarket;
     }
 
-    function setRoyaltyMarket(uint256 _royalty) public {
-        onlyMember();
-        royaltyMarket = _royalty;
 
-        emit RoyaltyMarketSet(msg.sender, _royalty, block.timestamp);
+    function onlyMember() private view {
+        require(allMembers[msg.sender], 'OM1');
+    }
+
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+    function checkAllowedList(uint256 _tokenId, address allowed) public view returns (bool) {
+        return allowedList[_tokenId][allowed];
+    }
+
+    function getHistory(uint256 _tokenId) public view returns (History[] memory) {
+        return houseHistories[_tokenId];
+    }
+
+    // Get History Type
+    function getHistoryType() public view returns (HistoryType[] memory) {
+        HistoryType[] memory aHistoryTypes = new HistoryType[](historyTypes.length);
+        for (uint256 i = 0; i < historyTypes.length; i++) {
+            aHistoryTypes[i] = historyTypes[i];
+        }
+        return aHistoryTypes;
+    }
+
+    function getMinMaxNFT() public view returns (uint256, uint256) {
+        return (minPrice, maxPrice);
+    }
+
+    // get owner of the token
+    function getTokenOwner(uint256 _tokenId) public view returns (address) {
+        address _tokenOwner = ownerOf(_tokenId);
+        return _tokenOwner;
     }
 }
