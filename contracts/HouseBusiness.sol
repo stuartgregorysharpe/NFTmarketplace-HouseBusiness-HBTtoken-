@@ -93,7 +93,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string initialDesc,
         uint256 timestamp
     );
-    event PayableSet(address indexed owner, string indexed tokenId, address buyer, bool nftPayable, uint256 timestamp);
+    event PayableSet(address indexed owner, uint256 indexed tokenId, address buyer, bool nftPayable, uint256 timestamp);
     event AllowListAdded(address indexed currentOwner, uint256 indexed tokenId, address allowed, uint256 timestamp);
     event AllowListRemoved(address indexed currentOwner, uint256 indexed tokenId, address allowed, uint256 timestamp);
     event HistoryAdded(
@@ -261,7 +261,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             buyer: address(0),
             creator: msg.sender,
             price: 0,
-            numberOfTransfer: 0,
+            numberOfTransfers: 0,
             nftPayable: false,
             staked: false,
             soldStatus: false
@@ -373,7 +373,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
         emit HistoryEdited(
             msg.sender,
-            tokenId,
+            _tokenId,
             historyIndex,
             houseImg,
             houseBrand,
