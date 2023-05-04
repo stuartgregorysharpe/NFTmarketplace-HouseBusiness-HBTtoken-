@@ -55,24 +55,24 @@ interface IHouseBusiness {
     function changeHousePrice(uint256 tokenId, uint256 newPrice) external;
 }
 
-interface IContract {}
+interface IMainCleanContract {}
 
-interface IERC20Token {}
+interface IHouseBusinessToken {}
 
 contract Operator {
     IHouseBusiness HouseBusiness;
-    IContract Contract;
-    IERC20Token ERC20Token;
+    IMainCleanContract CContract;
+    IHouseBusinessToken ERC20Token;
 
     // Utility tokens and NFT address
     address houseBusiness = 0x0A964d282AF35e81Ad9d72e5c215108B3c43D3c1;
-    address contractAddress = 0xaa3Dc2E3ca0FE2dE6E519F0F224456861A7e9cFC;
+    address cContractAddress = 0xaa3Dc2E3ca0FE2dE6E519F0F224456861A7e9cFC;
     address erc20Token = 0x27C1F4539Fd2CcE5394Ea11fA8554937A587d684;
 
     constructor() {
         // init contract interfaces
         HouseBusiness = IHouseBusiness(houseBusiness);
-        Contract = IContract(contractAddress);
-        ERC20Token = IERC20Token(erc20Token);
+        CContract = IMainCleanContract(cContractAddress);
+        ERC20Token = IHouseBusinessToken(erc20Token);
     }
 }
