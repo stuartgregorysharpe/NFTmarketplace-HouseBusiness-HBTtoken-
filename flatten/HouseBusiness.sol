@@ -1,90 +1,4 @@
-// Sources flattened with hardhat v2.10.2 https://hardhat.org
-
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.1
-
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
-
-pragma solidity ^0.8.0;
-
-/**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
-
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `to`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address to, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint256);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `from` to `to` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
-}
-
+// Sources flattened with hardhat v2.14.0 https://hardhat.org
 
 // File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.8.1
 
@@ -262,6 +176,35 @@ interface IERC721 is IERC165 {
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol@v4.8.1
+
+// SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)
+
+pragma solidity ^0.8.0;
+
+/**
+ * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
+ * @dev See https://eips.ethereum.org/EIPS/eip-721
+ */
+interface IERC721Metadata is IERC721 {
+    /**
+     * @dev Returns the token collection name.
+     */
+    function name() external view returns (string memory);
+
+    /**
+     * @dev Returns the token collection symbol.
+     */
+    function symbol() external view returns (string memory);
+
+    /**
+     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     */
+    function tokenURI(uint256 tokenId) external view returns (string memory);
+}
+
+
 // File @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol@v4.8.1
 
 // SPDX-License-Identifier: MIT
@@ -290,35 +233,6 @@ interface IERC721Receiver {
         uint256 tokenId,
         bytes calldata data
     ) external returns (bytes4);
-}
-
-
-// File @openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol@v4.8.1
-
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)
-
-pragma solidity ^0.8.0;
-
-/**
- * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
- * @dev See https://eips.ethereum.org/EIPS/eip-721
- */
-interface IERC721Metadata is IERC721 {
-    /**
-     * @dev Returns the token collection name.
-     */
-    function name() external view returns (string memory);
-
-    /**
-     * @dev Returns the token collection symbol.
-     */
-    function symbol() external view returns (string memory);
-
-    /**
-     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
-     */
-    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
 
@@ -594,6 +508,37 @@ abstract contract Context {
 
     function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
+    }
+}
+
+
+// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.8.1
+
+// SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
+
+pragma solidity ^0.8.0;
+
+/**
+ * @dev Implementation of the {IERC165} interface.
+ *
+ * Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check
+ * for the additional interface id that will be supported. For example:
+ *
+ * ```solidity
+ * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+ *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);
+ * }
+ * ```
+ *
+ * Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.
+ */
+abstract contract ERC165 is IERC165 {
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+        return interfaceId == type(IERC165).interfaceId;
     }
 }
 
@@ -1015,37 +960,6 @@ library Strings {
      */
     function toHexString(address addr) internal pure returns (string memory) {
         return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
-    }
-}
-
-
-// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.8.1
-
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
-
-pragma solidity ^0.8.0;
-
-/**
- * @dev Implementation of the {IERC165} interface.
- *
- * Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check
- * for the additional interface id that will be supported. For example:
- *
- * ```solidity
- * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
- *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);
- * }
- * ```
- *
- * Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.
- */
-abstract contract ERC165 is IERC165 {
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IERC165).interfaceId;
     }
 }
 
@@ -1619,14 +1533,89 @@ abstract contract ERC721URIStorage is ERC721 {
 }
 
 
-// File contracts/interfaces/IStaking.sol
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.1
 
 // SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
 
-interface IStaking {
-    function stakedCounter() external view returns (uint256);
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
+interface IERC20 {
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256);
+
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `to`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address to, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `from` to `to` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) external returns (bool);
 }
 
 
@@ -1670,6 +1659,17 @@ interface IMainCleanContract {
 }
 
 
+// File contracts/interfaces/IStaking.sol
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+interface IStaking {
+    function stakedCounter() external view returns (uint256);
+}
+
+
 // File contracts/HouseBusiness.sol
 
 // SPDX-License-Identifier: MIT
@@ -1699,21 +1699,25 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     uint256 public royaltyMarket;
     // CleanContract address
     IMainCleanContract cContract;
+
+    struct Contributor {
+        address currentOwner;
+        address previousOwner;
+        address buyer;
+        address creator;
+    }
     // define house struct
     struct House {
         uint256 tokenId;
         string tokenName;
         string tokenURI;
         string tokenType;
-        address currentOwner;
-        address previousOwner;
-        address buyer;
-        address creator;
         uint256 price;
         uint256 numberOfTransfers;
         bool nftPayable;
         bool staked;
         bool soldStatus;
+        Contributor contributor;
     }
     // House history struct
     struct History {
@@ -1844,7 +1848,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     modifier onlyMember() {
-        require(allMembers[msg.sender], "Only Member");
+        require(allMembers[msg.sender], 'Only Member');
         _;
     }
 
@@ -1855,6 +1859,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function setStakingContractAddress(address addr) external onlyMember {
         stakingContractAddress = addr;
     }
+
     // Sets house staked status
     function setHouseStakedStatus(uint256 tokenId, bool status) external {
         require(msg.sender == stakingContractAddress, 'sc');
@@ -1879,7 +1884,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address tokenOwner = ownerOf(tokenId);
         // check that token's owner should be equal to the caller of the function
         require(tokenOwner == msg.sender, 'Only owner can call this func.');
-        allHouses[tokenId].buyer = _buyer;
+        if (allHouses[tokenId].buyer != _buyer) allHouses[tokenId].buyer = _buyer;
         allHouses[tokenId].nftPayable = nftPayable;
 
         emit PayableSet(msg.sender, tokenId, _buyer, nftPayable, block.timestamp);
@@ -1947,7 +1952,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
-        string memory initialDesc 
+        string memory initialDesc
     ) public {
         // check if a token exists with the above token id => incremented counter
         require(!_exists(houseCounter + 1), 'NIE!');
@@ -1960,20 +1965,24 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // set token URI (bind token id with the passed in token URI)
         _setTokenURI(houseCounter, _tokenURI);
 
+
+
         allHouses[houseCounter] = House({
             tokenId: houseCounter,
             tokenName: _name,
             tokenURI: _tokenURI,
             tokenType: _tokenType,
-            currentOwner: msg.sender,
-            previousOwner: address(0),
-            buyer: address(0),
-            creator: msg.sender,
             price: 0,
             numberOfTransfers: 0,
             nftPayable: false,
             staked: false,
-            soldStatus: false
+            soldStatus: false,
+            contributor: Contributor({
+                currentOwner: msg.sender,
+                previousOwner: address(0),
+                buyer: address(0),
+                creator: msg.sender
+            })
         });
 
         // new house history push into the House struct
@@ -2131,11 +2140,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     function changeHousePrice(uint256 tokenId, uint256 newPrice) public {
-        require(allHouses[tokenId].currentOwner == msg.sender, 'Only the owner can change the price and tokenId must exist');
+        require(
+            allHouses[tokenId].currentOwner == msg.sender,
+            'Only the owner can change the price and tokenId must exist'
+        );
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
-    
+
         allHouses[tokenId].price = newPrice;
-    
+
         emit HousePriceChanged(tokenId, msg.sender, newPrice);
     }
 
@@ -2190,17 +2202,18 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
-    
+
     function _afterTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override {
         House storage house = allHouses[tokenId];
         // update the token's previous owner
-        house.previousOwner = house.currentOwner;
+        house.contributor.previousOwner = house.contributor.currentOwner;
         // update the token's current owner
-        house.currentOwner = to;
+        house.contributor.currentOwner = to;
         // update the how many times this token was transfered
         house.numberOfTransfers += 1;
         _transferHistoryContracts(tokenId, from, to);
     }
+
     /**
      * @dev transfer ownership of connected contracts
      */
@@ -2229,40 +2242,28 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // get all payable houses NFT
     function getAllPayableHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                iNum++;
+        House[] memory allPayableHouse;
+        uint256 j = 0;
+        for (uint256 i = 0; i < houseCounter; i++) {
+            House storage temp_house = allHouses[i];
+            if (temp_house.nftPayable == true && temp_house.staked == false) {
+                allPayableHouse[j++] = temp_house;
             }
         }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].nftPayable == true && allHouses[i].staked == false) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-        return tempHouses;
+        return allPayableHouse;
     }
-    
+
     // get all my houses NFT
     function getAllMyHouses() external view returns (House[] memory) {
-        uint256 iNum;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                iNum++;
+        House[] memory allMyHouse;
+        uint256 j = 0;
+        for (uint256 i = 0; i < houseCounter; i++) {
+            House storage temp_house = allHouses[i];
+            if (temp_house.contributor.currentOwner == msg.sender) {
+                allMyHouse[j++] = temp_house;
             }
         }
-        House[] memory tempHouses = new House[](iNum);
-        iNum = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
-            if (allHouses[i].currentOwner == msg.sender) {
-                tempHouses[iNum] = allHouses[i];
-                iNum++;
-            }
-        }
-        return tempHouses;
+        return allMyHouse;
     }
 
     // Returns price of a house with `tokenId`
@@ -2270,7 +2271,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(msg.sender == stakingContractAddress, 'sc');
         return allHouses[tokenId].price;
     }
-    
+
     // Get Overall total information
     function getTotalInfo() public view onlyMember returns (uint256, uint256, uint256) {
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);

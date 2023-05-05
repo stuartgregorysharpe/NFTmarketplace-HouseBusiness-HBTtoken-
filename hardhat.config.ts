@@ -18,12 +18,6 @@ module.exports = {
       optimizer: {
         enabled: true,
         runs: 200,
-        details: {
-          stack: {
-            // Increase stack size limit
-            size: 2048
-          }
-        }
       },
     },
   },
