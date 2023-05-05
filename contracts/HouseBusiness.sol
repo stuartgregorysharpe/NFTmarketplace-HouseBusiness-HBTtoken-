@@ -10,27 +10,17 @@ import './interfaces/IStaking.sol';
 import './interfaces/IMainCleanContract.sol';
 
 contract HouseBusiness is ERC721, ERC721URIStorage {
-    // this contract's token collection name
     string public collectionName;
-    // this contract's token symbol
     string public collectionNameSymbol;
-    // total number of houses minted
     uint256 public houseCounter;
-
-    // total number of solded nft
     uint256 public soldedCounter;
-    // total number of history type
-    uint256 public hTypeCounter;
-    // reward token
-    IERC20 _token;
-    // min house nft price
     uint256 public minPrice;
-    // max house nft price
     uint256 public maxPrice;
-    // token royalty
+    uint256 public hTypeCounter;
     uint256 public royaltyCreator;
     uint256 public royaltyMarket;
-    // CleanContract address
+    
+    IERC20 _token;
     IMainCleanContract cContract;
 
     struct Contributor {
@@ -39,7 +29,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address buyer;
         address creator;
     }
-    // define house struct
     struct House {
         uint256 tokenId;
         string tokenName;
@@ -52,7 +41,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool soldStatus;
         Contributor contributor;
     }
-    // House history struct
     struct History {
         uint256 hID;
         uint256 contractId;
@@ -63,7 +51,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string brandType;
         uint256 yearField;
     }
-    // History Type Struct
     struct HistoryType {
         uint256 hID;
         string hLabel;
@@ -75,18 +62,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool yearNeed;
         bool checkMark;
     }
-    // history types
+    
     HistoryType[] historyTypes;
-    // all house histories
-    mapping(uint256 => History[]) houseHistories;
-    // map members
+
     mapping(address => bool) public member;
-    // map house's token id to house
     mapping(uint256 => House) public allHouses;
-    // map house's token id to house
+    mapping(uint256 => History[]) houseHistories;
     mapping(uint256 => mapping(address => bool)) public allowedList;
 
-    // HouseStaking contract address
     address stakingContractAddress;
 
     event HouseMinted(

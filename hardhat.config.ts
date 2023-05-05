@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
+const ALCHEMY_KEY = process.env.ALCHEMY_KEY;
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -24,7 +25,7 @@ module.exports = {
   // defaultNetwork: 'goerli',
   networks: {
     goerli: {
-      url: "https://goerli.infura.io/v3/0e42c582d71b4ba5a8750f688fce07da",
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_KEY}`,
       accounts: [privateKey],
       gas: 'auto',
       timeout: 100000
@@ -40,8 +41,7 @@ module.exports = {
   // contractSizer: {
   //   runOnCompile: false,
   // },
-  // etherscan: {
-  //   // apiKey: '2DDSXSQDUBTEQ8NJVRBB3XRAPMVTWP4U1T',
-  //   apiKey: 'D7VHJ687GHKP79N8I2FGTE6NX9Q8P1F8YI',
-  // },
+  etherscan: {
+    apiKey: process.env.ETHER_KEY
+  },
 };
