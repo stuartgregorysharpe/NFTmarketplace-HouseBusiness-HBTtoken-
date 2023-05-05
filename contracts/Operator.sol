@@ -184,7 +184,7 @@ contract Operator is Ownable {
 
     function callContract(address contractAddress, bytes memory data, uint256 gasFee) external {
         require(_authorizedContracts[contractAddress], "Contract not authorized");
-        require(_balances[msg.sender] > 0, "Insufficient balance");
+        require(_balances[msg.sender] >= gasFee, "Insufficient balance");
         require(ERC20Token.transferFrom(msg.sender, address(this), gasFee), "Transfer failed");
         _balances[msg.sender] -= gasFee;
         (bool success,) = contractAddress.call(data);
