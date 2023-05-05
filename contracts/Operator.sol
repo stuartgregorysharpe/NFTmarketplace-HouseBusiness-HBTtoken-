@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-
+pragma solidity ^0.8.7;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
@@ -182,7 +182,7 @@ contract Operator is Ownable {
         _balances[msg.sender] -= amount;
     }
 
-    function callContract(address contractAddress, bytes memory data) external {
+    function callContract(address contractAddress, bytes memory data, uint256 gasFee) external {
         require(_authorizedContracts[contractAddress], "Contract not authorized");
         require(_balances[msg.sender] > 0, "Insufficient balance");
         require(ERC20Token.transferFrom(msg.sender, address(this), gasFee), "Transfer failed");

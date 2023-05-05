@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.5.1",
-    "@openzeppelin/contracts": "^4.7.3",
-    "@openzeppelin/contracts-upgradeable": "^4.7.2",
+    "@openzeppelin/contracts": "^4.8.3",
+    "@openzeppelin/contracts-upgradeable": "^4.8.3",
     "@openzeppelin/hardhat-upgrades": "^1.19.1",
     "@openzeppelin/upgrades-core": "^1.17.0",
     "@truffle/hdwallet-provider": "^2.0.11",
     "dotenv": "^16.0.1",
-    "solc": "^0.8.7"
+    "solc": "^0.8.7",
+    "solidity-coverage": "^0.8.2"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
