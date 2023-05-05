@@ -7,3 +7,5 @@ typechain
 .env
 artifacts/
 cache/
+coverage/
+flatten/

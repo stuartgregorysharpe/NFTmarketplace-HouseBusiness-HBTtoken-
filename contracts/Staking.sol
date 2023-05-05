@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import './interfaces/IHouseBusiness.sol';
+pragma solidity ^0.8.7;
 
 contract HouseStaking {
     // total number of staked nft
@@ -120,7 +120,7 @@ contract HouseStaking {
     }
 
     function updateAPYConfig(uint _type, uint APY) external {
-        require(IHouseBusiness(houseNFTAddress).allMembers(msg.sender), 'member');
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         for (uint i = 0; i < APYtypes.length; i++) {
             if (APYtypes[i] == _type) {
                 APYConfig[_type] = APY;
@@ -160,21 +160,20 @@ contract HouseStaking {
         }
     }
 
-    function setPenalty(uint256 _penalty) public {
-        require(IHouseBusiness(houseNFTAddress).allMembers(msg.sender), 'member');
+    function setPenalty(uint256 _penalty) external {
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         penalty = _penalty;
 
         emit PenaltySet(msg.sender, _penalty, block.timestamp);
     }
 
-    function calcDiv(uint256 a, uint256 b) external pure returns (uint256) {
+    function calcDiv(uint256 a, uint256 b) public pure returns (uint256) {
         return (a - (a % b)) / b;
     }
 
-    function getAllAPYTypes() public view returns (uint256[] memory) {
+    function getAllAPYTypes() external view returns (uint256[] memory) {
         return APYtypes;
     }
-
 
     function stakingFinished(uint256 _tokenId) public view returns (bool) {
         StakedNft memory stakingNft;
@@ -212,12 +211,12 @@ contract HouseStaking {
     }
 
     // Gaddress _rewardOwneret All staked Nfts
-    function getAllMyStakedNFTs() public view returns (StakedNft[] memory) {
+    function getAllMyStakedNFTs() external view returns (StakedNft[] memory) {
         return stakedNfts[msg.sender];
     }
 
     // Get All APYs
-    function getAllAPYs() public view returns (uint256[] memory, uint256[] memory) {
+    function getAllAPYs() external view returns (uint256[] memory, uint256[] memory) {
         uint256[] memory apyCon = new uint256[](APYtypes.length);
         uint256[] memory apys = new uint256[](APYtypes.length);
         for (uint256 i = 0; i < APYtypes.length; i++) {

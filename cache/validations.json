@@ -2,6 +2,150 @@
   "version": "3.2",
   "log": [
     {
+      "Ownable": {
+        "src": "@openzeppelin\\contracts\\access\\Ownable.sol:20",
+        "inherit": [
+          "Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin\\contracts\\access\\Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin\\contracts\\access\\Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "ERC20": {
+        "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:35",
+        "version": {
+          "withMetadata": "099716650746b26c53ee2c24235cf3df924a7f65b2877869baa4b93087a02047",
+          "withoutMetadata": "c2254a604c012efca8a0325f856612e2fdf3654d34d17c1f624a567797479f6d",
+          "linkedWithoutMetadata": "c2254a604c012efca8a0325f856612e2fdf3654d34d17c1f624a567797479f6d"
+        },
+        "inherit": [
+          "IERC20Metadata",
+          "IERC20",
+          "Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "(string,string)",
+          "name()",
+          "symbol()",
+          "decimals()",
+          "totalSupply()",
+          "balanceOf(address)",
+          "transfer(address,uint256)",
+          "allowance(address,address)",
+          "approve(address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "increaseAllowance(address,uint256)",
+          "decreaseAllowance(address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC20",
+            "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:54"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:36"
+            },
+            {
+              "label": "_allowances",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:38"
+            },
+            {
+              "label": "_totalSupply",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:40"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:42"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_string_storage",
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:43"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(address => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
       "IERC20": {
         "src": "@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol:9",
         "inherit": [],
@@ -13,6 +157,26 @@
           "allowance(address,address)",
           "approve(address,uint256)",
           "transferFrom(address,address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC20Metadata": {
+        "src": "@openzeppelin\\contracts\\token\\ERC20\\extensions\\IERC20Metadata.sol:13",
+        "inherit": [
+          "IERC20"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "decimals()"
         ],
         "linkReferences": [],
         "errors": [],
@@ -451,9 +615,9 @@
       "HouseBusiness": {
         "src": "contracts\\HouseBusiness.sol:12",
         "version": {
-          "withMetadata": "a19dec942c785ff677ed07d330ad27252c2dd2e5d0b0e58ae6162444ef4923c4",
-          "withoutMetadata": "d9a87cb61ad04d8e08bc2afd4fe273056d5d253248c6d9ddb052ff6a4efcae88",
-          "linkedWithoutMetadata": "d9a87cb61ad04d8e08bc2afd4fe273056d5d253248c6d9ddb052ff6a4efcae88"
+          "withMetadata": "a9a8d00b98d8ebc864d1f0ef3d6f345076010b360321f5e632681081fb3ddea4",
+          "withoutMetadata": "8e0a662f5a393bc4486c43480f235111488d6e66a0bc2ee8b4dc42729cd7cad5",
+          "linkedWithoutMetadata": "8e0a662f5a393bc4486c43480f235111488d6e66a0bc2ee8b4dc42729cd7cad5"
         },
         "inherit": [
           "ERC721URIStorage",
@@ -496,7 +660,6 @@
           "getAllMyHouses()",
           "getTokenPrice(uint256)",
           "getTotalInfo()",
-          "isMember()",
           "tokenURI(uint256)",
           "checkAllowedList(uint256,address)",
           "getHistory(uint256)",
@@ -508,7 +671,7 @@
           {
             "kind": "constructor",
             "contract": "HouseBusiness",
-            "src": "contracts\\HouseBusiness.sol:161"
+            "src": "contracts\\HouseBusiness.sol:213"
           }
         ],
         "layout": {
@@ -613,7 +776,7 @@
               "label": "_token",
               "offset": 0,
               "slot": "12",
-              "type": "t_contract(IERC20)77",
+              "type": "t_contract(IERC20)777",
               "contract": "HouseBusiness",
               "src": "contracts\\HouseBusiness.sol:25"
             },
@@ -653,7 +816,7 @@
               "label": "cContract",
               "offset": 0,
               "slot": "17",
-              "type": "t_contract(IMainCleanContract)5817",
+              "type": "t_contract(IMainCleanContract)8720",
               "contract": "HouseBusiness",
               "src": "contracts\\HouseBusiness.sol:34"
             },
@@ -661,33 +824,33 @@
               "label": "historyTypes",
               "offset": 0,
               "slot": "18",
-              "type": "t_array(t_struct(HistoryType)2835_storage)dyn_storage",
+              "type": "t_array(t_struct(HistoryType)3564_storage)dyn_storage",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:75"
+              "src": "contracts\\HouseBusiness.sol:79"
             },
             {
               "label": "houseHistories",
               "offset": 0,
               "slot": "19",
-              "type": "t_mapping(t_uint256,t_array(t_struct(History)2816_storage)dyn_storage)",
+              "type": "t_mapping(t_uint256,t_array(t_struct(History)3545_storage)dyn_storage)",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:77"
+              "src": "contracts\\HouseBusiness.sol:81"
             },
             {
-              "label": "allMembers",
+              "label": "member",
               "offset": 0,
               "slot": "20",
               "type": "t_mapping(t_address,t_bool)",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:79"
+              "src": "contracts\\HouseBusiness.sol:83"
             },
             {
               "label": "allHouses",
               "offset": 0,
               "slot": "21",
-              "type": "t_mapping(t_uint256,t_struct(House)2799_storage)",
+              "type": "t_mapping(t_uint256,t_struct(House)3528_storage)",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:81"
+              "src": "contracts\\HouseBusiness.sol:85"
             },
             {
               "label": "allowedList",
@@ -695,7 +858,7 @@
               "slot": "22",
               "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:83"
+              "src": "contracts\\HouseBusiness.sol:87"
             },
             {
               "label": "stakingContractAddress",
@@ -703,7 +866,7 @@
               "slot": "23",
               "type": "t_address",
               "contract": "HouseBusiness",
-              "src": "contracts\\HouseBusiness.sol:86"
+              "src": "contracts\\HouseBusiness.sol:90"
             }
           ],
           "types": {
@@ -711,11 +874,11 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(History)2816_storage)dyn_storage": {
+            "t_array(t_struct(History)3545_storage)dyn_storage": {
               "label": "struct HouseBusiness.History[]",
               "numberOfBytes": "32"
             },
-            "t_array(t_struct(HistoryType)2835_storage)dyn_storage": {
+            "t_array(t_struct(HistoryType)3564_storage)dyn_storage": {
               "label": "struct HouseBusiness.HistoryType[]",
               "numberOfBytes": "32"
             },
@@ -723,11 +886,11 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_contract(IERC20)77": {
+            "t_contract(IERC20)777": {
               "label": "contract IERC20",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)5817": {
+            "t_contract(IMainCleanContract)8720": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             },
@@ -747,7 +910,7 @@
               "label": "mapping(uint256 => address)",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_array(t_struct(History)2816_storage)dyn_storage)": {
+            "t_mapping(t_uint256,t_array(t_struct(History)3545_storage)dyn_storage)": {
               "label": "mapping(uint256 => struct HouseBusiness.History[])",
               "numberOfBytes": "32"
             },
@@ -759,7 +922,7 @@
               "label": "mapping(uint256 => string)",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(House)2799_storage)": {
+            "t_mapping(t_uint256,t_struct(House)3528_storage)": {
               "label": "mapping(uint256 => struct HouseBusiness.House)",
               "numberOfBytes": "32"
             },
@@ -767,7 +930,37 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(History)2816_storage": {
+            "t_struct(Contributor)3506_storage": {
+              "label": "struct HouseBusiness.Contributor",
+              "members": [
+                {
+                  "label": "currentOwner",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "previousOwner",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "buyer",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "creator",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "3"
+                }
+              ],
+              "numberOfBytes": "128"
+            },
+            "t_struct(History)3545_storage": {
               "label": "struct HouseBusiness.History",
               "members": [
                 {
@@ -821,7 +1014,7 @@
               ],
               "numberOfBytes": "256"
             },
-            "t_struct(HistoryType)2835_storage": {
+            "t_struct(HistoryType)3564_storage": {
               "label": "struct HouseBusiness.HistoryType",
               "members": [
                 {
@@ -881,7 +1074,7 @@
               ],
               "numberOfBytes": "96"
             },
-            "t_struct(House)2799_storage": {
+            "t_struct(House)3528_storage": {
               "label": "struct HouseBusiness.House",
               "members": [
                 {
@@ -909,58 +1102,40 @@
                   "slot": "3"
                 },
                 {
-                  "label": "currentOwner",
-                  "type": "t_address",
-                  "offset": 0,
-                  "slot": "4"
-                },
-                {
-                  "label": "previousOwner",
-                  "type": "t_address",
-                  "offset": 0,
-                  "slot": "5"
-                },
-                {
-                  "label": "buyer",
-                  "type": "t_address",
-                  "offset": 0,
-                  "slot": "6"
-                },
-                {
-                  "label": "creator",
-                  "type": "t_address",
-                  "offset": 0,
-                  "slot": "7"
-                },
-                {
                   "label": "price",
                   "type": "t_uint256",
                   "offset": 0,
-                  "slot": "8"
+                  "slot": "4"
                 },
                 {
                   "label": "numberOfTransfers",
                   "type": "t_uint256",
                   "offset": 0,
-                  "slot": "9"
+                  "slot": "5"
                 },
                 {
                   "label": "nftPayable",
                   "type": "t_bool",
                   "offset": 0,
-                  "slot": "10"
+                  "slot": "6"
                 },
                 {
                   "label": "staked",
                   "type": "t_bool",
                   "offset": 1,
-                  "slot": "10"
+                  "slot": "6"
                 },
                 {
                   "label": "soldStatus",
                   "type": "t_bool",
                   "offset": 2,
-                  "slot": "10"
+                  "slot": "6"
+                },
+                {
+                  "label": "contributor",
+                  "type": "t_struct(Contributor)3506_storage",
+                  "offset": 0,
+                  "slot": "7"
                 }
               ],
               "numberOfBytes": "352"
@@ -974,316 +1149,15 @@
           "flat": true
         }
       },
-      "HouseStaking": {
-        "src": "contracts\\Staking.sol:8",
-        "version": {
-          "withMetadata": "36c6bdee488b397e6beeb568b47cd66b2d4a00399be93ce5f529f14c3061323f",
-          "withoutMetadata": "7a0d4343ae20e41b6f4abe18cc1a2fa397c2b953aeb94b8577d8b9fe35613da2",
-          "linkedWithoutMetadata": "7a0d4343ae20e41b6f4abe18cc1a2fa397c2b953aeb94b8577d8b9fe35613da2"
-        },
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "(address,address)",
-          "setAPYConfig(uint256,uint256)",
-          "stake(uint256,uint256)",
-          "unstake(uint256)",
-          "updateAPYConfig(uint256,uint256)",
-          "claimRewards(address)",
-          "setPenalty(uint256)",
-          "calcDiv(uint256,uint256)",
-          "getAllAPYTypes()",
-          "stakingFinished(uint256)",
-          "totalRewards(address)",
-          "getAllMyStakedNFTs()",
-          "getAllAPYs()"
-        ],
-        "linkReferences": [],
-        "errors": [
-          {
-            "kind": "constructor",
-            "contract": "HouseStaking",
-            "src": "contracts\\Staking.sol:42"
-          }
-        ],
-        "layout": {
-          "storage": [
-            {
-              "label": "stakedCounter",
-              "offset": 0,
-              "slot": "0",
-              "type": "t_uint256",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:10"
-            },
-            {
-              "label": "penalty",
-              "offset": 0,
-              "slot": "1",
-              "type": "t_uint256",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:12"
-            },
-            {
-              "label": "APYtypes",
-              "offset": 0,
-              "slot": "2",
-              "type": "t_array(t_uint256)dyn_storage",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:14"
-            },
-            {
-              "label": "APYConfig",
-              "offset": 0,
-              "slot": "3",
-              "type": "t_mapping(t_uint256,t_uint256)",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:17"
-            },
-            {
-              "label": "stakedNfts",
-              "offset": 0,
-              "slot": "4",
-              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)4853_storage)dyn_storage)",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:18"
-            },
-            {
-              "label": "tokenAddress",
-              "offset": 0,
-              "slot": "5",
-              "type": "t_address",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:20"
-            },
-            {
-              "label": "houseNFTAddress",
-              "offset": 0,
-              "slot": "6",
-              "type": "t_address",
-              "contract": "HouseStaking",
-              "src": "contracts\\Staking.sol:21"
-            }
-          ],
-          "types": {
-            "t_address": {
-              "label": "address",
-              "numberOfBytes": "20"
-            },
-            "t_array(t_struct(StakedNft)4853_storage)dyn_storage": {
-              "label": "struct HouseStaking.StakedNft[]",
-              "numberOfBytes": "32"
-            },
-            "t_array(t_uint256)dyn_storage": {
-              "label": "uint256[]",
-              "numberOfBytes": "32"
-            },
-            "t_bool": {
-              "label": "bool",
-              "numberOfBytes": "1"
-            },
-            "t_mapping(t_address,t_array(t_struct(StakedNft)4853_storage)dyn_storage)": {
-              "label": "mapping(address => struct HouseStaking.StakedNft[])",
-              "numberOfBytes": "32"
-            },
-            "t_mapping(t_uint256,t_uint256)": {
-              "label": "mapping(uint256 => uint256)",
-              "numberOfBytes": "32"
-            },
-            "t_struct(StakedNft)4853_storage": {
-              "label": "struct HouseStaking.StakedNft",
-              "members": [
-                {
-                  "label": "owner",
-                  "type": "t_address",
-                  "offset": 0,
-                  "slot": "0"
-                },
-                {
-                  "label": "tokenId",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "1"
-                },
-                {
-                  "label": "startedDate",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "2"
-                },
-                {
-                  "label": "endDate",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "3"
-                },
-                {
-                  "label": "claimDate",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "4"
-                },
-                {
-                  "label": "stakingType",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "5"
-                },
-                {
-                  "label": "perSecRewards",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "6"
-                },
-                {
-                  "label": "stakingStatus",
-                  "type": "t_bool",
-                  "offset": 0,
-                  "slot": "7"
-                }
-              ],
-              "numberOfBytes": "256"
-            },
-            "t_uint256": {
-              "label": "uint256",
-              "numberOfBytes": "32"
-            }
-          },
-          "layoutVersion": "1.1",
-          "flat": true
-        }
-      },
-      "IMainCleanContract": {
-        "src": "contracts\\interfaces\\IContract.sol:6",
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "getContractById(uint256)",
-          "transferContractOwnership(uint256,address,address)"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      },
-      "IHouseBusiness": {
-        "src": "contracts\\interfaces\\IHouseBusiness.sol:5",
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "collectionName()",
-          "collectionNameSymbol()",
-          "houseCounter()",
-          "stakedCounter()",
-          "soldedCounter()",
-          "hTypeCounter()",
-          "minPrice()",
-          "maxPrice()",
-          "penalty()",
-          "royalty()",
-          "historyTypes(uint256)",
-          "houseHistories(uint256)",
-          "allMembers(address)",
-          "allHouses(uint256)",
-          "stakedNfts(address)",
-          "setMinMaxHousePrice(uint256,uint256)",
-          "setConfigToken(address)",
-          "isMember()",
-          "addMember(address)",
-          "removeMember(address)",
-          "tokenURI(uint256)",
-          "setPayable(uint256,address,bool)",
-          "mintHouse(string,string,string,string,uint256)",
-          "addAllowList(uint256,address)",
-          "removeAllowList(uint256,address)",
-          "checkAllowedList(uint256,address)",
-          "addHistory(uint256,uint256,string,string,string,string,string,uint256)",
-          "getHistory(uint256)",
-          "editHistory(uint256,uint256,string,string,string,string,string,uint256)",
-          "getHistoryType()",
-          "addOrEditHType(uint256,string,bool,bool,bool,bool,bool,bool,bool)",
-          "removeHistoryType(uint256)",
-          "getMinMaxNFT()",
-          "getTokenOwner(uint256)",
-          "buyHouseNft(uint256)",
-          "sendToken(address,uint256)",
-          "changeTokenPrice(uint256,uint256)",
-          "getAllHouses()",
-          "getAllPayableHouses()",
-          "getAllMyHouses()",
-          "withdrawToken(uint256)",
-          "withdrawETH(uint256)",
-          "setAPYConfig(uint256,uint256)",
-          "getAllAPYTypes()",
-          "stake(uint256,uint256)",
-          "unstake(uint256)",
-          "stakingFinished(uint256)",
-          "totalRewards(address)",
-          "claimRewards(address)",
-          "getAllMyStakedNFTs()",
-          "getTotalInfo()",
-          "getAllAPYs()",
-          "getPenalty()",
-          "setPenalty(uint256)",
-          "getRoyalty()",
-          "setRoyalty(uint256)",
-          "ownerOf(uint256)",
-          "getTokenPrice(uint256)",
-          "setHouseStakedStatus(uint256,bool)"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      },
-      "IStaking": {
-        "src": "contracts\\interfaces\\IStaking.sol:5",
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "stakedCounter()"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      }
-    },
-    {
-      "Context": {
-        "src": "contracts\\TokenContract.sol:30",
-        "inherit": [],
-        "libraries": [],
-        "methods": [],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      },
       "HouseBusinessToken": {
-        "src": "contracts\\TokenContract.sol:41",
+        "src": "contracts\\HouseBusinessToken.sol:7",
         "version": {
-          "withMetadata": "a301919fe62b4bdb55afe2b8d18ae9720fa903dbf6f93decdfd35288576a1d9c",
-          "withoutMetadata": "175ac03c3df53a4080c429517a0168c7515764521922a1093ae28fcf79fc2851",
-          "linkedWithoutMetadata": "175ac03c3df53a4080c429517a0168c7515764521922a1093ae28fcf79fc2851"
+          "withMetadata": "a5f535750057039fcb498ad5e20a6078ec7d942e57ab90fef8c7f9333bcfc3a9",
+          "withoutMetadata": "ed36ad7a2037c2051e6580d563f032903e4c2ab366169dc0d939f3c4d551757c",
+          "linkedWithoutMetadata": "ed36ad7a2037c2051e6580d563f032903e4c2ab366169dc0d939f3c4d551757c"
         },
         "inherit": [
+          "ERC20",
           "IERC20Metadata",
           "IERC20",
           "Context"
@@ -1291,45 +1165,15 @@
         "libraries": [],
         "methods": [
           "()",
-          "name()",
-          "symbol()",
-          "decimals()",
-          "totalSupply()",
-          "balanceOf(address)",
-          "transfer(address,uint256)",
-          "allowance(address,address)",
-          "approve(address,uint256)",
-          "transferFrom(address,address,uint256)",
-          "increaseAllowance(address,uint256)",
-          "decreaseAllowance(address,uint256)",
-          "_mint(address,uint256)"
+          "mint(address,uint256)",
+          "burn(address,uint256)"
         ],
         "linkReferences": [],
         "errors": [
           {
             "kind": "constructor",
             "contract": "HouseBusinessToken",
-            "src": "contracts\\TokenContract.sol:51"
-          },
-          {
-            "kind": "state-variable-assignment",
-            "name": "_name",
-            "src": "contracts\\TokenContract.sol:45"
-          },
-          {
-            "kind": "state-variable-assignment",
-            "name": "_symbol",
-            "src": "contracts\\TokenContract.sol:46"
-          },
-          {
-            "kind": "state-variable-assignment",
-            "name": "_decimals",
-            "src": "contracts\\TokenContract.sol:47"
-          },
-          {
-            "kind": "state-variable-assignment",
-            "name": "initialSupply",
-            "src": "contracts\\TokenContract.sol:48"
+            "src": "contracts\\HouseBusinessToken.sol:11"
           }
         ],
         "layout": {
@@ -1339,64 +1183,48 @@
               "offset": 0,
               "slot": "0",
               "type": "t_mapping(t_address,t_uint256)",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:42"
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:36"
             },
             {
               "label": "_allowances",
               "offset": 0,
               "slot": "1",
               "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:43"
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:38"
             },
             {
               "label": "_totalSupply",
               "offset": 0,
               "slot": "2",
               "type": "t_uint256",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:44"
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:40"
             },
             {
               "label": "_name",
               "offset": 0,
               "slot": "3",
               "type": "t_string_storage",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:45"
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:42"
             },
             {
               "label": "_symbol",
               "offset": 0,
               "slot": "4",
               "type": "t_string_storage",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:46"
-            },
-            {
-              "label": "_decimals",
-              "offset": 0,
-              "slot": "5",
-              "type": "t_uint8",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:47"
-            },
-            {
-              "label": "initialSupply",
-              "offset": 0,
-              "slot": "6",
-              "type": "t_uint256",
-              "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:48"
+              "contract": "ERC20",
+              "src": "@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol:43"
             },
             {
               "label": "_owner",
               "offset": 0,
-              "slot": "7",
+              "slot": "5",
               "type": "t_address",
               "contract": "HouseBusinessToken",
-              "src": "contracts\\TokenContract.sol:49"
+              "src": "contracts\\HouseBusinessToken.sol:9"
             }
           ],
           "types": {
@@ -1419,279 +1247,16 @@
             "t_uint256": {
               "label": "uint256",
               "numberOfBytes": "32"
-            },
-            "t_uint8": {
-              "label": "uint8",
-              "numberOfBytes": "1"
             }
           },
           "layoutVersion": "1.1",
           "flat": true
         }
       },
-      "IERC20": {
-        "src": "contracts\\TokenContract.sol:5",
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "totalSupply()",
-          "balanceOf(address)",
-          "transfer(address,uint256)",
-          "allowance(address,address)",
-          "approve(address,uint256)",
-          "transferFrom(address,address,uint256)"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      },
-      "IERC20Metadata": {
-        "src": "contracts\\TokenContract.sol:22",
-        "inherit": [
-          "IERC20"
-        ],
-        "libraries": [],
-        "methods": [
-          "name()",
-          "symbol()",
-          "decimals()"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [],
-          "types": {},
-          "layoutVersion": "1.1",
-          "flat": false
-        }
-      }
-    },
-    {
-      "ThirdParty": {
-        "src": "contracts\\ThirdParty.sol:5",
-        "version": {
-          "withMetadata": "d53521b340872e1cb19a829da8b6f983b51ec0caaaaed0ba0db377ea1dcf6c41",
-          "withoutMetadata": "3acbde7a57100e491145d86dc06d6a1d005f910761389ab6ab79b372a76c9ad9",
-          "linkedWithoutMetadata": "3acbde7a57100e491145d86dc06d6a1d005f910761389ab6ab79b372a76c9ad9"
-        },
-        "inherit": [],
-        "libraries": [],
-        "methods": [
-          "getAllCategories()",
-          "addCategory(string,uint256[])",
-          "editCategory(uint256,string,uint256[])",
-          "deleteCategory(uint256)",
-          "getAllProperties()",
-          "addProperty(string)",
-          "editProperty(uint256,string)",
-          "deleteProperty(uint256)",
-          "getPackagesByCategory(uint256)",
-          "addPackage(uint256,string,uint256,uint256,uint256,bool[])",
-          "editPackage(uint256,uint256,string,uint256,uint256,uint256,bool[])",
-          "deletePackage(uint256,uint256)"
-        ],
-        "linkReferences": [],
-        "errors": [],
-        "layout": {
-          "storage": [
-            {
-              "label": "categoryCounter",
-              "offset": 0,
-              "slot": "0",
-              "type": "t_uint256",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:12"
-            },
-            {
-              "label": "packageCounter",
-              "offset": 0,
-              "slot": "1",
-              "type": "t_uint256",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:23"
-            },
-            {
-              "label": "propertyCounter",
-              "offset": 0,
-              "slot": "2",
-              "type": "t_uint256",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:29"
-            },
-            {
-              "label": "allCategories",
-              "offset": 0,
-              "slot": "3",
-              "type": "t_array(t_struct(Category)11_storage)dyn_storage",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:31"
-            },
-            {
-              "label": "allPackages",
-              "offset": 0,
-              "slot": "4",
-              "type": "t_mapping(t_uint256,t_array(t_struct(Package)29_storage)dyn_storage)",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:34"
-            },
-            {
-              "label": "allProperties",
-              "offset": 0,
-              "slot": "5",
-              "type": "t_array(t_struct(Property)36_storage)dyn_storage",
-              "contract": "ThirdParty",
-              "src": "contracts\\ThirdParty.sol:37"
-            }
-          ],
-          "types": {
-            "t_array(t_bool)dyn_storage": {
-              "label": "bool[]",
-              "numberOfBytes": "32"
-            },
-            "t_array(t_struct(Category)11_storage)dyn_storage": {
-              "label": "struct ThirdParty.Category[]",
-              "numberOfBytes": "32"
-            },
-            "t_array(t_struct(Package)29_storage)dyn_storage": {
-              "label": "struct ThirdParty.Package[]",
-              "numberOfBytes": "32"
-            },
-            "t_array(t_struct(Property)36_storage)dyn_storage": {
-              "label": "struct ThirdParty.Property[]",
-              "numberOfBytes": "32"
-            },
-            "t_array(t_uint256)dyn_storage": {
-              "label": "uint256[]",
-              "numberOfBytes": "32"
-            },
-            "t_bool": {
-              "label": "bool",
-              "numberOfBytes": "1"
-            },
-            "t_mapping(t_uint256,t_array(t_struct(Package)29_storage)dyn_storage)": {
-              "label": "mapping(uint256 => struct ThirdParty.Package[])",
-              "numberOfBytes": "32"
-            },
-            "t_string_storage": {
-              "label": "string",
-              "numberOfBytes": "32"
-            },
-            "t_struct(Category)11_storage": {
-              "label": "struct ThirdParty.Category",
-              "members": [
-                {
-                  "label": "categoryID",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "0"
-                },
-                {
-                  "label": "cartegoryName",
-                  "type": "t_string_storage",
-                  "offset": 0,
-                  "slot": "1"
-                },
-                {
-                  "label": "properties",
-                  "type": "t_array(t_uint256)dyn_storage",
-                  "offset": 0,
-                  "slot": "2"
-                },
-                {
-                  "label": "visible",
-                  "type": "t_bool",
-                  "offset": 0,
-                  "slot": "3"
-                }
-              ],
-              "numberOfBytes": "128"
-            },
-            "t_struct(Package)29_storage": {
-              "label": "struct ThirdParty.Package",
-              "members": [
-                {
-                  "label": "categoryID",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "0"
-                },
-                {
-                  "label": "packageID",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "1"
-                },
-                {
-                  "label": "packageName",
-                  "type": "t_string_storage",
-                  "offset": 0,
-                  "slot": "2"
-                },
-                {
-                  "label": "price",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "3"
-                },
-                {
-                  "label": "period",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "4"
-                },
-                {
-                  "label": "dataLimit",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "5"
-                },
-                {
-                  "label": "propertyVisible",
-                  "type": "t_array(t_bool)dyn_storage",
-                  "offset": 0,
-                  "slot": "6"
-                }
-              ],
-              "numberOfBytes": "224"
-            },
-            "t_struct(Property)36_storage": {
-              "label": "struct ThirdParty.Property",
-              "members": [
-                {
-                  "label": "propertyID",
-                  "type": "t_uint256",
-                  "offset": 0,
-                  "slot": "0"
-                },
-                {
-                  "label": "propertyName",
-                  "type": "t_string_storage",
-                  "offset": 0,
-                  "slot": "1"
-                }
-              ],
-              "numberOfBytes": "64"
-            },
-            "t_uint256": {
-              "label": "uint256",
-              "numberOfBytes": "32"
-            }
-          },
-          "layoutVersion": "1.1",
-          "flat": true
-        }
-      }
-    },
-    {
       "MainCleanContract": {
-        "src": "contracts\\Contract.sol:6",
+        "src": "contracts\\MainCleanContract.sol:6",
         "version": {
-          "withMetadata": "010468631cbf91e131d43c059b189b55d220c871cd6c9bf91654f94d798103f1",
+          "withMetadata": "7bcff61ea34635b82d078616d5b5112924c4e9fa754a4ce2c3d2a0c74d5453e6",
           "withoutMetadata": "e5b88dc6dff55c5639dcf382191cb4bb5323b9b8daccad7765611efdf8c82446",
           "linkedWithoutMetadata": "e5b88dc6dff55c5639dcf382191cb4bb5323b9b8daccad7765611efdf8c82446"
         },
@@ -1720,7 +1285,7 @@
           {
             "kind": "constructor",
             "contract": "MainCleanContract",
-            "src": "contracts\\Contract.sol:52"
+            "src": "contracts\\MainCleanContract.sol:52"
           }
         ],
         "layout": {
@@ -1731,7 +1296,7 @@
               "slot": "0",
               "type": "t_uint256",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:8"
+              "src": "contracts\\MainCleanContract.sol:8"
             },
             {
               "label": "houseNFTAddress",
@@ -1739,15 +1304,15 @@
               "slot": "1",
               "type": "t_address",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:11"
+              "src": "contracts\\MainCleanContract.sol:11"
             },
             {
               "label": "allCleanContracts",
               "offset": 0,
               "slot": "2",
-              "type": "t_mapping(t_uint256,t_struct(CleanContract)39_storage)",
+              "type": "t_mapping(t_uint256,t_struct(CleanContract)5680_storage)",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:44"
+              "src": "contracts\\MainCleanContract.sol:44"
             },
             {
               "label": "allContractsByOwner",
@@ -1755,7 +1320,7 @@
               "slot": "3",
               "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:46"
+              "src": "contracts\\MainCleanContract.sol:46"
             },
             {
               "label": "allContractsBySigner",
@@ -1763,15 +1328,15 @@
               "slot": "4",
               "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:48"
+              "src": "contracts\\MainCleanContract.sol:48"
             },
             {
               "label": "allNotifies",
               "offset": 0,
               "slot": "5",
-              "type": "t_mapping(t_address,t_array(t_struct(Notify)52_storage)dyn_storage)",
+              "type": "t_mapping(t_address,t_array(t_struct(Notify)5693_storage)dyn_storage)",
               "contract": "MainCleanContract",
-              "src": "contracts\\Contract.sol:50"
+              "src": "contracts\\MainCleanContract.sol:50"
             }
           ],
           "types": {
@@ -1779,7 +1344,7 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(Notify)52_storage)dyn_storage": {
+            "t_array(t_struct(Notify)5693_storage)dyn_storage": {
               "label": "struct MainCleanContract.Notify[]",
               "numberOfBytes": "32"
             },
@@ -1791,7 +1356,7 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_address,t_array(t_struct(Notify)52_storage)dyn_storage)": {
+            "t_mapping(t_address,t_array(t_struct(Notify)5693_storage)dyn_storage)": {
               "label": "mapping(address => struct MainCleanContract.Notify[])",
               "numberOfBytes": "32"
             },
@@ -1799,7 +1364,7 @@
               "label": "mapping(address => uint256[])",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(CleanContract)39_storage)": {
+            "t_mapping(t_uint256,t_struct(CleanContract)5680_storage)": {
               "label": "mapping(uint256 => struct MainCleanContract.CleanContract)",
               "numberOfBytes": "32"
             },
@@ -1807,7 +1372,7 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(CleanContract)39_storage": {
+            "t_struct(CleanContract)5680_storage": {
               "label": "struct MainCleanContract.CleanContract",
               "members": [
                 {
@@ -1909,7 +1474,7 @@
               ],
               "numberOfBytes": "448"
             },
-            "t_struct(Notify)52_storage": {
+            "t_struct(Notify)5693_storage": {
               "label": "struct MainCleanContract.Notify",
               "members": [
                 {
@@ -1959,21 +1524,571 @@
           "layoutVersion": "1.1",
           "flat": true
         }
-      }
-    },
-    {
-      "IPRC20": {
-        "src": "contracts\\interfaces\\IPRC20.sol:4",
+      },
+      "IHouseBusiness": {
+        "src": "contracts\\interfaces\\IHouseBusiness.sol:5",
         "inherit": [],
         "libraries": [],
         "methods": [
-          "totalSupply()",
-          "balanceOf(address)",
+          "member(address)",
+          "allHouses(uint256)",
+          "stakedNfts(address)",
+          "ownerOf(uint256)",
+          "getTokenPrice(uint256)",
+          "setHouseStakedStatus(uint256,bool)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IHouseBusinessToken": {
+        "src": "contracts\\Operator.sol:88",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
           "transfer(address,uint256)",
-          "allowance(address,address)",
           "approve(address,uint256)",
           "transferFrom(address,address,uint256)",
-          "decimals()"
+          "increaseAllowance(address,uint256)",
+          "decreaseAllowance(address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IMainCleanContract": {
+        "src": "contracts\\interfaces\\IMainCleanContract.sol:6",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getContractById(uint256)",
+          "transferContractOwnership(uint256,address,address)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Operator": {
+        "src": "contracts\\Operator.sol:100",
+        "version": {
+          "withMetadata": "88014f5c2788b0f67746008784ab46486c5368e0f6574cf353973c765c08d0ee",
+          "withoutMetadata": "f2d572f7c6495663a7c8340330f3889a59fa802b07e1ed51d3d5bc4770b83828",
+          "linkedWithoutMetadata": "f2d572f7c6495663a7c8340330f3889a59fa802b07e1ed51d3d5bc4770b83828"
+        },
+        "inherit": [
+          "Ownable",
+          "Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "(address,address,address)",
+          "setHouseBusiness(address)",
+          "setCContract(address)",
+          "setERC20Token(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Operator",
+            "src": "contracts\\Operator.sol:110"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin\\contracts\\access\\Ownable.sol:21"
+            },
+            {
+              "label": "HouseBusiness",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_contract(IHouseBusiness)6871",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:101"
+            },
+            {
+              "label": "CContract",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_contract(IMainCleanContract)6922",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:102"
+            },
+            {
+              "label": "ERC20Token",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_contract(IHouseBusinessToken)6970",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:103"
+            },
+            {
+              "label": "houseBusiness",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_address",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:106"
+            },
+            {
+              "label": "cContract",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_address",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:107"
+            },
+            {
+              "label": "erc20Token",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_address",
+              "contract": "Operator",
+              "src": "contracts\\Operator.sol:108"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_contract(IHouseBusiness)6871": {
+              "label": "contract IHouseBusiness",
+              "numberOfBytes": "20"
+            },
+            "t_contract(IHouseBusinessToken)6970": {
+              "label": "contract IHouseBusinessToken",
+              "numberOfBytes": "20"
+            },
+            "t_contract(IMainCleanContract)6922": {
+              "label": "contract IMainCleanContract",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "HouseStaking": {
+        "src": "contracts\\Staking.sol:8",
+        "version": {
+          "withMetadata": "c84d204e69984db6f02c88ed84caac8d8774652461721f00c60916b6f0430f7a",
+          "withoutMetadata": "145c4b7251e20f1b566d0d8e3d3db77197fe41ee5d9909629a36d3eba116a901",
+          "linkedWithoutMetadata": "145c4b7251e20f1b566d0d8e3d3db77197fe41ee5d9909629a36d3eba116a901"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "(address,address)",
+          "setAPYConfig(uint256,uint256)",
+          "stake(uint256,uint256)",
+          "unstake(uint256)",
+          "updateAPYConfig(uint256,uint256)",
+          "claimRewards(address)",
+          "setPenalty(uint256)",
+          "calcDiv(uint256,uint256)",
+          "getAllAPYTypes()",
+          "stakingFinished(uint256)",
+          "totalRewards(address)",
+          "getAllMyStakedNFTs()",
+          "getAllAPYs()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "HouseStaking",
+            "src": "contracts\\Staking.sol:42"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "stakedCounter",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:10"
+            },
+            {
+              "label": "penalty",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:12"
+            },
+            {
+              "label": "APYtypes",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_uint256)dyn_storage",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:14"
+            },
+            {
+              "label": "APYConfig",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_uint256,t_uint256)",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:17"
+            },
+            {
+              "label": "stakedNfts",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)7116_storage)dyn_storage)",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:18"
+            },
+            {
+              "label": "tokenAddress",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_address",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:20"
+            },
+            {
+              "label": "houseNFTAddress",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_address",
+              "contract": "HouseStaking",
+              "src": "contracts\\Staking.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_struct(StakedNft)7116_storage)dyn_storage": {
+              "label": "struct HouseStaking.StakedNft[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)dyn_storage": {
+              "label": "uint256[]",
+              "numberOfBytes": "32"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_array(t_struct(StakedNft)7116_storage)dyn_storage)": {
+              "label": "mapping(address => struct HouseStaking.StakedNft[])",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_uint256)": {
+              "label": "mapping(uint256 => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(StakedNft)7116_storage": {
+              "label": "struct HouseStaking.StakedNft",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "tokenId",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "startedDate",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "endDate",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "claimDate",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "stakingType",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "perSecRewards",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "6"
+                },
+                {
+                  "label": "stakingStatus",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "7"
+                }
+              ],
+              "numberOfBytes": "256"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "ThirdParty": {
+        "src": "contracts\\ThirdParty.sol:5",
+        "version": {
+          "withMetadata": "a8df656f0eb451bd8a746087d496a91f54bd221e4f5c246cb564e36d52e94758",
+          "withoutMetadata": "d4f13321d3c66b2aaee289d519c289fc460d03e5aa2338dedaefc60dfd0f3e99",
+          "linkedWithoutMetadata": "d4f13321d3c66b2aaee289d519c289fc460d03e5aa2338dedaefc60dfd0f3e99"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllCategories()",
+          "addCategory(string,uint256[])",
+          "editCategory(uint256,string,uint256[])",
+          "deleteCategory(uint256)",
+          "getProperties()",
+          "addProperty(string)",
+          "editProperty(uint256,string)",
+          "deleteProperty(uint256)",
+          "getPackagesByCategory(uint256)",
+          "addPackage(uint256,string,uint256,uint256,uint256,bool[])",
+          "editPackage(uint256,uint256,string,uint256,uint256,uint256,bool[])",
+          "deletePackage(uint256,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "categoryCounter",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:12"
+            },
+            {
+              "label": "packageCounter",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:23"
+            },
+            {
+              "label": "propertyCounter",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:29"
+            },
+            {
+              "label": "allCategories",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_array(t_struct(Category)8038_storage)dyn_storage",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:31"
+            },
+            {
+              "label": "allPackages",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_array(t_struct(Package)8056_storage)dyn_storage)",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:34"
+            },
+            {
+              "label": "properties",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_uint256,t_struct(Property)8063_storage)",
+              "contract": "ThirdParty",
+              "src": "contracts\\ThirdParty.sol:37"
+            }
+          ],
+          "types": {
+            "t_array(t_bool)dyn_storage": {
+              "label": "bool[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_struct(Category)8038_storage)dyn_storage": {
+              "label": "struct ThirdParty.Category[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_struct(Package)8056_storage)dyn_storage": {
+              "label": "struct ThirdParty.Package[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)dyn_storage": {
+              "label": "uint256[]",
+              "numberOfBytes": "32"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_uint256,t_array(t_struct(Package)8056_storage)dyn_storage)": {
+              "label": "mapping(uint256 => struct ThirdParty.Package[])",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_struct(Property)8063_storage)": {
+              "label": "mapping(uint256 => struct ThirdParty.Property)",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Category)8038_storage": {
+              "label": "struct ThirdParty.Category",
+              "members": [
+                {
+                  "label": "categoryID",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "cartegoryName",
+                  "type": "t_string_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "properties",
+                  "type": "t_array(t_uint256)dyn_storage",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "visible",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "3"
+                }
+              ],
+              "numberOfBytes": "128"
+            },
+            "t_struct(Package)8056_storage": {
+              "label": "struct ThirdParty.Package",
+              "members": [
+                {
+                  "label": "categoryID",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "packageID",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "packageName",
+                  "type": "t_string_storage",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "price",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "period",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "dataLimit",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "propertyVisible",
+                  "type": "t_array(t_bool)dyn_storage",
+                  "offset": 0,
+                  "slot": "6"
+                }
+              ],
+              "numberOfBytes": "224"
+            },
+            "t_struct(Property)8063_storage": {
+              "label": "struct ThirdParty.Property",
+              "members": [
+                {
+                  "label": "propertyID",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "propertyName",
+                  "type": "t_string_storage",
+                  "offset": 0,
+                  "slot": "1"
+                }
+              ],
+              "numberOfBytes": "64"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IStaking": {
+        "src": "contracts\\interfaces\\IStaking.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "stakedCounter()"
         ],
         "linkReferences": [],
         "errors": [],

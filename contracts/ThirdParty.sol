@@ -34,10 +34,10 @@ contract ThirdParty {
     mapping(uint => Package[]) allPackages;
 
     // all properties
-    Property[] allProperties;
+    mapping(uint256 => Property) properties;
 
     // Categories
-    function getAllCategories() public view returns (Category[] memory) {
+    function getAllCategories() external view returns (Category[] memory) {
         Category[] memory allCates = new Category[](categoryCounter);
         for (uint i = 0; i < categoryCounter; i++) {
             allCates[i] = allCategories[i];
@@ -45,64 +45,62 @@ contract ThirdParty {
         return allCates;
     }
 
-    function addCategory(string memory _newCategory, uint[] memory _properties) public {
+    function addCategory(string memory _newCategory, uint[] memory _properties) external {
         allCategories.push(Category(categoryCounter++, _newCategory, _properties, true));
     }
 
-    function editCategory(uint _categoryID, string memory _editCategory, uint[] memory _properties) public {
+    function editCategory(uint _categoryID, string memory _editCategory, uint[] memory _properties) external {
         Category storage cartegory = allCategories[_categoryID];
         cartegory.cartegoryName = _editCategory;
         cartegory.properties = _properties;
     }
 
-    function deleteCategory(uint _categoryID) public {
+    function deleteCategory(uint _categoryID) external {
         delete allCategories[_categoryID];
         delete allPackages[_categoryID];
     }
 
-    function getAllProperties() public view returns (Property[] memory) {
-        uint propertyNum;
-        for (uint i = 0; i < allProperties.length; i++) {
-            if (isCompare((allProperties[i].propertyName), '') == false) {
-                propertyNum++;
+    function getProperties() external view returns (Property[] memory) {
+        Property[] memory allProperties;
+
+        uint256 j = 0;
+        for (uint256 i = 0; i < propertyCounter; i++) {
+            Property storage temp_property = properties[i];
+            if (isCompare(temp_property.propertyName, '') != true) {
+                allProperties[j++] = temp_property;
             }
         }
-        Property[] memory allProperty = new Property[](propertyNum);
-        propertyNum = 0;
-        for (uint i = 0; i < allProperties.length; i++) {
-            if (isCompare((allProperties[i].propertyName), '') != true) {
-                allProperty[propertyNum++] = allProperties[i];
-            }
-        }
-        return allProperty;
+        return allProperties;
     }
 
     // Property
-    function addProperty(string memory _propertyName) public {
-        if (allProperties.length > 0) {
-            bool flag = false;
-            for (uint i = 0; i < allProperties.length; i++) {
-                if (isCompare(allProperties[i].propertyName, _propertyName) == true) {
-                    flag = true;
-                }
-            }
-            require(flag == false, "can't add same property");
-            allProperties.push(Property({ propertyID: allProperties.length, propertyName: _propertyName }));
-        } else {
-            allProperties.push(Property({ propertyID: allProperties.length, propertyName: _propertyName }));
+    function addProperty(string memory _propertyName) external {
+        // Check that the property name is not empty
+        require(bytes(_propertyName).length > 0, 'property name cannot be empty');
+
+        // Check that the property does not already exist
+        for (uint256 i = 0; i < propertyCounter; i++) {
+            require(!isCompare(properties[i].propertyName, _propertyName), 'property already exists');
         }
+
+        Property storage _properties = properties[propertyCounter];
+
+        _properties.propertyID = propertyCounter;
+        _properties.propertyName = _propertyName;
+
+        propertyCounter++;
     }
 
-    function editProperty(uint _propertyID, string memory _propertyName) public {
-        allProperties[_propertyID].propertyName = _propertyName;
+    function editProperty(uint _propertyID, string memory _propertyName) external {
+        properties[_propertyID].propertyName = _propertyName;
     }
 
-    function deleteProperty(uint _propertyID) public {
-        delete allProperties[_propertyID];
+    function deleteProperty(uint _propertyID) external {
+        delete properties[_propertyID];
     }
 
     // Packages
-    function getPackagesByCategory(uint _categoryID) public view returns (Package[] memory) {
+    function getPackagesByCategory(uint _categoryID) external view returns (Package[] memory) {
         Package[] memory packages = new Package[](allPackages[_categoryID].length);
         for (uint i = 0; i < allPackages[_categoryID].length; i++) {
             packages[i] = allPackages[_categoryID][i];
@@ -117,7 +115,7 @@ contract ThirdParty {
         uint _period,
         uint _dataLimit,
         bool[] memory _propertyVisible
-    ) public {
+    ) external {
         allPackages[_categoryID].push(
             Package(_categoryID, packageCounter++, _packageName, _price, _period, _dataLimit, _propertyVisible)
         );
@@ -131,7 +129,7 @@ contract ThirdParty {
         uint _period,
         uint _dataLimit,
         bool[] memory _propertyVisible
-    ) public {
+    ) external {
         Package[] storage packagesByCategory = allPackages[_categoryID];
 
         for (uint i = 0; i < packagesByCategory.length; i++) {
@@ -145,7 +143,7 @@ contract ThirdParty {
         }
     }
 
-    function deletePackage(uint _categoryID, uint _packageID) public {
+    function deletePackage(uint _categoryID, uint _packageID) external {
         Package[] storage packagesByCategory = allPackages[_categoryID];
 
         for (uint i = 0; i < packagesByCategory.length; i++) {
