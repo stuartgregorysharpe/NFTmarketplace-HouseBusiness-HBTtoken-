@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-
+pragma solidity ^0.8.7;
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 interface IHouseBusiness {
@@ -103,15 +103,15 @@ contract Operator is Ownable {
     IHouseBusinessToken ERC20Token;
 
     // Utility tokens and NFT address
-    address houseBusiness = 0x0A964d282AF35e81Ad9d72e5c215108B3c43D3c1;
-    address cContract = 0xaa3Dc2E3ca0FE2dE6E519F0F224456861A7e9cFC;
-    address erc20Token = 0x27C1F4539Fd2CcE5394Ea11fA8554937A587d684;
+    address houseBusiness;
+    address cContract;
+    address erc20Token;
 
-    constructor() {
+    constructor(address _houseBusiness, address _cContract, address _erc20) {
         // init contract interfaces
-        HouseBusiness = IHouseBusiness(houseBusiness);
-        CContract = IMainCleanContract(cContract);
-        ERC20Token = IHouseBusinessToken(erc20Token);
+        HouseBusiness = IHouseBusiness(_houseBusiness);
+        CContract = IMainCleanContract(_cContract);
+        ERC20Token = IHouseBusinessToken(_erc20);
     }
 
     /**
