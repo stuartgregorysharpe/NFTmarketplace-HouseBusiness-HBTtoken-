@@ -25,6 +25,12 @@ module.exports = {
   // defaultNetwork: 'goerli',
   networks: {
     goerli: {
+      url: "https://goerli.infura.io/v3/0e42c582d71b4ba5a8750f688fce07da",
+      accounts: [privateKey],
+      gas: 'auto',
+      timeout: 100000
+    },
+    mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_KEY}`,
       accounts: [privateKey],
       gas: 'auto',

@@ -100,7 +100,7 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 contract Operator is Ownable {
     // Contract addresses
-    IERC20 ERC20Token;
+    IERC20 HBToken;
     
     // IHouseBusiness HouseBusiness;
     // IMainCleanContract CContract;
@@ -112,14 +112,14 @@ contract Operator is Ownable {
     mapping(address => bool) private _authorizedContracts;
 
     // Utility tokens and NFT address
-    address erc20Token = 0x27C1F4539Fd2CcE5394Ea11fA8554937A587d684;
+    address houseBusinessToken;
 
     // address houseBusiness = 0x0A964d282AF35e81Ad9d72e5c215108B3c43D3c1;
     // address cContract = 0xaa3Dc2E3ca0FE2dE6E519F0F224456861A7e9cFC;
 
-    constructor() {
+    constructor(address _houseBusinessToken) {
         // Init contract instances
-        ERC20Token = IERC20(erc20Token);
+        HBToken = IERC20(houseBusinessToken);
 
         // HouseBusiness = IHouseBusiness(houseBusiness);
         // CContract = IMainCleanContract(cContract);
@@ -145,11 +145,11 @@ contract Operator is Ownable {
 
     /**
      * Provides the ability to update smart contract addresses for scalability.
-     * @param _erc20Token HouseBusinessToken address
+     * @param _houseBusinessToken HouseBusinessToken address
      */
-    function setERC20Token(address _erc20Token) external onlyOwner {
-        erc20Token = _erc20Token;
-        ERC20Token = IERC20(_erc20Token);
+    function setHBToken(address _houseBusinessToken) external onlyOwner {
+        houseBusinessToken = _houseBusinessToken;
+        HBToken = IERC20(_houseBusinessToken);
     }
 
     function authorizeContract(address contractAddress) external onlyOwner {
@@ -171,21 +171,21 @@ contract Operator is Ownable {
     // These functions should be called from the account user's virtual wallet address
     function deposit(uint256 amount) external {
         require(amount > 0, "Amount must be greater than zero");
-        require(ERC20Token.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        require(HBToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
         _balances[msg.sender] += amount;
     }
 
     function withdraw(uint256 amount) external {
         require(amount > 0, "Amount must be greater than zero");
         require(_balances[msg.sender] >= amount, "Insufficient balance");
-        require(ERC20Token.transfer(msg.sender, amount), "Transfer failed");
+        require(HBToken.transfer(msg.sender, amount), "Transfer failed");
         _balances[msg.sender] -= amount;
     }
 
     function callContract(address contractAddress, bytes memory data, uint256 gasFee) external {
         require(_authorizedContracts[contractAddress], "Contract not authorized");
         require(_balances[msg.sender] >= gasFee, "Insufficient balance");
-        require(ERC20Token.transferFrom(msg.sender, address(this), gasFee), "Transfer failed");
+        require(HBToken.transferFrom(msg.sender, address(this), gasFee), "Transfer failed");
         _balances[msg.sender] -= gasFee;
         (bool success,) = contractAddress.call(data);
         require(success, "Contract call failed");
