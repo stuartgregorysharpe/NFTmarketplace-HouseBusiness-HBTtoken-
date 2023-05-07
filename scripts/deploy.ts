@@ -6,7 +6,7 @@ import { HouseBusiness, HouseBusinessToken, HouseStaking, MainCleanContract, Thi
 
 const addressFile = './contract_addresses/address.md';
 async function main() {
-  if (network.name !== 'goerli') {
+  if (network.name !== 'mumbai') {
     console.log('main net')
     return;
   }

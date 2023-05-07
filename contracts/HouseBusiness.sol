@@ -772,7 +772,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function getAllHouses() external view returns (House[] memory) {
         House[] memory tempHouses = new House[](houseCounter);
         uint256 index = 0;
-        for (uint256 i = 1; i < houseCounter; i++) {
+        for (uint256 i = 0; i < houseCounter; i++) {
             tempHouses[i] = allHouses[i];
             index++;
         }

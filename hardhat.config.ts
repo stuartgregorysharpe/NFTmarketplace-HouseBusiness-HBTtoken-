@@ -24,7 +24,7 @@ module.exports = {
   },
   // defaultNetwork: 'goerli',
   networks: {
-    goerli: {
+    mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_KEY}`,
       accounts: [privateKey],
       gas: 'auto',
@@ -42,6 +42,6 @@ module.exports = {
   //   runOnCompile: false,
   // },
   etherscan: {
-    apiKey: process.env.ETHER_KEY
+    apiKey: process.env.POLYGON_KEY
   },
 };
