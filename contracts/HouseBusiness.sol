@@ -531,7 +531,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 houseBrand: _houseBrand,
                 desc: _desc,
                 history: _history,
-                brandType: -brandType,
+                brandType: _brandType,
                 yearField: _yearField
             })
         );
@@ -574,11 +574,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             _tokenId,
             _historyIndex,
             _houseImg,
-            -houseBrand,
+            _houseBrand,
             _history,
             _desc,
             _brandType,
-            -yearField,
+            _yearField,
             block.timestamp
         );
     }
