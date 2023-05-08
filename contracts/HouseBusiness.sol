@@ -338,25 +338,25 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     function setPayable(
-        uint256 tokenId,
+        uint256 _tokenId,
         address _buyer,
-        bool nftPayable
+        bool _nftPayable
     ) external {
+        House memory house = allHouses[_tokenId];
         // require that token should exist
-        require(_exists(tokenId));
-        // get the token's owner
-        address tokenOwner = ownerOf(tokenId);
+        require(_exists(_tokenId));
         // check that token's owner should be equal to the caller of the function
-        require(tokenOwner == msg.sender, "Only owner can call this func.");
-        if (allHouses[tokenId].contributor.buyer != _buyer)
-            allHouses[tokenId].contributor.buyer = _buyer;
-        allHouses[tokenId].nftPayable = nftPayable;
+        require(house.contributor.currentOwner == msg.sender, "Only owner can call this func.");
+        require(house.price > 0, "Pricing has not been set at this time.");
+        if (house.contributor.buyer != _buyer)
+            house.contributor.buyer = _buyer;
+        house.nftPayable = _nftPayable;
 
         emit PayableSet(
             msg.sender,
-            tokenId,
+            _tokenId,
             _buyer,
-            nftPayable,
+            _nftPayable,
             block.timestamp
         );
     }
