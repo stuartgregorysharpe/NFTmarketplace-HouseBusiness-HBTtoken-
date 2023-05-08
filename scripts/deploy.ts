@@ -49,7 +49,7 @@ async function main() {
   const operatorFactory = await ethers.getContractFactory('Operator');
   const Operator = (await operatorFactory.deploy(House.address));
   await Operator.deployed();
-  console.log('This is the token address: ', Operator.address);
+  console.log('This is the Operator address: ', Operator.address);
 
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
   await tx.wait();
