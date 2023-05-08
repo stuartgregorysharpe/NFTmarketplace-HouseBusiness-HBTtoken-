@@ -47,7 +47,7 @@ async function main() {
   console.log('This is the third party address; ', ThirdPartyContract.address);
 
   const operatorFactory = await ethers.getContractFactory('Operator');
-  const Operator = (await operatorFactory.deploy(tokenAddress));
+  const Operator = (await operatorFactory.deploy(House.address));
   await Operator.deployed();
   console.log('This is the token address: ', Operator.address);
 
@@ -78,7 +78,7 @@ async function main() {
   await verify(HouseNFT.address, [House.address]);
   await verify(CContract.address, [HouseNFT.addesrs]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
-  await verify(Operator.address, [tokenAddress]);
+  await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }
