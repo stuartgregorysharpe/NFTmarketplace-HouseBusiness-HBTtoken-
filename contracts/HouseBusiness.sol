@@ -341,15 +341,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address _buyer,
         bool _nftPayable
     ) external {
-        House memory house = allHouses[_tokenId];
         // require that token should exist
         require(_exists(_tokenId));
+        // get the token's owner
+        address tokenOwner = ownerOf(_tokenId);
         // check that token's owner should be equal to the caller of the function
-        require(house.contributor.currentOwner == msg.sender, "Only owner can call this func.");
-        require(house.price > 0, "Pricing has not been set at this time.");
-        if (house.contributor.buyer != _buyer)
-            house.contributor.buyer = _buyer;
-        house.nftPayable = _nftPayable;
+        require(tokenOwner == msg.sender, "Only owner can call this func.");
+        require(allHouses[_tokenId].price > 0, "Pricing has not been set at this time.");
+        if (allHouses[_tokenId].contributor.buyer != _buyer)
+            allHouses[_tokenId].contributor.buyer = _buyer;
+        allHouses[_tokenId].nftPayable = _nftPayable;
 
         emit PayableSet(
             msg.sender,
@@ -434,17 +435,17 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _tokenType,
         string memory _initialDesc
     ) external {
-        houseCounter++;
+        uint256 tokenId = houseCounter + 1;
 
         // ensure token with id doesn't already exist
-        require(!_exists(houseCounter), "Token already exists.");
+        require(!_exists(tokenId), "Token already exists.");
 
         // mint the token
-        _safeMint(msg.sender, houseCounter);
-        _setTokenURI(houseCounter, _tokenURI);
+        _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, _tokenURI);
 
         allHouses[houseCounter] = House({
-            tokenId: houseCounter,
+            tokenId: tokenId,
             tokenName: _name,
             tokenURI: _tokenURI,
             tokenType: _tokenType,
@@ -474,6 +475,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 yearField: 0
             })
         );
+        houseCounter++;
         
         emit HouseMinted(
             msg.sender,
@@ -862,11 +864,5 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             aHistoryTypes[i] = historyTypes[i];
         }
         return aHistoryTypes;
-    }
-
-    // get owner of the token
-    function getTokenOwner(uint256 _tokenId) external view returns (address) {
-        address _tokenOwner = ownerOf(_tokenId);
-        return _tokenOwner;
     }
 }
