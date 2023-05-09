@@ -76,7 +76,7 @@ async function main() {
   await new Promise((f) => setTimeout(f, 60000));
 
   await verify(HouseNFT.address, [House.address]);
-  await verify(CContract.address, [HouseNFT.addesrs]);
+  await verify(CContract.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
   await verify(Operator.address, [House.address]);
 
