@@ -3548,9 +3548,9 @@
       "HouseBusiness": {
         "src": "contracts\\HouseBusiness.sol:12",
         "version": {
-          "withMetadata": "fe8a4170d6fe14d3a4ea421637a34d3d4a6041cc630a12ceea19b00cfd6e75d5",
-          "withoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c",
-          "linkedWithoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c"
+          "withMetadata": "22ee7e04c028ebbe04ad09d7b36d46aa5c340db9aa3b4041bcc2d8d91c68b31f",
+          "withoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2",
+          "linkedWithoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2"
         },
         "inherit": [
           "ERC721URIStorage",
@@ -3603,7 +3603,7 @@
           {
             "kind": "constructor",
             "contract": "HouseBusiness",
-            "src": "contracts\\HouseBusiness.sol:195"
+            "src": "contracts\\HouseBusiness.sol:147"
           }
         ],
         "layout": {
@@ -3748,7 +3748,7 @@
               "label": "cContract",
               "offset": 0,
               "slot": "17",
-              "type": "t_contract(IMainCleanContract)8691",
+              "type": "t_contract(IMainCleanContract)8669",
               "contract": "HouseBusiness",
               "src": "contracts\\HouseBusiness.sol:24"
             },
@@ -3822,7 +3822,7 @@
               "label": "contract IERC20",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)8691": {
+            "t_contract(IMainCleanContract)8669": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             },
@@ -4242,7 +4242,7 @@
               "label": "allCleanContracts",
               "offset": 0,
               "slot": "2",
-              "type": "t_mapping(t_uint256,t_struct(CleanContract)5651_storage)",
+              "type": "t_mapping(t_uint256,t_struct(CleanContract)5629_storage)",
               "contract": "MainCleanContract",
               "src": "contracts\\MainCleanContract.sol:44"
             },
@@ -4266,7 +4266,7 @@
               "label": "allNotifies",
               "offset": 0,
               "slot": "5",
-              "type": "t_mapping(t_address,t_array(t_struct(Notify)5664_storage)dyn_storage)",
+              "type": "t_mapping(t_address,t_array(t_struct(Notify)5642_storage)dyn_storage)",
               "contract": "MainCleanContract",
               "src": "contracts\\MainCleanContract.sol:50"
             }
@@ -4276,7 +4276,7 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(Notify)5664_storage)dyn_storage": {
+            "t_array(t_struct(Notify)5642_storage)dyn_storage": {
               "label": "struct MainCleanContract.Notify[]",
               "numberOfBytes": "32"
             },
@@ -4288,7 +4288,7 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_address,t_array(t_struct(Notify)5664_storage)dyn_storage)": {
+            "t_mapping(t_address,t_array(t_struct(Notify)5642_storage)dyn_storage)": {
               "label": "mapping(address => struct MainCleanContract.Notify[])",
               "numberOfBytes": "32"
             },
@@ -4296,7 +4296,7 @@
               "label": "mapping(address => uint256[])",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(CleanContract)5651_storage)": {
+            "t_mapping(t_uint256,t_struct(CleanContract)5629_storage)": {
               "label": "mapping(uint256 => struct MainCleanContract.CleanContract)",
               "numberOfBytes": "32"
             },
@@ -4304,7 +4304,7 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(CleanContract)5651_storage": {
+            "t_struct(CleanContract)5629_storage": {
               "label": "struct MainCleanContract.CleanContract",
               "members": [
                 {
@@ -4406,7 +4406,7 @@
               ],
               "numberOfBytes": "448"
             },
-            "t_struct(Notify)5664_storage": {
+            "t_struct(Notify)5642_storage": {
               "label": "struct MainCleanContract.Notify",
               "members": [
                 {
@@ -4555,7 +4555,7 @@
               "label": "HouseBusiness",
               "offset": 0,
               "slot": "1",
-              "type": "t_contract(IHouseBusiness)6842",
+              "type": "t_contract(IHouseBusiness)6820",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:101"
             },
@@ -4563,7 +4563,7 @@
               "label": "CContract",
               "offset": 0,
               "slot": "2",
-              "type": "t_contract(IMainCleanContract)6893",
+              "type": "t_contract(IMainCleanContract)6871",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:102"
             },
@@ -4571,7 +4571,7 @@
               "label": "ERC20Token",
               "offset": 0,
               "slot": "3",
-              "type": "t_contract(IHouseBusinessToken)6941",
+              "type": "t_contract(IHouseBusinessToken)6919",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:103"
             },
@@ -4605,15 +4605,15 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_contract(IHouseBusiness)6842": {
+            "t_contract(IHouseBusiness)6820": {
               "label": "contract IHouseBusiness",
               "numberOfBytes": "20"
             },
-            "t_contract(IHouseBusinessToken)6941": {
+            "t_contract(IHouseBusinessToken)6919": {
               "label": "contract IHouseBusinessToken",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)6893": {
+            "t_contract(IMainCleanContract)6871": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             }
@@ -4692,7 +4692,7 @@
               "label": "stakedNfts",
               "offset": 0,
               "slot": "4",
-              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)7087_storage)dyn_storage)",
+              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)7065_storage)dyn_storage)",
               "contract": "HouseStaking",
               "src": "contracts\\Staking.sol:18"
             },
@@ -4718,7 +4718,7 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(StakedNft)7087_storage)dyn_storage": {
+            "t_array(t_struct(StakedNft)7065_storage)dyn_storage": {
               "label": "struct HouseStaking.StakedNft[]",
               "numberOfBytes": "32"
             },
@@ -4730,7 +4730,7 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_address,t_array(t_struct(StakedNft)7087_storage)dyn_storage)": {
+            "t_mapping(t_address,t_array(t_struct(StakedNft)7065_storage)dyn_storage)": {
               "label": "mapping(address => struct HouseStaking.StakedNft[])",
               "numberOfBytes": "32"
             },
@@ -4738,7 +4738,7 @@
               "label": "mapping(uint256 => uint256)",
               "numberOfBytes": "32"
             },
-            "t_struct(StakedNft)7087_storage": {
+            "t_struct(StakedNft)7065_storage": {
               "label": "struct HouseStaking.StakedNft",
               "members": [
                 {
@@ -4856,7 +4856,7 @@
               "label": "allCategories",
               "offset": 0,
               "slot": "3",
-              "type": "t_array(t_struct(Category)8009_storage)dyn_storage",
+              "type": "t_array(t_struct(Category)7987_storage)dyn_storage",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:31"
             },
@@ -4864,7 +4864,7 @@
               "label": "allPackages",
               "offset": 0,
               "slot": "4",
-              "type": "t_mapping(t_uint256,t_array(t_struct(Package)8027_storage)dyn_storage)",
+              "type": "t_mapping(t_uint256,t_array(t_struct(Package)8005_storage)dyn_storage)",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:34"
             },
@@ -4872,7 +4872,7 @@
               "label": "properties",
               "offset": 0,
               "slot": "5",
-              "type": "t_mapping(t_uint256,t_struct(Property)8034_storage)",
+              "type": "t_mapping(t_uint256,t_struct(Property)8012_storage)",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:37"
             }
@@ -4882,11 +4882,11 @@
               "label": "bool[]",
               "numberOfBytes": "32"
             },
-            "t_array(t_struct(Category)8009_storage)dyn_storage": {
+            "t_array(t_struct(Category)7987_storage)dyn_storage": {
               "label": "struct ThirdParty.Category[]",
               "numberOfBytes": "32"
             },
-            "t_array(t_struct(Package)8027_storage)dyn_storage": {
+            "t_array(t_struct(Package)8005_storage)dyn_storage": {
               "label": "struct ThirdParty.Package[]",
               "numberOfBytes": "32"
             },
@@ -4898,11 +4898,11 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_uint256,t_array(t_struct(Package)8027_storage)dyn_storage)": {
+            "t_mapping(t_uint256,t_array(t_struct(Package)8005_storage)dyn_storage)": {
               "label": "mapping(uint256 => struct ThirdParty.Package[])",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(Property)8034_storage)": {
+            "t_mapping(t_uint256,t_struct(Property)8012_storage)": {
               "label": "mapping(uint256 => struct ThirdParty.Property)",
               "numberOfBytes": "32"
             },
@@ -4910,7 +4910,7 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(Category)8009_storage": {
+            "t_struct(Category)7987_storage": {
               "label": "struct ThirdParty.Category",
               "members": [
                 {
@@ -4940,7 +4940,7 @@
               ],
               "numberOfBytes": "128"
             },
-            "t_struct(Package)8027_storage": {
+            "t_struct(Package)8005_storage": {
               "label": "struct ThirdParty.Package",
               "members": [
                 {
@@ -4988,7 +4988,7 @@
               ],
               "numberOfBytes": "224"
             },
-            "t_struct(Property)8034_storage": {
+            "t_struct(Property)8012_storage": {
               "label": "struct ThirdParty.Property",
               "members": [
                 {
@@ -5482,9 +5482,9 @@
       "HouseBusiness": {
         "src": "contracts\\HouseBusiness.sol:12",
         "version": {
-          "withMetadata": "fe8a4170d6fe14d3a4ea421637a34d3d4a6041cc630a12ceea19b00cfd6e75d5",
-          "withoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c",
-          "linkedWithoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c"
+          "withMetadata": "22ee7e04c028ebbe04ad09d7b36d46aa5c340db9aa3b4041bcc2d8d91c68b31f",
+          "withoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2",
+          "linkedWithoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2"
         },
         "inherit": [
           "ERC721URIStorage",
@@ -5537,7 +5537,7 @@
           {
             "kind": "constructor",
             "contract": "HouseBusiness",
-            "src": "contracts\\HouseBusiness.sol:195"
+            "src": "contracts\\HouseBusiness.sol:147"
           }
         ],
         "layout": {
@@ -5682,7 +5682,7 @@
               "label": "cContract",
               "offset": 0,
               "slot": "17",
-              "type": "t_contract(IMainCleanContract)4849",
+              "type": "t_contract(IMainCleanContract)4827",
               "contract": "HouseBusiness",
               "src": "contracts\\HouseBusiness.sol:24"
             },
@@ -5756,7 +5756,7 @@
               "label": "contract IERC20",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)4849": {
+            "t_contract(IMainCleanContract)4827": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             },
@@ -6663,9 +6663,9 @@
       "HouseBusiness": {
         "src": "contracts\\HouseBusiness.sol:12",
         "version": {
-          "withMetadata": "fe8a4170d6fe14d3a4ea421637a34d3d4a6041cc630a12ceea19b00cfd6e75d5",
-          "withoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c",
-          "linkedWithoutMetadata": "cce79433bf22c64750b5faa6e4dd8b547970e346c3e3c69ed3a28255481dce9c"
+          "withMetadata": "22ee7e04c028ebbe04ad09d7b36d46aa5c340db9aa3b4041bcc2d8d91c68b31f",
+          "withoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2",
+          "linkedWithoutMetadata": "f92ba90e815a4774143d951e2f56e42df366829c6f2d63bfd300d58c99d34ac2"
         },
         "inherit": [
           "ERC721URIStorage",
@@ -6718,7 +6718,7 @@
           {
             "kind": "constructor",
             "contract": "HouseBusiness",
-            "src": "contracts\\HouseBusiness.sol:195"
+            "src": "contracts\\HouseBusiness.sol:147"
           }
         ],
         "layout": {
@@ -6863,7 +6863,7 @@
               "label": "cContract",
               "offset": 0,
               "slot": "17",
-              "type": "t_contract(IMainCleanContract)8691",
+              "type": "t_contract(IMainCleanContract)8669",
               "contract": "HouseBusiness",
               "src": "contracts\\HouseBusiness.sol:24"
             },
@@ -6937,7 +6937,7 @@
               "label": "contract IERC20",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)8691": {
+            "t_contract(IMainCleanContract)8669": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             },
@@ -7357,7 +7357,7 @@
               "label": "allCleanContracts",
               "offset": 0,
               "slot": "2",
-              "type": "t_mapping(t_uint256,t_struct(CleanContract)5651_storage)",
+              "type": "t_mapping(t_uint256,t_struct(CleanContract)5629_storage)",
               "contract": "MainCleanContract",
               "src": "contracts\\MainCleanContract.sol:44"
             },
@@ -7381,7 +7381,7 @@
               "label": "allNotifies",
               "offset": 0,
               "slot": "5",
-              "type": "t_mapping(t_address,t_array(t_struct(Notify)5664_storage)dyn_storage)",
+              "type": "t_mapping(t_address,t_array(t_struct(Notify)5642_storage)dyn_storage)",
               "contract": "MainCleanContract",
               "src": "contracts\\MainCleanContract.sol:50"
             }
@@ -7391,7 +7391,7 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(Notify)5664_storage)dyn_storage": {
+            "t_array(t_struct(Notify)5642_storage)dyn_storage": {
               "label": "struct MainCleanContract.Notify[]",
               "numberOfBytes": "32"
             },
@@ -7403,7 +7403,7 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_address,t_array(t_struct(Notify)5664_storage)dyn_storage)": {
+            "t_mapping(t_address,t_array(t_struct(Notify)5642_storage)dyn_storage)": {
               "label": "mapping(address => struct MainCleanContract.Notify[])",
               "numberOfBytes": "32"
             },
@@ -7411,7 +7411,7 @@
               "label": "mapping(address => uint256[])",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(CleanContract)5651_storage)": {
+            "t_mapping(t_uint256,t_struct(CleanContract)5629_storage)": {
               "label": "mapping(uint256 => struct MainCleanContract.CleanContract)",
               "numberOfBytes": "32"
             },
@@ -7419,7 +7419,7 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(CleanContract)5651_storage": {
+            "t_struct(CleanContract)5629_storage": {
               "label": "struct MainCleanContract.CleanContract",
               "members": [
                 {
@@ -7521,7 +7521,7 @@
               ],
               "numberOfBytes": "448"
             },
-            "t_struct(Notify)5664_storage": {
+            "t_struct(Notify)5642_storage": {
               "label": "struct MainCleanContract.Notify",
               "members": [
                 {
@@ -7670,7 +7670,7 @@
               "label": "HouseBusiness",
               "offset": 0,
               "slot": "1",
-              "type": "t_contract(IHouseBusiness)6842",
+              "type": "t_contract(IHouseBusiness)6820",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:101"
             },
@@ -7678,7 +7678,7 @@
               "label": "CContract",
               "offset": 0,
               "slot": "2",
-              "type": "t_contract(IMainCleanContract)6893",
+              "type": "t_contract(IMainCleanContract)6871",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:102"
             },
@@ -7686,7 +7686,7 @@
               "label": "ERC20Token",
               "offset": 0,
               "slot": "3",
-              "type": "t_contract(IHouseBusinessToken)6941",
+              "type": "t_contract(IHouseBusinessToken)6919",
               "contract": "Operator",
               "src": "contracts\\Operator.sol:103"
             },
@@ -7720,15 +7720,15 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_contract(IHouseBusiness)6842": {
+            "t_contract(IHouseBusiness)6820": {
               "label": "contract IHouseBusiness",
               "numberOfBytes": "20"
             },
-            "t_contract(IHouseBusinessToken)6941": {
+            "t_contract(IHouseBusinessToken)6919": {
               "label": "contract IHouseBusinessToken",
               "numberOfBytes": "20"
             },
-            "t_contract(IMainCleanContract)6893": {
+            "t_contract(IMainCleanContract)6871": {
               "label": "contract IMainCleanContract",
               "numberOfBytes": "20"
             }
@@ -7807,7 +7807,7 @@
               "label": "stakedNfts",
               "offset": 0,
               "slot": "4",
-              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)7087_storage)dyn_storage)",
+              "type": "t_mapping(t_address,t_array(t_struct(StakedNft)7065_storage)dyn_storage)",
               "contract": "HouseStaking",
               "src": "contracts\\Staking.sol:18"
             },
@@ -7833,7 +7833,7 @@
               "label": "address",
               "numberOfBytes": "20"
             },
-            "t_array(t_struct(StakedNft)7087_storage)dyn_storage": {
+            "t_array(t_struct(StakedNft)7065_storage)dyn_storage": {
               "label": "struct HouseStaking.StakedNft[]",
               "numberOfBytes": "32"
             },
@@ -7845,7 +7845,7 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_address,t_array(t_struct(StakedNft)7087_storage)dyn_storage)": {
+            "t_mapping(t_address,t_array(t_struct(StakedNft)7065_storage)dyn_storage)": {
               "label": "mapping(address => struct HouseStaking.StakedNft[])",
               "numberOfBytes": "32"
             },
@@ -7853,7 +7853,7 @@
               "label": "mapping(uint256 => uint256)",
               "numberOfBytes": "32"
             },
-            "t_struct(StakedNft)7087_storage": {
+            "t_struct(StakedNft)7065_storage": {
               "label": "struct HouseStaking.StakedNft",
               "members": [
                 {
@@ -7971,7 +7971,7 @@
               "label": "allCategories",
               "offset": 0,
               "slot": "3",
-              "type": "t_array(t_struct(Category)8009_storage)dyn_storage",
+              "type": "t_array(t_struct(Category)7987_storage)dyn_storage",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:31"
             },
@@ -7979,7 +7979,7 @@
               "label": "allPackages",
               "offset": 0,
               "slot": "4",
-              "type": "t_mapping(t_uint256,t_array(t_struct(Package)8027_storage)dyn_storage)",
+              "type": "t_mapping(t_uint256,t_array(t_struct(Package)8005_storage)dyn_storage)",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:34"
             },
@@ -7987,7 +7987,7 @@
               "label": "properties",
               "offset": 0,
               "slot": "5",
-              "type": "t_mapping(t_uint256,t_struct(Property)8034_storage)",
+              "type": "t_mapping(t_uint256,t_struct(Property)8012_storage)",
               "contract": "ThirdParty",
               "src": "contracts\\ThirdParty.sol:37"
             }
@@ -7997,11 +7997,11 @@
               "label": "bool[]",
               "numberOfBytes": "32"
             },
-            "t_array(t_struct(Category)8009_storage)dyn_storage": {
+            "t_array(t_struct(Category)7987_storage)dyn_storage": {
               "label": "struct ThirdParty.Category[]",
               "numberOfBytes": "32"
             },
-            "t_array(t_struct(Package)8027_storage)dyn_storage": {
+            "t_array(t_struct(Package)8005_storage)dyn_storage": {
               "label": "struct ThirdParty.Package[]",
               "numberOfBytes": "32"
             },
@@ -8013,11 +8013,11 @@
               "label": "bool",
               "numberOfBytes": "1"
             },
-            "t_mapping(t_uint256,t_array(t_struct(Package)8027_storage)dyn_storage)": {
+            "t_mapping(t_uint256,t_array(t_struct(Package)8005_storage)dyn_storage)": {
               "label": "mapping(uint256 => struct ThirdParty.Package[])",
               "numberOfBytes": "32"
             },
-            "t_mapping(t_uint256,t_struct(Property)8034_storage)": {
+            "t_mapping(t_uint256,t_struct(Property)8012_storage)": {
               "label": "mapping(uint256 => struct ThirdParty.Property)",
               "numberOfBytes": "32"
             },
@@ -8025,7 +8025,7 @@
               "label": "string",
               "numberOfBytes": "32"
             },
-            "t_struct(Category)8009_storage": {
+            "t_struct(Category)7987_storage": {
               "label": "struct ThirdParty.Category",
               "members": [
                 {
@@ -8055,7 +8055,7 @@
               ],
               "numberOfBytes": "128"
             },
-            "t_struct(Package)8027_storage": {
+            "t_struct(Package)8005_storage": {
               "label": "struct ThirdParty.Package",
               "members": [
                 {
@@ -8103,7 +8103,7 @@
               ],
               "numberOfBytes": "224"
             },
-            "t_struct(Property)8034_storage": {
+            "t_struct(Property)8012_storage": {
               "label": "struct ThirdParty.Property",
               "members": [
                 {
