@@ -341,7 +341,9 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 _yearField
     ) external {
         require(ownerOf(_tokenId) == msg.sender, 'owner');
-        require(cContract.getContractById(_contractId).owner == msg.sender, 'cowner');
+        if (_contractId != 0) {
+            require(cContract.getContractById(_contractId).owner == msg.sender, 'cowner');
+        }
 
         History[] storage histories = houseHistories[_tokenId];
         histories.push(

@@ -49,6 +49,24 @@ contract MainCleanContract {
     // notifications
     mapping(address => Notify[]) allNotifies;
 
+    event CleanContractCreated(
+        uint256 indexed ccID,
+        address indexed owner,
+        address indexed creator,
+        string companyName,
+        string contractType,
+        address contractSigner,
+        string contractURI,
+        uint256 dateFrom,
+        uint256 dateTo,
+        uint256 agreedPrice,
+        string currency,
+        string status
+    );
+    event ContractSignerAdded(address indexed creator, uint256 indexed ccID, address contractSigner);
+    event ContractSigned(address indexed signer, uint256 ccID, string status);
+    event NotifySent(address indexed sender, address indexed receiver, uint256 ccID, uint256 sentTime, string content);
+
     constructor(address addr) {
         houseNFTAddress = addr;
     }
@@ -97,24 +115,39 @@ contract MainCleanContract {
 
         uint256[] storage contractsByOwner = allContractsByOwner[msg.sender];
         contractsByOwner.push(ccCounter);
+
+        emit CleanContractCreated(
+            ccCounter,
+            msg.sender,
+            msg.sender,
+            _companyName,
+            _contractType,
+            _contractSigner,
+            _contractURI,
+            _dateFrom,
+            _dateTo,
+            _agreedPrice,
+            _currency,
+            'pendig'
+        );
     }
 
     // Get All Contracts
-    function getAllContractsByOwner() public view returns (CleanContract[] memory) {
-        uint256[] memory contractsByOwner = allContractsByOwner[msg.sender];
+    function getAllContractsByOwner(address _owner) public view returns (CleanContract[] memory) {
+        uint256[] memory contractsByOwner = allContractsByOwner[_owner];
         CleanContract[] memory contracts = new CleanContract[](contractsByOwner.length);
         for (uint256 i = 0; i < contractsByOwner.length; i++) {
-            contracts[i] = allCleanContracts[contractsByOwner[i]];
+            contracts[i] = allCleanContracts[contractsByOwner[i + 1]];
         }
         return contracts;
     }
 
     // Get All Signer Contracts
-    function getAllContractsBySigner() public view returns (CleanContract[] memory) {
-        uint256[] memory allCons = allContractsBySigner[msg.sender];
+    function getAllContractsBySigner(address _signer) public view returns (CleanContract[] memory) {
+        uint256[] memory allCons = allContractsBySigner[_signer];
         CleanContract[] memory contracts = new CleanContract[](allCons.length);
         for (uint256 i = 0; i < allCons.length; i++) {
-            contracts[i++] = allCleanContracts[allCons[i]];
+            contracts[i++] = allCleanContracts[allCons[i + 1]];
         }
         return contracts;
     }
@@ -146,6 +179,8 @@ contract MainCleanContract {
         if (flag == false) {
             allCons.push(_ccID);
         }
+
+        emit ContractSignerAdded(msg.sender, _ccID, _contractSigner);
     }
 
     // sign contract
@@ -162,6 +197,8 @@ contract MainCleanContract {
                 singleContract.status = 'signed';
                 singleContract.creatorSignDate = block.timestamp;
                 flag = 1;
+
+                emit ContractSigned(msg.sender, ccID, 'signed');
             }
         } else if (msg.sender == singleContract.contractSigner) {
             singleContract.signerApproval = true;
@@ -169,6 +206,8 @@ contract MainCleanContract {
                 singleContract.status = 'signed';
                 singleContract.signerSignDate = block.timestamp;
                 flag = 2;
+
+                emit ContractSigned(msg.sender, ccID, 'signed');
             }
         }
         if (flag == 1) {
@@ -226,24 +265,17 @@ contract MainCleanContract {
             status: false
         });
         allNotifies[_notifyReceiver].push(newNotify);
-    }
 
-    function getUploadedCounter() public view returns (uint256) {
-        return ccCounter;
+        emit NotifySent(msg.sender, _notifyReceiver, ccID, block.timestamp, _notifyContent);
     }
 
     // get my all notifies
-    function getAllNotifies() public view returns (Notify[] memory) {
-        return allNotifies[msg.sender];
-    }
-
-    // Devide number
-    function calcDiv(uint256 a, uint256 b) external pure returns (uint256) {
-        return (a - (a % b)) / b;
+    function getAllNotifies(address _address) external view returns (Notify[] memory) {
+        return allNotifies[_address];
     }
 
     // declare this function for use in the following 3 functions
-    function toString(bytes memory data) public pure returns (string memory) {
+    function toString(bytes memory data) internal pure returns (string memory) {
         bytes memory alphabet = '0123456789abcdef';
 
         bytes memory str = new bytes(2 + data.length * 2);
@@ -257,18 +289,8 @@ contract MainCleanContract {
     }
 
     // cast address to string
-    function addressToString(address account) public pure returns (string memory) {
+    function addressToString(address account) internal pure returns (string memory) {
         return toString(abi.encodePacked(account));
-    }
-
-    // cast uint to string
-    function uintToString(uint256 value) public pure returns (string memory) {
-        return toString(abi.encodePacked(value));
-    }
-
-    // cast bytes32 to string
-    function bytesToString(bytes32 value) public pure returns (string memory) {
-        return toString(abi.encodePacked(value));
     }
 
     function append(string memory a, string memory b) internal pure returns (string memory) {
