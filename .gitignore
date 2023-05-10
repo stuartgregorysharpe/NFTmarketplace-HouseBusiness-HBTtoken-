@@ -9,3 +9,4 @@ artifacts/
 cache/
 coverage/
 flatten/
+.vscode/
