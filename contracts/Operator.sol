@@ -105,4 +105,8 @@ contract Operator is Ownable {
         address payable recipient = payable(msg.sender);
         recipient.transfer(address(this).balance);
     }
+
+    fallback() external payable {
+        
+    }
 }
