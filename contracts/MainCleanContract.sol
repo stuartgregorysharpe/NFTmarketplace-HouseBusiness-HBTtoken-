@@ -43,11 +43,11 @@ contract MainCleanContract {
     // map house's token id to house
     mapping(uint256 => CleanContract) allCleanContracts;
     // map contracts of owner
-    mapping(address => uint256[]) allContractsByOwner;
+    mapping(address => uint256[]) public allContractsByOwner;
     // map contracts of signer
-    mapping(address => uint256[]) allContractsBySigner;
+    mapping(address => uint256[]) public allContractsBySigner;
     // notifications
-    mapping(address => Notify[]) allNotifies;
+    mapping(address => Notify[]) public allNotifies;
 
     event CleanContractCreated(
         uint256 indexed ccID,
@@ -137,7 +137,7 @@ contract MainCleanContract {
         uint256[] memory contractsByOwner = allContractsByOwner[_owner];
         CleanContract[] memory contracts = new CleanContract[](contractsByOwner.length);
         for (uint256 i = 0; i < contractsByOwner.length; i++) {
-            contracts[i] = allCleanContracts[contractsByOwner[i + 1]];
+            contracts[i] = allCleanContracts[contractsByOwner[i]];
         }
         return contracts;
     }
@@ -147,7 +147,7 @@ contract MainCleanContract {
         uint256[] memory allCons = allContractsBySigner[_signer];
         CleanContract[] memory contracts = new CleanContract[](allCons.length);
         for (uint256 i = 0; i < allCons.length; i++) {
-            contracts[i++] = allCleanContracts[allCons[i + 1]];
+            contracts[i++] = allCleanContracts[allCons[i]];
         }
         return contracts;
     }
