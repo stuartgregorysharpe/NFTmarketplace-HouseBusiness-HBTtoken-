@@ -3,9 +3,14 @@ pragma solidity ^0.8.7;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
+interface IHBToken {
+    function mint(address to, uint256 amount) external;
+}
+
 contract Operator is Ownable {
     // Contract addresses
-    IERC20 HBToken;
+    IHBToken HBToken;
+    IERC20 hbToken;
 
     // IHouseBusiness HouseBusiness;
     // IMainCleanContract CContract;
@@ -21,7 +26,8 @@ contract Operator is Ownable {
 
     constructor(address _houseBusinessToken) {
         // Init contract instances
-        HBToken = IERC20(_houseBusinessToken);
+        HBToken = IHBToken(_houseBusinessToken);
+        hbToken = IERC20(houseBusinessToken);
         houseBusinessToken = _houseBusinessToken;
     }
 
@@ -31,15 +37,20 @@ contract Operator is Ownable {
      */
     function setHBToken(address _houseBusinessToken) external onlyOwner {
         houseBusinessToken = _houseBusinessToken;
-        HBToken = IERC20(_houseBusinessToken);
+        HBToken = IHBToken(_houseBusinessToken);
+        hbToken = IERC20(_houseBusinessToken);
     }
 
-    function authorizeContract(address contractAddress) external onlyOwner {
-        _authorizedContracts[contractAddress] = true;
+    function authorizeContracts(address[] memory contractAddresses) external onlyOwner {
+        for (uint256 i = 0; i < contractAddresses.length; i++) {
+            _authorizedContracts[contractAddresses[i]] = true;
+        }
     }
 
-    function revokeContract(address contractAddress) external onlyOwner {
-        _authorizedContracts[contractAddress] = false;
+    function revokeContracts(address[] memory contractAddresses) external onlyOwner {
+        for (uint256 i = 0; i < contractAddresses.length; i++) {
+            _authorizedContracts[contractAddresses[i]] = false;
+        }
     }
 
     function isContractAuthorized(address contractAddress) external view returns (bool) {
@@ -50,26 +61,48 @@ contract Operator is Ownable {
         return _balances[account];
     }
 
-    // These functions should be called from the account user's virtual wallet address
+    function mintAndStore(address user, uint256 amount) public {
+        // Mint the HBToken to the Operator contract
+        HBToken.mint(address(this), amount);
+
+        // Store the mapping of the HBToken balance to the user
+        _balances[user] += amount;
+    }
+
+    // These functions should be called from the account user's virtual wallet address, should be approved first
     function deposit(uint256 amount) external {
         require(amount > 0, 'Amount must be greater than zero');
-        require(HBToken.transferFrom(msg.sender, address(this), amount), 'Transfer failed');
+        require(hbToken.transferFrom(msg.sender, address(this), amount), 'Transfer failed');
         _balances[msg.sender] += amount;
     }
 
-    function withdraw(uint256 amount) external {
+    function withdraw(uint256 amount, address user) external {
         require(amount > 0, 'Amount must be greater than zero');
-        require(_balances[msg.sender] >= amount, 'Insufficient balance');
-        require(HBToken.transfer(msg.sender, amount), 'Transfer failed');
-        _balances[msg.sender] -= amount;
+        require(_balances[user] >= amount, 'Insufficient balance');
+        require(hbToken.transfer(user, amount), 'Transfer failed');
+        _balances[user] -= amount;
     }
 
-    function callContract(address contractAddress, bytes memory data, uint256 gasFee) external {
+    function callContract(address contractAddress, bytes memory data, uint256 gasFee, address user) external {
         require(_authorizedContracts[contractAddress], 'Contract not authorized');
-        require(_balances[msg.sender] >= gasFee, 'Insufficient balance');
-        require(HBToken.transferFrom(msg.sender, address(this), gasFee), 'Transfer failed');
-        _balances[msg.sender] -= gasFee;
+        require(_balances[user] >= gasFee, 'Insufficient balance');
+        // require(hbToken.transferFrom(user, address(this), gasFee), 'Transfer failed');
+        _balances[user] -= gasFee;
         (bool success, ) = contractAddress.call(data);
         require(success, 'Contract call failed');
+    }
+
+    // Only Admin role can withdraw the balance
+    function withdrawToken(uint256 amount) external onlyOwner {
+        require(amount > 0, 'Amount must be greater than zero');
+        require(hbToken.balanceOf(address(this)) >= amount, 'Insufficient balance');
+        require(hbToken.transfer(msg.sender, amount), 'Transfer failed');
+    }
+
+    function withdrawETH(uint256 amount) external onlyOwner {
+        require(amount > 0, 'Amount must be greater than zero');
+        require(address(this).balance >= amount, 'Insufficient balance');
+        address payable recipient = payable(msg.sender);
+        recipient.transfer(address(this).balance);
     }
 }
