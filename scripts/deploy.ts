@@ -46,11 +46,6 @@ async function main() {
   await ThirdPartyContract.deployed();
   console.log('This is the third party address; ', ThirdPartyContract.address);
 
-  const operatorFactory = await ethers.getContractFactory('Operator');
-  const Operator = (await operatorFactory.deploy(House.address));
-  await Operator.deployed();
-  console.log('This is the Operator address: ', Operator.address);
-
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
   await tx.wait();
 
@@ -68,7 +63,6 @@ async function main() {
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
   writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
-  writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
 
   console.log('Deployments done, waiting for etherscan verifications');
 
@@ -78,7 +72,6 @@ async function main() {
   await verify(HouseNFT.address, [House.address]);
   await verify(CContract.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
-  await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }
