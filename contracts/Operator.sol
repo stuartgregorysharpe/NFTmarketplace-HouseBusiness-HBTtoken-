@@ -26,9 +26,9 @@ contract Operator is Ownable {
 
     constructor(address _houseBusinessToken) {
         // Init contract instances
-        HBToken = IHBToken(_houseBusinessToken);
-        hbToken = IERC20(houseBusinessToken);
         houseBusinessToken = _houseBusinessToken;
+        HBToken = IHBToken(_houseBusinessToken);
+        hbToken = IERC20(_houseBusinessToken);
     }
 
     /**
