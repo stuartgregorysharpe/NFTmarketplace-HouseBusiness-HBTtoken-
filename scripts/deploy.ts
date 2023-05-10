@@ -60,6 +60,9 @@ async function main() {
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
+  tx = await Operator.connect(deployer).authorizeContracts([House.address, HouseNFT.address, CContract.address]);
+  await tx.wait();
+
   if (fs.existsSync(addressFile)) {
     fs.rmSync(addressFile);
   }
