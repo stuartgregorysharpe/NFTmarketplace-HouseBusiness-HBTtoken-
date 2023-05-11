@@ -18,12 +18,12 @@ async function main() {
   console.log('Starting deployments');
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
-  const tokenAddress = '0x65079701914EA470Fc8f3Fc50D0ef782CaDd709D';
+  const tokenAddress = '0x7E687b50cBB1D58be37Cae9a8D2aa920973d97d7';
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
-  const House = (await tokenFactory.deploy()) as HouseBusinessToken;
-  await House.deployed();
-  // const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
+  // const House = (await tokenFactory.deploy()) as HouseBusinessToken;
+  // await House.deployed();
+  const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
   console.log('This is the token address: ', House.address);
 
   const HouseNFTFactory = await ethers.getContractFactory('HouseBusiness');
@@ -36,24 +36,24 @@ async function main() {
   await CContract.deployed();
   console.log('This is the CContract address: ', CContract.address);
 
-  const StakingFactory = await ethers.getContractFactory('HouseStaking');
-  const StakingContract = (await StakingFactory.deploy(HouseNFT.address, House.address)) as HouseStaking;
-  await StakingContract.deployed();
-  console.log('This is the Staking contract address: ', StakingContract.address);
+  // const StakingFactory = await ethers.getContractFactory('HouseStaking');
+  // const StakingContract = (await StakingFactory.deploy(HouseNFT.address, House.address)) as HouseStaking;
+  // await StakingContract.deployed();
+  // console.log('This is the Staking contract address: ', StakingContract.address);
 
-  const ThirdPartyFactory = await ethers.getContractFactory("ThirdParty");
-  const ThirdPartyContract = (await ThirdPartyFactory.deploy()) as ThirdParty;
-  await ThirdPartyContract.deployed();
-  console.log('This is the third party address; ', ThirdPartyContract.address);
+  // const ThirdPartyFactory = await ethers.getContractFactory("ThirdParty");
+  // const ThirdPartyContract = (await ThirdPartyFactory.deploy()) as ThirdParty;
+  // await ThirdPartyContract.deployed();
+  // console.log('This is the third party address; ', ThirdPartyContract.address);
 
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
   await tx.wait();
 
-  tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
-  await tx.wait();
+  // tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
+  // await tx.wait();
 
-  tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
-  await tx.wait();
+  // tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
+  // await tx.wait();
 
   if (fs.existsSync(addressFile)) {
     fs.rmSync(addressFile);
@@ -71,7 +71,7 @@ async function main() {
 
   await verify(HouseNFT.address, [House.address]);
   await verify(CContract.address, [HouseNFT.address]);
-  await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  // await verify(StakingContract.address, [HouseNFT.address, House.address]);
 
   console.log('All done');
 }

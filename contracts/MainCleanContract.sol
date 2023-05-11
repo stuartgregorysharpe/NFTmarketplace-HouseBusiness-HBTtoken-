@@ -14,7 +14,7 @@ contract MainCleanContract {
     struct CleanContract {
         uint256 contractId;
         string companyName;
-        string contractType;
+        uint256 contractType;
         string contractURI;
         uint256 dateFrom;
         uint256 dateTo;
@@ -54,7 +54,7 @@ contract MainCleanContract {
         address indexed owner,
         address indexed creator,
         string companyName,
-        string contractType,
+        uint256 contractType,
         address contractSigner,
         string contractURI,
         uint256 dateFrom,
@@ -74,7 +74,7 @@ contract MainCleanContract {
     // write Contract
     function ccCreation(
         string memory _companyName,
-        string memory _contractType,
+        uint256 _contractType,
         address _contractSigner,
         string memory _contractURI,
         uint256 _dateFrom,
@@ -85,6 +85,8 @@ contract MainCleanContract {
         ccCounter++;
         CleanContract storage singleContract = allCleanContracts[ccCounter];
         singleContract.contractId = ccCounter;
+        singleContract.owner = msg.sender;
+        singleContract.creator = msg.sender;
         singleContract.contractURI = _contractURI;
         singleContract.companyName = _companyName;
         singleContract.contractType = _contractType;
@@ -93,8 +95,6 @@ contract MainCleanContract {
         singleContract.agreedPrice = _agreedPrice;
         singleContract.currency = _currency;
         singleContract.status = 'pending';
-        singleContract.owner = msg.sender;
-        singleContract.creator = msg.sender;
         singleContract.contractSigner = _contractSigner;
         require(singleContract.creator != _contractSigner, "Owner can't be signer");
         if (_contractSigner != address(0)) {
