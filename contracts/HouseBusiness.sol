@@ -302,7 +302,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         });
 
         // new house history push into the House struct
-        houseHistories[houseCounter].push(
+        houseHistories[houseID].push(
             History({
                 hID: 0,
                 houseID: houseID,
