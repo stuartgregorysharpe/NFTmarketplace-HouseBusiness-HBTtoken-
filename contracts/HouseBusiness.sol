@@ -581,6 +581,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return tempHouses;
     }
 
+    // function getMyHouses(address _owner) external view returns (House[] memory) {
+    //     uint256 count;
+    //     for (uint256 i =0; i< houseCounter; i++) {
+
+    //     }
+    // }
+
     // Returns price of a house with `tokenId`
     function getTokenPrice(uint256 _tokenId) external view returns (uint256) {
         require(msg.sender == stakingContractAddress, 'sc');
@@ -588,8 +595,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Get Overall total information
-    function getTotalInfo() external view onlyMember returns (uint256, uint256, uint256) {
-        return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
+    function getTotalInfo() external view returns (uint256, uint256, uint256) {
+        return (houseCounter, IStaking(stakingContractAddress).getStakedCounter(), soldedCounter);
     }
 
     function tokenURI(uint256 _houseId) public view override(ERC721, ERC721URIStorage) returns (string memory) {

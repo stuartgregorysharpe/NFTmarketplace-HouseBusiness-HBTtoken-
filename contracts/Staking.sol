@@ -85,6 +85,7 @@ contract HouseStaking {
         );
 
         houseBusiness.setHouseStakedStatus(_tokenId, true);
+        stakedCounter++;
 
         emit NFTStaked(msg.sender, _tokenId, _stakingType, block.timestamp);
     }
@@ -169,6 +170,10 @@ contract HouseStaking {
 
     function calcDiv(uint256 a, uint256 b) public pure returns (uint256) {
         return (a - (a % b)) / b;
+    }
+
+    function getStakedCounter() external view returns (uint256) {
+        return stakedCounter;
     }
 
     function getAllAPYTypes() external view returns (uint256[] memory) {
