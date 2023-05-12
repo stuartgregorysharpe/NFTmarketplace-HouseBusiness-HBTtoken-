@@ -61,7 +61,7 @@ contract Operator is Ownable {
         return _balances[account];
     }
 
-    function mintAndStore(address user, uint256 amount) public {
+    function mintAndStore(address user, uint256 amount) public onlyOwner {
         // Mint the HBToken to the Operator contract
         HBToken.mint(address(this), amount);
 
@@ -83,7 +83,7 @@ contract Operator is Ownable {
         _balances[user] -= amount;
     }
 
-    function callContract(address contractAddress, bytes memory data, uint256 gasFee, address user) external {
+    function callContract(address contractAddress, bytes memory data, uint256 gasFee, address user) external onlyOwner {
         require(_authorizedContracts[contractAddress], 'Contract not authorized');
         require(_balances[user] >= gasFee, 'Insufficient balance');
         // require(hbToken.transferFrom(user, address(this), gasFee), 'Transfer failed');
@@ -104,5 +104,9 @@ contract Operator is Ownable {
         require(address(this).balance >= amount, 'Insufficient balance');
         address payable recipient = payable(msg.sender);
         recipient.transfer(address(this).balance);
+    }
+
+    fallback() external payable {
+        
     }
 }
