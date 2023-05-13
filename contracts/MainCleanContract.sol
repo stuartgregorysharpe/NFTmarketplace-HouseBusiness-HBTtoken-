@@ -47,7 +47,7 @@ contract MainCleanContract {
     // map contracts of signer
     mapping(address => uint256[]) public allContractsBySigner;
     // notifications
-    mapping(address => Notify[]) public allNotifies;
+    mapping(address => Notify[]) allNotifies;
 
     event CleanContractCreated(
         uint256 indexed ccID,
@@ -82,21 +82,25 @@ contract MainCleanContract {
         uint256 _agreedPrice,
         string memory _currency
     ) public {
+        require(_dateFrom < _dateTo, 'Start date must be before end date');
+        require(_agreedPrice > 0, 'Agreed price must be greater than 0');
+        require(msg.sender != _contractSigner, "Owner can't be signer");
+
         ccCounter++;
-        CleanContract storage singleContract = allCleanContracts[ccCounter];
-        singleContract.contractId = ccCounter;
-        singleContract.owner = msg.sender;
-        singleContract.creator = msg.sender;
-        singleContract.contractURI = _contractURI;
-        singleContract.companyName = _companyName;
-        singleContract.contractType = _contractType;
-        singleContract.dateFrom = _dateFrom;
-        singleContract.dateTo = _dateTo;
-        singleContract.agreedPrice = _agreedPrice;
-        singleContract.currency = _currency;
-        singleContract.status = 'pending';
-        singleContract.contractSigner = _contractSigner;
-        require(singleContract.creator != _contractSigner, "Owner can't be signer");
+
+        allCleanContracts[ccCounter].contractId = ccCounter;
+        allCleanContracts[ccCounter].owner = msg.sender;
+        allCleanContracts[ccCounter].creator = msg.sender;
+        allCleanContracts[ccCounter].contractURI = _contractURI;
+        allCleanContracts[ccCounter].companyName = _companyName;
+        allCleanContracts[ccCounter].contractType = _contractType;
+        allCleanContracts[ccCounter].dateFrom = _dateFrom;
+        allCleanContracts[ccCounter].dateTo = _dateTo;
+        allCleanContracts[ccCounter].agreedPrice = _agreedPrice;
+        allCleanContracts[ccCounter].currency = _currency;
+        allCleanContracts[ccCounter].status = 'pending';
+        allCleanContracts[ccCounter].contractSigner = _contractSigner;
+
         if (_contractSigner != address(0)) {
             bool flag = false;
             // allContractsBySigner
@@ -110,8 +114,8 @@ contract MainCleanContract {
                 allCons.push(ccCounter);
             }
         }
-        singleContract.creatorApproval = false;
-        singleContract.signerApproval = false;
+        allCleanContracts[ccCounter].creatorApproval = false;
+        allCleanContracts[ccCounter].signerApproval = false;
 
         uint256[] storage contractsByOwner = allContractsByOwner[msg.sender];
         contractsByOwner.push(ccCounter);
@@ -151,15 +155,22 @@ contract MainCleanContract {
         }
         return contracts;
     }
+    function getAllCleanContracts() external view returns(CleanContract[] memory) {
+        CleanContract[] memory contracts = new CleanContract[](ccCounter);
+        for(uint256 i = 0; i < ccCounter; i++) {
+            contracts[i] = allCleanContracts[i+1];
+        }
+        return contracts;
+    }
 
     /**
      * @dev returns contract with id as `contractId`
      *
      * NOTE only houseNFT contract can call
      */
-    function getContractById(uint256 contractId) external view returns (CleanContract memory) {
+    function getContractById(uint256 contractId) external view returns (address _owner) {
         require(msg.sender == houseNFTAddress, 'only NFT');
-        return allCleanContracts[contractId];
+        return _owner = allCleanContracts[contractId].owner;
     }
 
     // Add Contract Signer

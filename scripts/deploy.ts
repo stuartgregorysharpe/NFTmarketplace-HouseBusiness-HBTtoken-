@@ -41,10 +41,10 @@ async function main() {
   await StakingContract.deployed();
   console.log('This is the Staking contract address: ', StakingContract.address);
 
-  const ThirdPartyFactory = await ethers.getContractFactory("ThirdParty");
-  const ThirdPartyContract = (await ThirdPartyFactory.deploy()) as ThirdParty;
-  await ThirdPartyContract.deployed();
-  console.log('This is the third party address; ', ThirdPartyContract.address);
+  // const ThirdPartyFactory = await ethers.getContractFactory("ThirdParty");
+  // const ThirdPartyContract = (await ThirdPartyFactory.deploy()) as ThirdParty;
+  // await ThirdPartyContract.deployed();
+  // console.log('This is the third party address; ', ThirdPartyContract.address);
 
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
   await tx.wait();

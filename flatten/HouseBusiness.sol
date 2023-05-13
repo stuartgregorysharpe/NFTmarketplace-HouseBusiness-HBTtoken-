@@ -1666,7 +1666,7 @@ interface IMainCleanContract {
 pragma solidity ^0.8.0;
 
 interface IStaking {
-    function stakedCounter() external view returns (uint256);
+    function getStakedCounter() external view returns (uint256);
 }
 
 
@@ -1736,7 +1736,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     mapping(address => bool) public member;
     mapping(uint256 => House) public allHouses;
-    mapping(uint256 => History[]) houseHistories;
+    mapping(uint256 => History[]) public houseHistories;
     mapping(uint256 => mapping(address => bool)) public allowedList;
 
     address stakingContractAddress;
@@ -1947,7 +1947,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(!_exists(houseID), 'Token already exists.');
 
         // mint the token
-        _safeMint(msg.sender, houseID);
+        _mint(msg.sender, houseID);
         _setTokenURI(houseID, _tokenURI);
 
         allHouses[houseID] = House({
@@ -1969,7 +1969,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         });
 
         // new house history push into the House struct
-        houseHistories[houseCounter].push(
+        houseHistories[houseID].push(
             History({
                 hID: 0,
                 houseID: houseID,
@@ -2002,6 +2002,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit AllowListRemoved(msg.sender, _tokenId, _allowed, block.timestamp);
     }
 
+    function checkContractId(uint256 _contractId) external view returns (CleanContract memory) {
+        // _cowner = cContract.getContractById(_contractId).owner;
+        _cowner = cContract.getContractById(_contractId);
+    }
+
     // Add history of house
     function addHistory(
         uint256 _houseId,
@@ -2014,19 +2019,20 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _brandType,
         uint256 _yearField
     ) external {
-        require(ownerOf(_houseId) == msg.sender, 'owner');
+        require(ownerOf(_houseId) == msg.sender, 'Only owner can call this func.');
         if (_contractId != 0) {
             require(cContract.getContractById(_contractId).owner == msg.sender, 'cowner');
         }
 
         History[] storage houseHist = houseHistories[_houseId];
         uint256 historyCnt = houseHist.length;
-        houseHist.push(
+
+        houseHistories[_houseId].push(
             History({
                 hID: historyCnt,
                 houseID: _houseId,
-                historyTypeId: _historyTypeId,
                 contractId: _contractId,
+                historyTypeId: _historyTypeId,
                 houseImg: _houseImg,
                 houseBrand: _houseBrand,
                 desc: _desc,
@@ -2135,7 +2141,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function changeHousePrice(uint256 houseId, uint256 newPrice) external {
         require(
             allHouses[houseId].contributor.currentOwner == msg.sender,
-            'Only the owner can change the price and houseId must exist'
+            'Caller is not owner or house does not exist'
         );
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
 
@@ -2242,43 +2248,18 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // get all houses NFT
     function getAllHouses() external view returns (House[] memory) {
         House[] memory tempHouses = new House[](houseCounter);
-        uint256 index = 0;
         for (uint256 i = 0; i < houseCounter; i++) {
             tempHouses[i] = allHouses[i + 1];
-            index++;
         }
         return tempHouses;
     }
 
-    // get all payable houses NFT
-    function getAllPayableHouses() external view returns (House[] memory) {
-        House[] memory allPayableHouse;
-        uint256 j = 0;
-        for (uint256 i = 0; i < houseCounter; i++) {
-            House storage temp_house = allHouses[i + 1];
-            if (temp_house.nftPayable == true && temp_house.staked == false) {
-                allPayableHouse[j++] = temp_house;
-            }
-        }
-        return allPayableHouse;
-    }
+    // function getMyHouses(address _owner) external view returns (House[] memory) {
+    //     uint256 count;
+    //     for (uint256 i =0; i< houseCounter; i++) {
 
-    // get all my houses NFT
-    function getAllMyHouses() external view returns (House[] memory) {
-        House[] memory allMyHouse = new House[](houseCounter);
-        uint256 j = 0;
-
-        for (uint256 i = 0; i < houseCounter; i++) {
-            if (allHouses[i + 1].contributor.currentOwner == msg.sender) {
-                allMyHouse[j++] = allHouses[i + 1];
-            }
-        }
-
-        assembly {
-            mstore(allMyHouse, j)
-        }
-        return allMyHouse;
-    }
+    //     }
+    // }
 
     // Returns price of a house with `tokenId`
     function getTokenPrice(uint256 _tokenId) external view returns (uint256) {
@@ -2287,8 +2268,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Get Overall total information
-    function getTotalInfo() external view onlyMember returns (uint256, uint256, uint256) {
-        return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
+    function getTotalInfo() external view returns (uint256, uint256, uint256) {
+        return (houseCounter, IStaking(stakingContractAddress).getStakedCounter(), soldedCounter);
     }
 
     function tokenURI(uint256 _houseId) public view override(ERC721, ERC721URIStorage) returns (string memory) {

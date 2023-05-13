@@ -69,7 +69,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     mapping(address => bool) public member;
     mapping(uint256 => House) public allHouses;
-    mapping(uint256 => History[]) houseHistories;
+    mapping(uint256 => History[]) public houseHistories;
     mapping(uint256 => mapping(address => bool)) public allowedList;
 
     address stakingContractAddress;
@@ -280,7 +280,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(!_exists(houseID), 'Token already exists.');
 
         // mint the token
-        _safeMint(msg.sender, houseID);
+        _mint(msg.sender, houseID);
         _setTokenURI(houseID, _tokenURI);
 
         allHouses[houseID] = House({
@@ -347,19 +347,20 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _brandType,
         uint256 _yearField
     ) external {
-        require(ownerOf(_houseId) == msg.sender, 'owner');
+        require(ownerOf(_houseId) == msg.sender, 'Only owner can call this func.');
         if (_contractId != 0) {
-            require(cContract.getContractById(_contractId).owner == msg.sender, 'cowner');
+            require(cContract.getContractById(_contractId) == msg.sender, 'cowner');
         }
 
         History[] storage houseHist = houseHistories[_houseId];
         uint256 historyCnt = houseHist.length;
-        houseHist.push(
+
+        houseHistories[_houseId].push(
             History({
                 hID: historyCnt,
                 houseID: _houseId,
-                historyTypeId: _historyTypeId,
                 contractId: _contractId,
+                historyTypeId: _historyTypeId,
                 houseImg: _houseImg,
                 houseBrand: _houseBrand,
                 desc: _desc,
