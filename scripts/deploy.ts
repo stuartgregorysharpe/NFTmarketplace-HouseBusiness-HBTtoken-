@@ -18,7 +18,6 @@ async function main() {
   console.log('Starting deployments');
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
-  const tokenAddress = '0x65079701914EA470Fc8f3Fc50D0ef782CaDd709D';
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
   const House = (await tokenFactory.deploy()) as HouseBusinessToken;
@@ -60,7 +59,7 @@ async function main() {
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await House.connect(deployer).assignOperator(Operator.address);
+  tx = await House.connect(deployer).assignOperator(Operator.address);  
   await tx.wait();
 
   tx = await Operator.connect(deployer).authorizeContracts([House.address, HouseNFT.address, CContract.address]);
@@ -74,6 +73,8 @@ async function main() {
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
   writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
+  writeAddr(addressFile, network.name, StakingContract.address, 'StakingContract');
+  writeAddr(addressFile, network.name, ThirdPartyContract.address, 'ThirdPartyContract');
   writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
 
   console.log('Deployments done, waiting for etherscan verifications');

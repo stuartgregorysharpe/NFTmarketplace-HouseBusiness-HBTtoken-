@@ -265,6 +265,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     function mintHouse(
+        address _dest, // The wallet address where the NFT goes after the minting process
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
@@ -276,7 +277,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(!_exists(tokenId), 'Token already exists.');
 
         // mint the token
-        _safeMint(msg.sender, tokenId);
+        _safeMint(_dest, tokenId);
         _setTokenURI(tokenId, _tokenURI);
 
         allHouses[tokenId] = House({
@@ -290,7 +291,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             staked: false,
             soldStatus: false,
             contributor: Contributor({
-                currentOwner: msg.sender,
+                currentOwner: _dest,
                 previousOwner: address(0),
                 buyer: address(0),
                 creator: msg.sender
@@ -312,7 +313,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
         houseCounter++;
 
-        emit HouseMinted(msg.sender, _name, _tokenURI, _tokenType, _initialDesc, block.timestamp);
+        emit HouseMinted(_dest, _name, _tokenURI, _tokenType, _initialDesc, block.timestamp);
     }
 
     // Add allow list
