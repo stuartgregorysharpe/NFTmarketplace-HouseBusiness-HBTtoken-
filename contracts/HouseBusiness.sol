@@ -65,11 +65,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool checkMark;
     }
 
-    HistoryType[] historyTypes;
-
     mapping(address => bool) public member;
     mapping(uint256 => House) public allHouses;
     mapping(uint256 => History[]) public houseHistories;
+    mapping(uint256 => HistoryType) public historyTypes;
     mapping(uint256 => mapping(address => bool)) public allowedList;
 
     address stakingContractAddress;
@@ -111,6 +110,20 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 yearField,
         uint256 timestamp
     );
+    event HistoryTypeAdded(
+        address indexed member,
+        uint256 indexed hID,
+        string label,
+        bool connectContract,
+        bool imgNeed,
+        bool brandNeed,
+        bool descNeed,
+        bool brandTypeNeed,
+        bool yearNeed,
+        bool checkMark,
+        uint256 hTypeCounter,
+        uint256 timestamp
+    );
     event HistoryTypeUpdated(
         address indexed member,
         uint256 indexed hID,
@@ -124,7 +137,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool checkMark,
         uint256 timestamp
     );
-    event HistoryTypeRemoved(address indexed member, uint256 indexed hIndex, uint256 timestamp);
+    event HistoryTypeRemoved(address indexed member, uint256 indexed hIndex, uint256 hTypeCounter, uint256 timestamp);
     event ContractDisconnected(
         address indexed owner,
         uint256 indexed tokenId,
@@ -153,17 +166,102 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         member[msg.sender] = true;
         royaltyCreator = 6;
         royaltyMarket = 2;
-        historyTypes.push(HistoryType(hTypeCounter++, 'Construction', false, false, false, false, false, false, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Floorplan', true, true, true, true, false, false, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Pictures', true, true, true, true, false, false, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Blueprint', true, true, true, true, false, false, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Solarpanels', true, true, true, true, true, true, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Airconditioning', true, true, true, true, true, true, false));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Sonneboiler', true, true, true, true, true, true, true));
-        historyTypes.push(HistoryType(hTypeCounter++, 'Housepainter', false, false, false, false, false, false, true));
         minPrice = 10 ** 16;
         maxPrice = 10 ** 18;
         _token = IERC20(_tokenAddress);
+        addDefaultHTypes();
+    }
+
+    function addDefaultHTypes() internal {
+        historyTypes[0] = HistoryType({
+            hID: 0,
+            hLabel:'Construction',
+            connectContract: false,
+            imgNeed: false,
+            brandNeed: false,
+            descNeed: false,
+            brandTypeNeed: false,
+            yearNeed: false,
+            checkMark: false
+        });
+        historyTypes[1] = HistoryType({
+            hID: 1,
+            hLabel:'Floorplan',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[2] = HistoryType({
+            hID:2,
+            hLabel:'Pictures',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[3] = HistoryType({
+            hID: 3,
+            hLabel:'Blueprint',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[4] = HistoryType({
+            hID: 4,
+            hLabel:'Solarpanels',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[5] = HistoryType({
+            hID: 5,
+            hLabel:'Airconditioning',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[6] = HistoryType({
+            hID: 6,
+            hLabel:'Sonneboiler',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        historyTypes[7] = HistoryType({
+            hID: 7,
+            hLabel:'Housepainter',
+            connectContract: true,
+            imgNeed: true,
+            brandNeed: true,
+            descNeed: true,
+            brandTypeNeed: true,
+            yearNeed: true,
+            checkMark: false
+        });
+        hTypeCounter = 7;
     }
 
     modifier onlyMember() {
@@ -421,8 +519,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
     }
 
-    // Add Or Edit History Type
-    function addOrEditHType(
+    // Add History Type
+    function addHistoryType(
         uint256 _historyIndex,
         string memory _label,
         bool _connectContract,
@@ -433,16 +531,58 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool _yearNeed,
         bool _checkMark
     ) external onlyMember {
-        HistoryType storage newHistory = historyTypes[_historyIndex];
-        newHistory.hID = _historyIndex;
-        newHistory.hLabel = _label;
-        newHistory.connectContract = _connectContract;
-        newHistory.imgNeed = _imgNeed;
-        newHistory.brandNeed = _brandNeed;
-        newHistory.descNeed = _descNeed;
-        newHistory.brandTypeNeed = _brandTypeNeed;
-        newHistory.yearNeed = _yearNeed;
-        newHistory.checkMark = _checkMark;
+        historyTypes[_historyIndex] = HistoryType({
+            hID: _historyIndex,
+            hLabel: _label,
+            connectContract: _connectContract,
+            imgNeed: _imgNeed,
+            brandNeed: _brandNeed,
+            descNeed: _descNeed,
+            brandTypeNeed: _brandTypeNeed,
+            yearNeed: _yearNeed,
+            checkMark: _checkMark
+        });
+        hTypeCounter++;
+
+        emit HistoryTypeAdded(
+            msg.sender,
+            _historyIndex,
+            _label,
+            _connectContract,
+            _imgNeed,
+            _brandNeed,
+            _descNeed,
+            _brandTypeNeed,
+            _yearNeed,
+            _checkMark,
+            hTypeCounter,
+            block.timestamp
+        );
+    }
+
+    // Edit History Type
+    function editHistoryType(
+        uint256 _historyIndex,
+        string memory _label,
+        bool _connectContract,
+        bool _imgNeed,
+        bool _brandNeed,
+        bool _descNeed,
+        bool _brandTypeNeed,
+        bool _yearNeed,
+        bool _checkMark
+    ) external onlyMember {
+        historyTypes[_historyIndex] = HistoryType({
+            hID: _historyIndex,
+            hLabel: _label,
+            connectContract: _connectContract,
+            imgNeed: _imgNeed,
+            brandNeed: _brandNeed,
+            descNeed: _descNeed,
+            brandTypeNeed: _brandTypeNeed,
+            yearNeed: _yearNeed,
+            checkMark: _checkMark
+        });
 
         emit HistoryTypeUpdated(
             msg.sender,
@@ -461,9 +601,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // Remove History Type
     function removeHistoryType(uint256 _hIndex) external onlyMember {
-        delete historyTypes[_hIndex];
+        for (uint i = _hIndex; i < hTypeCounter; i++) {
+            historyTypes[i] = historyTypes[i + 1];
+            historyTypes[i].hID = historyTypes[i + 1].hID;
+        }
+        hTypeCounter--;
 
-        emit HistoryTypeRemoved(msg.sender, _hIndex, block.timestamp);
+        emit HistoryTypeRemoved(msg.sender, _hIndex, hTypeCounter, block.timestamp);
     }
 
     function changeHousePrice(uint256 houseId, uint256 newPrice) external {
@@ -582,6 +726,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return tempHouses;
     }
 
+    // Get History Type
+    function getAllHistoryTypes() external view returns (HistoryType[] memory) {
+        HistoryType[] memory tempHistoryType = new HistoryType[](hTypeCounter);
+        for (uint256 i = 0; i < hTypeCounter; i++) {
+            tempHistoryType[i] = historyTypes[i];
+        }
+        return tempHistoryType;
+    }
+    
+
     // function getMyHouses(address _owner) external view returns (House[] memory) {
     //     uint256 count;
     //     for (uint256 i =0; i< houseCounter; i++) {
@@ -610,14 +764,5 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function getHistory(uint256 _houseId) external view returns (History[] memory) {
         return houseHistories[_houseId];
-    }
-
-    // Get History Type
-    function getHistoryType() external view returns (HistoryType[] memory) {
-        HistoryType[] memory aHistoryTypes = new HistoryType[](historyTypes.length);
-        for (uint256 i = 0; i < historyTypes.length; i++) {
-            aHistoryTypes[i] = historyTypes[i];
-        }
-        return aHistoryTypes;
     }
 }

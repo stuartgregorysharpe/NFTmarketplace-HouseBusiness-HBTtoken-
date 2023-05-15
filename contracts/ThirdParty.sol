@@ -61,14 +61,10 @@ contract ThirdParty {
     }
 
     function getProperties() external view returns (Property[] memory) {
-        Property[] memory allProperties;
+        Property[] memory allProperties = new Property[](propertyCounter);
 
-        uint256 j = 0;
         for (uint256 i = 0; i < propertyCounter; i++) {
-            Property storage temp_property = properties[i];
-            if (isCompare(temp_property.propertyName, '') != true) {
-                allProperties[j++] = temp_property;
-            }
+            allProperties[i] = properties[i];
         }
         return allProperties;
     }
