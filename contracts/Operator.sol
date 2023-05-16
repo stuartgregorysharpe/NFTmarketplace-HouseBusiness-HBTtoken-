@@ -83,12 +83,11 @@ contract Operator is Ownable {
         _balances[user] -= amount;
     }
 
-    function callContract(address contractAddress, bytes memory data, uint256 gasFee, address user) external onlyOwner {
+    function callContract(address contractAddress, bytes memory data, uint256 gasFee, address user) external payable onlyOwner {
         require(_authorizedContracts[contractAddress], 'Contract not authorized');
         require(_balances[user] >= gasFee, 'Insufficient balance');
-        // require(hbToken.transferFrom(user, address(this), gasFee), 'Transfer failed');
         _balances[user] -= gasFee;
-        (bool success, ) = contractAddress.call(data);
+        (bool success, ) = contractAddress.call{value: msg.value}(data);
         require(success, 'Contract call failed');
     }
 
