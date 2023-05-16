@@ -294,7 +294,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 currentOwner: _dest,
                 previousOwner: address(0),
                 buyer: address(0),
-                creator: msg.sender
+                creator: tx.origin
             })
         });
 
