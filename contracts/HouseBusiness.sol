@@ -162,16 +162,16 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
-    modifier onlyMember(address _user) {
-        require(member[_user], 'Only Member');
+    modifier onlyMember() {
+        require(member[msg.sender], 'Only Member');
         _;
     }
 
-    function setCContractAddress(address _address) external onlyMember(msg.sender) {
+    function setCContractAddress(address _address) external onlyMember {
         cContract = IMainCleanContract(_address);
     }
 
-    function setStakingContractAddress(address _address) external onlyMember(msg.sender) {
+    function setStakingContractAddress(address _address) external onlyMember {
         stakingContractAddress = _address;
     }
 
@@ -183,7 +183,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HouseStakedStatusSet(_tokenId, _status, block.timestamp);
     }
 
-    function setMinMaxHousePrice(uint256 _min, uint256 _max) external onlyMember(msg.sender) {
+    function setMinMaxHousePrice(uint256 _min, uint256 _max) external onlyMember {
         minPrice = _min;
         maxPrice = _max;
     }
@@ -206,13 +206,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit PayableSet(_tokenOwner, _tokenId, _buyer, _nftPayable, block.timestamp);
     }
 
-    function setRoyaltyCreator(uint256 _royalty) external onlyMember(msg.sender) {
+    function setRoyaltyCreator(uint256 _royalty) external onlyMember {
         royaltyCreator = _royalty;
 
         emit RoyaltyCreatorSet(msg.sender, _royalty, block.timestamp);
     }
 
-    function setRoyaltyMarket(uint256 _royalty) external onlyMember(msg.sender) {
+    function setRoyaltyMarket(uint256 _royalty) external onlyMember {
         royaltyMarket = _royalty;
 
         emit RoyaltyMarketSet(msg.sender, _royalty, block.timestamp);
@@ -243,24 +243,24 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // withdraw token
-    function withdrawToken(uint256 _amount) external payable onlyMember(msg.sender) {
+    function withdrawToken(uint256 _amount) external payable onlyMember {
         _token.transfer(msg.sender, _amount);
 
         emit TokenWithdrawn(msg.sender, _amount, block.timestamp);
     }
 
     // withdraw ETH
-    function withdrawETH(uint256 _amount) external payable onlyMember(msg.sender) {
+    function withdrawETH(uint256 _amount) external payable onlyMember {
         payable(msg.sender).transfer(_amount);
 
         emit EthWithdrawn(msg.sender, _amount, block.timestamp);
     }
 
-    function addMember(address _newMember) external onlyMember(msg.sender) {
+    function addMember(address _newMember) external onlyMember {
         member[_newMember] = true;
     }
 
-    function removeMember(address _newMember) external onlyMember(msg.sender) {
+    function removeMember(address _newMember) external onlyMember {
         member[_newMember] = false;
     }
 
@@ -421,7 +421,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool _brandTypeNeed,
         bool _yearNeed,
         bool _checkMark
-    ) external onlyMember(msg.sender) {
+    ) external onlyMember {
         HistoryType storage newHistory = historyTypes[_historyIndex];
         newHistory.hID = _historyIndex;
         newHistory.hLabel = _label;
@@ -449,10 +449,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Remove History Type
-    function removeHistoryType(uint256 _hIndex, address _tokenOwner) external onlyMember(msg.sender) {
+    function removeHistoryType(uint256 _hIndex) external onlyMember {
         delete historyTypes[_hIndex];
 
-        emit HistoryTypeRemoved(_tokenOwner, _hIndex, block.timestamp);
+        emit HistoryTypeRemoved(msg.sender, _hIndex, block.timestamp);
     }
 
     function changeHousePrice(uint256 tokenId, uint256 newPrice, address _tokenOwner) external {
@@ -612,7 +612,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Get Overall total information
-    function getTotalInfo() external view onlyMember(msg.sender) returns (uint256, uint256, uint256) {
+    function getTotalInfo() external view onlyMember returns (uint256, uint256, uint256) {
         return (houseCounter, IStaking(stakingContractAddress).stakedCounter(), soldedCounter);
     }
 
