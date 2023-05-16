@@ -54,7 +54,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 yearField;
     }
     struct HistoryType {
-        uint256 hID;
         string hLabel;
         bool connectContract;
         bool imgNeed;
@@ -174,7 +173,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function addDefaultHTypes() internal {
         historyTypes[0] = HistoryType({
-            hID: 0,
             hLabel:'Construction',
             connectContract: false,
             imgNeed: false,
@@ -185,7 +183,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[1] = HistoryType({
-            hID: 1,
             hLabel:'Floorplan',
             connectContract: true,
             imgNeed: true,
@@ -196,7 +193,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[2] = HistoryType({
-            hID:2,
             hLabel:'Pictures',
             connectContract: true,
             imgNeed: true,
@@ -207,7 +203,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[3] = HistoryType({
-            hID: 3,
             hLabel:'Blueprint',
             connectContract: true,
             imgNeed: true,
@@ -218,7 +213,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[4] = HistoryType({
-            hID: 4,
             hLabel:'Solarpanels',
             connectContract: true,
             imgNeed: true,
@@ -229,7 +223,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[5] = HistoryType({
-            hID: 5,
             hLabel:'Airconditioning',
             connectContract: true,
             imgNeed: true,
@@ -240,7 +233,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[6] = HistoryType({
-            hID: 6,
             hLabel:'Sonneboiler',
             connectContract: true,
             imgNeed: true,
@@ -251,7 +243,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[7] = HistoryType({
-            hID: 7,
             hLabel:'Housepainter',
             connectContract: true,
             imgNeed: true,
@@ -532,7 +523,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool _checkMark
     ) external onlyMember {
         historyTypes[_historyIndex] = HistoryType({
-            hID: _historyIndex,
             hLabel: _label,
             connectContract: _connectContract,
             imgNeed: _imgNeed,
@@ -573,7 +563,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool _checkMark
     ) external onlyMember {
         historyTypes[_historyIndex] = HistoryType({
-            hID: _historyIndex,
             hLabel: _label,
             connectContract: _connectContract,
             imgNeed: _imgNeed,
@@ -603,7 +592,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function removeHistoryType(uint256 _hIndex) external onlyMember {
         for (uint i = _hIndex; i < hTypeCounter; i++) {
             historyTypes[i] = historyTypes[i + 1];
-            historyTypes[i].hID = historyTypes[i + 1].hID;
         }
         hTypeCounter--;
 
@@ -669,12 +657,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             block.timestamp
         );
     }
-
-    // function sendValue(address payable _recipient, uint256 _amount) internal {
-    //     require(address(this).balance >= _amount, 'Insufficient balance.');
-    //     (bool success, ) = _recipient.call{ value: _amount }('');
-    //     require(success, 'Failed to sendETH.');
-    // }
 
     // by a token by passing in the token's id
     function sendToken(address _receiver, uint256 _tokenId) external payable {
