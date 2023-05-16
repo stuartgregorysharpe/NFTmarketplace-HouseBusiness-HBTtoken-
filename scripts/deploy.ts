@@ -69,7 +69,7 @@ async function main() {
     fs.rmSync(addressFile);
   }
 
-  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
+  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network\n');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
   writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
