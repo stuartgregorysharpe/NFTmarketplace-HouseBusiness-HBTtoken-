@@ -77,16 +77,16 @@ contract MainCleanContract {
         uint256 _dateTo,
         uint256 _agreedPrice,
         string memory _currency,
-        address _currentOwner
+        address _user
     ) public {
         require(_dateFrom < _dateTo, 'Start date must be before end date');
         require(_agreedPrice > 0, 'Agreed price must be greater than 0');
-        require(_currentOwner != _contractSigner, "Owner can't be signer");
+        require(_user != _contractSigner, "Owner can't be signer");
 
         ccCounter++;
         allCleanContracts[ccCounter].contractId = ccCounter;
-        allCleanContracts[ccCounter].owner = msg.sender;
-        allCleanContracts[ccCounter].creator = msg.sender;
+        allCleanContracts[ccCounter].owner = _user;
+        allCleanContracts[ccCounter].creator = _user;
         allCleanContracts[ccCounter].contractURI = _contractURI;
         allCleanContracts[ccCounter].companyName = _companyName;
         allCleanContracts[ccCounter].contractType = _contractType;
@@ -101,8 +101,8 @@ contract MainCleanContract {
 
         emit CleanContractCreated(
             ccCounter,
-            _currentOwner,
-            _currentOwner,
+            _user,
+            _user,
             _companyName,
             _contractType,
             _contractSigner,

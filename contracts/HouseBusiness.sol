@@ -270,7 +270,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // Sets house staked status
     function setHouseStakedStatus(uint256 _tokenId, bool _status) external {
-        require(msg.sender == stakingContractAddress, 'Only Staking contract can call this func');
+        require(msg.sender == stakingContractAddress, 'Unauthorized');
         allHouses[_tokenId].staked = _status;
 
         emit HouseStakedStatusSet(_tokenId, _status, block.timestamp);
@@ -291,8 +291,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // get the token's owner
         address tokenOwner = ownerOf(_tokenId);
         // check that token's owner should be equal to the caller of the function
-        require(tokenOwner == _tokenOwner, 'Only owner can call this func.');
-        require(allHouses[_tokenId].price > 0, 'Pricing has not been set at this time.');
+        require(tokenOwner == _tokenOwner, 'Unauthorized.');
+        require(allHouses[_tokenId].price > 0, 'Invaid price.');
         if (allHouses[_tokenId].contributor.buyer != _buyer) allHouses[_tokenId].contributor.buyer = _buyer;
         allHouses[_tokenId].nftPayable = _nftPayable;
 
@@ -413,14 +413,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // Add allow list
     function addAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external {
-        require(ownerOf(_tokenId) == _tokenOwner, 'Only the owner can add to the allowlist.');
+        require(ownerOf(_tokenId) == _tokenOwner, 'Unauthorized.');
         allowedList[_tokenId][_allowed] = true;
         emit AllowListAdded(_tokenOwner, _tokenId, _allowed, block.timestamp);
     }
 
     // Remove allow list
     function removeAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external {
-        require(ownerOf(_tokenId) == _tokenOwner, 'Only the owner can remove from the allowlist.');
+        require(ownerOf(_tokenId) == _tokenOwner, 'Unauthorized.');
         allowedList[_tokenId][_allowed] = false;
         emit AllowListRemoved(_tokenOwner, _tokenId, _allowed, block.timestamp);
     }
@@ -438,7 +438,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 _yearField,
         address _tokenOwner
     ) external {
-        require(ownerOf(_houseId) == _tokenOwner, 'Only owner can call this func.');
+        require(ownerOf(_houseId) == _tokenOwner, 'Not owner.');
         if (_contractId != 0) {
             require(cContract.getContractById(_contractId) == _tokenOwner, 'cowner');
         }
@@ -489,7 +489,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 _yearField,
         address _tokenOwner
     ) external {
-        require(ownerOf(_houseId) == _tokenOwner, 'Only owner can call this func.');
+        require(ownerOf(_houseId) == _tokenOwner, 'No-owner');
         History storage _houseHistory = houseHistories[_houseId][_historyIndex];
         _houseHistory.historyTypeId = _historyTypeId;
         _houseHistory.houseImg = _houseImg;
@@ -605,9 +605,9 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function changeHousePrice(uint256 houseID, uint256 newPrice, address _tokenOwner) external {
         require(
             allHouses[houseID].contributor.currentOwner == _tokenOwner,
-            'Caller is not owner or house does not exist'
+            'No-owner'
         );
-        require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
+        require(newPrice >= minPrice && newPrice <= maxPrice, 'Invalid price');
 
         allHouses[houseID].price = newPrice;
 
@@ -619,13 +619,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         House memory house = allHouses[_houseID];
         Contributor memory _contributor = house.contributor;
 
-        require(msg.value >= house.price, 'Insufficient payment.');
-        require(house.nftPayable, 'House is not for sale.');
-        require(_contributor.currentOwner != address(0), 'House does not exist.');
-        require(_contributor.currentOwner != _buyer, 'You are already the owner of this house.');
+        require(msg.value >= house.price, 'Invalid payment');
+        require(house.nftPayable, 'Not for sale.');
+        require(_contributor.currentOwner != address(0), 'Not exist');
+        require(_contributor.currentOwner != _buyer, 'Owner can not be buyer.');
 
         if (_contributor.buyer != address(0)) {
-            require(_contributor.buyer == _buyer, 'You are not authorized to buy this house.');
+            require(_contributor.buyer == _buyer, 'Unauthorized.');
         }
         _contributor.buyer = _buyer;
 

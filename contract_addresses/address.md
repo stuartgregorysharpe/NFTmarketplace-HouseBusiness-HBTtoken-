@@ -1,7 +1,7 @@
 This file contains the latest test deployment addresses in the Goerli network
-ERC-20: [https://mumbai.polygonscan.io/address/0xb83af35e5fc6F8D0CC296efaD86bF87f4607cD93](https://mumbai.polygonscan.io/address/0xb83af35e5fc6F8D0CC296efaD86bF87f4607cD93)
-HouseNFT: [https://mumbai.polygonscan.io/address/0x6B66935d1B6aba317AFcba1132185942e972DdFA](https://mumbai.polygonscan.io/address/0x6B66935d1B6aba317AFcba1132185942e972DdFA)
-CleanContract: [https://mumbai.polygonscan.io/address/0x7E1C21927ce87c30183c2647F11c6D158f04549e](https://mumbai.polygonscan.io/address/0x7E1C21927ce87c30183c2647F11c6D158f04549e)
-StakingContract: [https://mumbai.polygonscan.io/address/0x4e4af943b68d77b08D57798c6608581e571810f7](https://mumbai.polygonscan.io/address/0x4e4af943b68d77b08D57798c6608581e571810f7)
-ThirdPartyContract: [https://mumbai.polygonscan.io/address/0xF94500Cf03a393E9cDA60e95Df9fB541afcd1a1F](https://mumbai.polygonscan.io/address/0xF94500Cf03a393E9cDA60e95Df9fB541afcd1a1F)
-OperatorContract: [https://mumbai.polygonscan.io/address/0xc64F085d256c69b98F6798A0b44F77C74c74F2B7](https://mumbai.polygonscan.io/address/0xc64F085d256c69b98F6798A0b44F77C74c74F2B7)
+ERC-20: [https://mumbai.polygonscan.io/address/0x951EB2d2E09C2f928Db31dB7B5B399E9B89b0A47](https://mumbai.polygonscan.io/address/0x951EB2d2E09C2f928Db31dB7B5B399E9B89b0A47)
+HouseNFT: [https://mumbai.polygonscan.io/address/0x5339BA1C836a667b35E55c07ABAc17e977A71e7c](https://mumbai.polygonscan.io/address/0x5339BA1C836a667b35E55c07ABAc17e977A71e7c)
+CleanContract: [https://mumbai.polygonscan.io/address/0x23FC50c08e8d370c50A3d7E0b8024F7172afEbAf](https://mumbai.polygonscan.io/address/0x23FC50c08e8d370c50A3d7E0b8024F7172afEbAf)
+StakingContract: [https://mumbai.polygonscan.io/address/0x376fB7D65e685db752f42febf3DF86573D91Fa71](https://mumbai.polygonscan.io/address/0x376fB7D65e685db752f42febf3DF86573D91Fa71)
+ThirdPartyContract: [https://mumbai.polygonscan.io/address/0x734A86Fafb115AEEE2C784bE6C5a729824F0F44C](https://mumbai.polygonscan.io/address/0x734A86Fafb115AEEE2C784bE6C5a729824F0F44C)
+OperatorContract: [https://mumbai.polygonscan.io/address/0x55F29427c2a164c9be50E93b455CCef13c0B5e67](https://mumbai.polygonscan.io/address/0x55F29427c2a164c9be50E93b455CCef13c0B5e67)
