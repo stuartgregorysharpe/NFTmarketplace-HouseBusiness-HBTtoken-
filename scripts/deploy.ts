@@ -57,7 +57,7 @@ async function main() {
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await House.connect(deployer).assignOperator(Operator.address);
+  tx = await House.connect(deployer).assignOperator(Operator.address);  
   await tx.wait();
 
   tx = await Operator.connect(deployer).authorizeContracts([House.address, HouseNFT.address, CContract.address]);
@@ -67,16 +67,21 @@ async function main() {
     fs.rmSync(addressFile);
   }
 
-  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Mumbai network<br/>');
+  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Mumbai network\n');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
   writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
+  writeAddr(addressFile, network.name, StakingContract.address, 'StakingContract');
+  writeAddr(addressFile, network.name, ThirdPartyContract.address, 'ThirdPartyContract');
+  writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
+
 
   console.log('Deployments done, waiting for etherscan verifications');
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
+  await verify(House.address, []);
   await verify(HouseNFT.address, [House.address]);
   await verify(CContract.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);

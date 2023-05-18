@@ -188,7 +188,12 @@ contract MainCleanContract {
     }
 
     // send sign notification
-    function sendNotify(address _notifyReceiver, string memory _notifyContent, uint256 ccID) external {
+    function sendNotify(
+        address _notifyReceiver,
+        string memory _notifyContent,
+        uint256 ccID,
+        address _notifier
+    ) external {
         CleanContract storage cContract = allCleanContracts[ccID];
         require(cContract.contractSigner != address(0), "Please add contract signer.");
         Notify[] storage notifies = allNotifies[cContract.contractSigner];
@@ -199,7 +204,7 @@ contract MainCleanContract {
             );
         }
         Notify memory newNotify = Notify({
-            nSender: msg.sender,
+            nSender: _notifier,
             nReceiver: _notifyReceiver,
             ccID: ccID,
             notifySentTime: block.timestamp,
@@ -208,7 +213,7 @@ contract MainCleanContract {
         });
         allNotifies[_notifyReceiver].push(newNotify);
 
-        emit NotifySent(msg.sender, _notifyReceiver, ccID, block.timestamp, _notifyContent);
+        emit NotifySent(_notifier, _notifyReceiver, ccID, block.timestamp, _notifyContent);
     }
 
     function getAllCleanContracts() external view returns (CleanContract[] memory) {
@@ -230,7 +235,7 @@ contract MainCleanContract {
      * NOTE only houseNFT contract can call
      */
     function getContractById(uint256 contractId) external view returns (address _owner) {
-        require(msg.sender == houseNFTAddress, "only NFT");
+        require(msg.sender == houseNFTAddress, 'only NFT');
         return _owner = allCleanContracts[contractId].owner;
     }
 
@@ -261,10 +266,10 @@ contract MainCleanContract {
      * @dev modifies ownership of `contractId` from `from` to `to`
      */
     function transferContractOwnership(uint256 contractId, address from, address to) external {
-        require(msg.sender == houseNFTAddress, "Only house contract");
+        require(msg.sender == houseNFTAddress, 'Only house contract');
 
         CleanContract storage singleContract = allCleanContracts[contractId];
-        require(singleContract.owner == from, "Only owner can call this function");
+        require(singleContract.owner == from, 'Only owner can call this function');
         singleContract.owner = to;
     }
 }
