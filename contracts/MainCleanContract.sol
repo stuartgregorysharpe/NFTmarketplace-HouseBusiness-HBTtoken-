@@ -76,17 +76,18 @@ contract MainCleanContract {
         uint256 _dateFrom,
         uint256 _dateTo,
         uint256 _agreedPrice,
-        string memory _currency
+        string memory _currency,
+        address _user
     ) public {
         require(_dateFrom < _dateTo, "Start date must be before end date");
         require(_agreedPrice > 0, "Agreed price must be greater than 0");
-        require(msg.sender != _contractSigner, "Owner can't be signer");
+        require(_user != _contractSigner, "Owner can't be signer");
 
         ccCounter++;
 
         allCleanContracts[ccCounter].contractId = ccCounter;
-        allCleanContracts[ccCounter].owner = msg.sender;
-        allCleanContracts[ccCounter].creator = msg.sender;
+        allCleanContracts[ccCounter].owner = _user;
+        allCleanContracts[ccCounter].creator = _user;
         allCleanContracts[ccCounter].contractURI = _contractURI;
         allCleanContracts[ccCounter].companyName = _companyName;
         allCleanContracts[ccCounter].contractType = _contractType;
@@ -101,8 +102,8 @@ contract MainCleanContract {
 
         emit CleanContractCreated(
             ccCounter,
-            msg.sender,
-            msg.sender,
+            _user,
+            _user,
             _companyName,
             _contractType,
             _contractSigner,
@@ -116,40 +117,40 @@ contract MainCleanContract {
     }
 
     // Add Contract Signer
-    function addContractSigner(uint256 _ccID, address _contractSigner) public {
+    function addContractSigner(uint256 _ccID, address _contractSigner, address _owner) public {
         CleanContract storage singleContract = allCleanContracts[_ccID];
-        require(singleContract.owner == msg.sender, "Only contract owner can add contract signer");
+        require(singleContract.owner == _owner, "Only contract owner can add contract signer");
         require(singleContract.owner != _contractSigner, "Owner can't be signer");
         singleContract.contractSigner = _contractSigner;
 
-        emit ContractSignerAdded(msg.sender, _ccID, _contractSigner);
+        emit ContractSignerAdded(_owner, _ccID, _contractSigner);
     }
 
     // sign contract
-    function signContract(uint256 ccID) public {
+    function signContract(uint256 ccID, address _newSigner) public {
         CleanContract storage singleContract = allCleanContracts[ccID];
         require(
-            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner,
+            _newSigner == singleContract.creator || _newSigner == singleContract.contractSigner,
             "You don't have permission to this contract"
         );
         uint256 flag = 0;
-        if (msg.sender == singleContract.creator) {
+        if (_newSigner == singleContract.creator) {
             singleContract.creatorApproval = true;
             if (singleContract.signerApproval == true) {
                 singleContract.status = "signed";
                 singleContract.creatorSignDate = block.timestamp;
                 flag = 1;
 
-                emit ContractSigned(msg.sender, ccID, "signed");
+                emit ContractSigned(_newSigner, ccID, "signed");
             }
-        } else if (msg.sender == singleContract.contractSigner) {
+        } else if (_newSigner == singleContract.contractSigner) {
             singleContract.signerApproval = true;
             if (singleContract.creatorApproval == true) {
                 singleContract.status = "signed";
                 singleContract.signerSignDate = block.timestamp;
                 flag = 2;
 
-                emit ContractSigned(msg.sender, ccID, "signed");
+                emit ContractSigned(_newSigner, ccID, "signed");
             }
         }
         if (flag == 1) {
@@ -166,17 +167,17 @@ contract MainCleanContract {
             }
         } else {
             address _notifyReceiver;
-            if (msg.sender == singleContract.creator) {
+            if (_newSigner == singleContract.creator) {
                 _notifyReceiver = singleContract.contractSigner;
             } else {
                 _notifyReceiver = singleContract.creator;
             }
 
-            string memory stringAddress = addressToString(msg.sender);
+            string memory stringAddress = addressToString(_newSigner);
             string memory notifyMsg = append("New signing request from ", stringAddress);
 
             Notify memory newNotify = Notify({
-                nSender: msg.sender,
+                nSender: _newSigner,
                 nReceiver: _notifyReceiver,
                 ccID: ccID,
                 notifySentTime: 0,
