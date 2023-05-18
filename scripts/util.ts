@@ -4,7 +4,7 @@ import hre from 'hardhat';
 export const writeAddr = (addressFile: string, network: string, addr: string, name: string) => {
   fs.appendFileSync(
     addressFile,
-    `${name}: [https://${network}.polygonscan.io/address/${addr}](https://${network}.polygonscan.io/address/${addr})\n`
+    `${name}: [https://${network}.polygonscan.com/address/${addr}](https://${network}.polygonscan.io/address/${addr})<br/>`
   );
 };
 

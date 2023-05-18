@@ -173,7 +173,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function addDefaultHTypes() internal {
         historyTypes[0] = HistoryType({
-            hLabel: 'Construction',
+            hLabel:'Construction',
             connectContract: false,
             imgNeed: false,
             brandNeed: false,
@@ -193,7 +193,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[2] = HistoryType({
-            hLabel: 'Pictures',
+            hLabel:'Pictures',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -203,7 +203,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[3] = HistoryType({
-            hLabel: 'Blueprint',
+            hLabel:'Blueprint',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -213,7 +213,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[4] = HistoryType({
-            hLabel: 'Solarpanels',
+            hLabel:'Solarpanels',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -223,7 +223,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[5] = HistoryType({
-            hLabel: 'Airconditioning',
+            hLabel:'Airconditioning',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -233,7 +233,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[6] = HistoryType({
-            hLabel: 'Sonneboiler',
+            hLabel:'Sonneboiler',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -243,7 +243,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[7] = HistoryType({
-            hLabel: 'Housepainter',
+            hLabel:'Housepainter',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -370,7 +370,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(!_exists(houseID), 'Token already exists.');
 
         // mint the token
-        _safeMint(_dest, houseID);
+        _mint(msg.sender, houseID);
         _setTokenURI(houseID, _tokenURI);
 
         allHouses[houseID] = House({
@@ -435,12 +435,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _history,
         string memory _desc,
         string memory _brandType,
-        uint256 _yearField,
-        address _tokenOwner
+        uint256 _yearField
     ) external {
-        require(ownerOf(_houseId) == _tokenOwner, 'Not owner.');
+        require(ownerOf(_houseId) == msg.sender, 'Only owner can call this func.');
         if (_contractId != 0) {
-            require(cContract.getContractById(_contractId) == _tokenOwner, 'cowner');
+            require(cContract.getContractById(_contractId) == msg.sender, 'cowner');
         }
 
         History[] storage houseHist = houseHistories[_houseId];
@@ -462,7 +461,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
 
         emit HistoryAdded(
-            _tokenOwner,
+            msg.sender,
             _houseId,
             _contractId,
             _historyTypeId,
@@ -486,10 +485,9 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _history,
         string memory _desc,
         string memory _brandType,
-        uint256 _yearField,
-        address _tokenOwner
+        uint256 _yearField
     ) external {
-        require(ownerOf(_houseId) == _tokenOwner, 'No-owner');
+        require(ownerOf(_houseId) == msg.sender, 'No-owner');
         History storage _houseHistory = houseHistories[_houseId][_historyIndex];
         _houseHistory.historyTypeId = _historyTypeId;
         _houseHistory.houseImg = _houseImg;
@@ -500,7 +498,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _houseHistory.yearField = _yearField;
 
         emit HistoryEdited(
-            _tokenOwner,
+            msg.sender,
             _houseId,
             _historyIndex,
             _historyTypeId,
@@ -602,32 +600,32 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HistoryTypeRemoved(msg.sender, _hIndex, hTypeCounter, block.timestamp);
     }
 
-    function changeHousePrice(uint256 houseID, uint256 newPrice, address _tokenOwner) external {
+    function changeHousePrice(uint256 houseId, uint256 newPrice) external {
         require(
-            allHouses[houseID].contributor.currentOwner == _tokenOwner,
-            'No-owner'
+            allHouses[houseId].contributor.currentOwner == msg.sender,
+            'Caller is not owner or house does not exist'
         );
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Invalid price');
 
         allHouses[houseID].price = newPrice;
 
-        emit HousePriceChanged(houseID, _tokenOwner, newPrice);
+        emit HousePriceChanged(houseID, msg.sender, newPrice);
     }
 
     // by a token by passing in the token's id
-    function buyHouseNft(uint256 _houseID, address _buyer) public payable {
-        House memory house = allHouses[_houseID];
+    function buyHouseNft(uint256 _houseId) public payable {
+        House memory house = allHouses[_houseId];
         Contributor memory _contributor = house.contributor;
 
-        require(msg.value >= house.price, 'Invalid payment');
-        require(house.nftPayable, 'Not for sale.');
-        require(_contributor.currentOwner != address(0), 'Not exist');
-        require(_contributor.currentOwner != _buyer, 'Owner can not be buyer.');
+        require(msg.value >= house.price, 'Insufficient payment.');
+        require(house.nftPayable, 'House is not for sale');
+        require(_contributor.currentOwner != address(0), 'House does not exist.');
+        require(_contributor.currentOwner != msg.sender, 'You are already the owner of this house.');
 
         if (_contributor.buyer != address(0)) {
-            require(_contributor.buyer == _buyer, 'Unauthorized.');
+            require(_contributor.buyer == _buyer, 'You are not authorized to buy this house..');
         }
-        _contributor.buyer = _buyer;
+        _contributor.buyer = msg.sender;
 
         // calculate the payouts
         uint256 creatorCut = (house.price * royaltyCreator) / 100;
@@ -635,28 +633,25 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 ownerCut = house.price - creatorCut - marketCut;
 
         // transfer the funds to the previous owner and creators
-        // sendValue(payable(_contributor.previousOwner), ownerCut);
-        // sendValue(payable(_contributor.creator), creatorCut);
         payable(_contributor.currentOwner).transfer(ownerCut);
         payable(_contributor.creator).transfer(creatorCut);
 
-        // transfer the token to the new owner
-        _transfer(_contributor.currentOwner, _buyer, _houseID);
+        _transfer(_contributor.currentOwner, msg.sender, _houseId);
 
         // update the house details
         _contributor.previousOwner = _contributor.currentOwner;
-        _contributor.currentOwner = _buyer;
-        allHouses[_houseID].nftPayable = false;
-        allHouses[_houseID].soldStatus = true;
-        allHouses[_houseID].numberOfTransfers++;
+        _contributor.currentOwner = msg.sender;
+        allHouses[_houseId].nftPayable = false;
+        allHouses[_houseId].soldStatus = true;
+        allHouses[_houseId].numberOfTransfers++;
 
         // update the counters
         soldedCounter++;
 
         // emit an event
         emit HouseNftBought(
-            _houseID,
-            _buyer,
+            _houseId,
+            msg.sender,
             _contributor.previousOwner,
             _contributor.creator,
             house.price,
@@ -675,26 +670,26 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         // Transfer ownership of connected contracts
     }
 
-    function _burn(uint256 _houseID) internal override(ERC721, ERC721URIStorage) {
-        super._burn(_houseID);
+    function _burn(uint256 _houseId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(_houseId);
     }
 
-    function _afterTokenTransfer(address from, address to, uint256 houseID, uint256 batchSize) internal override {
-        House storage house = allHouses[houseID];
+    function _afterTokenTransfer(address from, address to, uint256 houseId, uint256 batchSize) internal override {
+        House storage house = allHouses[houseId];
         // update the token's previous owner
         house.contributor.previousOwner = house.contributor.currentOwner;
         // update the token's current owner
         house.contributor.currentOwner = to;
         // update the how many times this token was transfered
         house.numberOfTransfers += 1;
-        _transferHistoryContracts(houseID, from, to);
+        _transferHistoryContracts(houseId, from, to);
     }
 
     /**
      * @dev transfer ownership of connected contracts
      */
-    function _transferHistoryContracts(uint256 houseID, address from, address to) private {
-        History[] storage histories = houseHistories[houseID];
+    function _transferHistoryContracts(uint256 houseId, address from, address to) private {
+        History[] storage histories = houseHistories[houseId];
 
         unchecked {
             for (uint256 i = 0; i < histories.length; ++i) {

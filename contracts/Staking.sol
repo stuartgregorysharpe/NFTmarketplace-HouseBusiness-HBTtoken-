@@ -83,7 +83,7 @@ contract HouseStaking {
                 true
             )
         );
-
+        
         houseBusiness.setHouseStakedStatus(_houseID, true);
         stakedCounter++;
 
