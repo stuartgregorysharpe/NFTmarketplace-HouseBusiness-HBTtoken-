@@ -25,8 +25,8 @@ contract HouseBusinessToken is Context, ERC20 {
         _;
     }
 
-    function assignOperator(address _address) public onlyOwner {
-        operators[_address] = true;
+    function setOperator(address _address, bool _isOperator) public onlyOwner() {
+        operators[_address] = _isOperator;
     }
 
     function mint(address to, uint256 amount) public virtual OnlyOperator {

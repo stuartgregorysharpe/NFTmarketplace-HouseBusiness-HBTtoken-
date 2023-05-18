@@ -65,6 +65,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     mapping(address => bool) public member;
+    mapping(address => bool) public operators;
     mapping(uint256 => House) public allHouses;
     mapping(uint256 => History[]) public houseHistories;
     mapping(uint256 => HistoryType) public historyTypes;
@@ -173,7 +174,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function addDefaultHTypes() internal {
         historyTypes[0] = HistoryType({
-            hLabel:'Construction',
+            hLabel: 'Construction',
             connectContract: false,
             imgNeed: false,
             brandNeed: false,
@@ -183,7 +184,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[1] = HistoryType({
-            hLabel:'Floorplan',
+            hLabel: 'Floorplan',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -193,7 +194,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[2] = HistoryType({
-            hLabel:'Pictures',
+            hLabel: 'Pictures',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -203,7 +204,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[3] = HistoryType({
-            hLabel:'Blueprint',
+            hLabel: 'Blueprint',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -213,7 +214,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[4] = HistoryType({
-            hLabel:'Solarpanels',
+            hLabel: 'Solarpanels',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -223,7 +224,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[5] = HistoryType({
-            hLabel:'Airconditioning',
+            hLabel: 'Airconditioning',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -233,7 +234,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[6] = HistoryType({
-            hLabel:'Sonneboiler',
+            hLabel: 'Sonneboiler',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -243,7 +244,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             checkMark: false
         });
         historyTypes[7] = HistoryType({
-            hLabel:'Housepainter',
+            hLabel: 'Housepainter',
             connectContract: true,
             imgNeed: true,
             brandNeed: true,
@@ -258,6 +259,15 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     modifier onlyMember() {
         require(member[msg.sender], 'Only Member');
         _;
+    }
+
+    modifier OnlyOperator() {
+        require(operators[msg.sender], 'Only moderators can call this function.');
+        _;
+    }
+
+    function setOperator(address _address, bool _isOperator) public onlyMember() {
+        operators[_address] = _isOperator;
     }
 
     function setCContractAddress(address _address) external onlyMember {
@@ -285,7 +295,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
-    function setPayable(uint256 _tokenId, address _buyer, bool _nftPayable, address _tokenOwner) external {
+    function setPayable(uint256 _tokenId, address _buyer, bool _nftPayable, address _tokenOwner) external OnlyOperator {
         // require that token should exist
         require(_exists(_tokenId));
         // get the token's owner
@@ -314,7 +324,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     /**
      * @dev disconnects contract from house history
      */
-    function disconnectContract(uint256 _tokenId, uint256 _hIndex, uint256 _contractId, address _tokenOwner) external {
+    function disconnectContract(uint256 _tokenId, uint256 _hIndex, uint256 _contractId, address _tokenOwner) external OnlyOperator {
         require(ownerOf(_tokenId) == _tokenOwner, 'owner');
         History storage history = houseHistories[_tokenId][_hIndex];
         require(history.contractId == _contractId, 'id');
@@ -324,7 +334,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // change token price by token id
-    function changeTokenPrice(uint256 _tokenId, uint256 _newPrice, address _tokenOwner) external {
+    function changeTokenPrice(uint256 _tokenId, uint256 _newPrice, address _tokenOwner) external OnlyOperator {
         require(_exists(_tokenId), 'TNE');
         require(ownerOf(_tokenId) == _tokenOwner, 'OOCC/RO');
         House memory house = allHouses[_tokenId];
@@ -363,7 +373,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _tokenURI,
         string memory _tokenType,
         string memory _initialDesc
-    ) external {
+    ) external OnlyOperator {
         uint256 houseID = houseCounter + 1;
 
         // ensure token with id doesn't already exist
@@ -412,14 +422,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Add allow list
-    function addAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external {
+    function addAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external OnlyOperator {
         require(ownerOf(_tokenId) == _tokenOwner, 'Only the owner can add to the allowlist.');
         allowedList[_tokenId][_allowed] = true;
         emit AllowListAdded(_tokenOwner, _tokenId, _allowed, block.timestamp);
     }
 
     // Remove allow list
-    function removeAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external {
+    function removeAllowList(uint256 _tokenId, address _allowed, address _tokenOwner) external OnlyOperator {
         require(ownerOf(_tokenId) == _tokenOwner, 'Only the owner can remove from the allowlist.');
         allowedList[_tokenId][_allowed] = false;
         emit AllowListRemoved(_tokenOwner, _tokenId, _allowed, block.timestamp);
@@ -437,7 +447,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _brandType,
         uint256 _yearField,
         address _tokenOwner
-    ) external {
+    ) external OnlyOperator {
         require(ownerOf(_houseId) == _tokenOwner, 'Only owner can call this func.');
         if (_contractId != 0) {
             require(cContract.getContractById(_contractId) == _tokenOwner, 'cowner');
@@ -488,7 +498,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _brandType,
         uint256 _yearField,
         address _tokenOwner
-    ) external {
+    ) external OnlyOperator {
         require(ownerOf(_houseId) == _tokenOwner, 'Only owner can call this func.');
         History storage _houseHistory = houseHistories[_houseId][_historyIndex];
         _houseHistory.historyTypeId = _historyTypeId;
@@ -602,7 +612,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HistoryTypeRemoved(msg.sender, _hIndex, hTypeCounter, block.timestamp);
     }
 
-    function changeHousePrice(uint256 houseId, uint256 newPrice, address _tokenOwner) external {
+    function changeHousePrice(uint256 houseId, uint256 newPrice, address _tokenOwner) external OnlyOperator {
         require(
             allHouses[houseId].contributor.currentOwner == _tokenOwner,
             'Caller is not owner or house does not exist'
@@ -615,7 +625,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // by a token by passing in the token's id
-    function buyHouseNft(uint256 _houseId, address _buyer) public payable {
+    function buyHouseNft(uint256 _houseId, address _buyer) public payable OnlyOperator {
         House memory house = allHouses[_houseId];
         Contributor memory _contributor = house.contributor;
 
@@ -720,7 +730,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         }
         return tempHistoryType;
     }
-    
 
     // function getMyHouses(address _owner) external view returns (House[] memory) {
     //     uint256 count;

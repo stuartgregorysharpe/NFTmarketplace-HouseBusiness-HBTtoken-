@@ -6,6 +6,7 @@ import './interfaces/IHouseBusiness.sol';
 pragma solidity ^0.8.7;
 
 contract HouseStaking {
+    address private _owner;
     // total number of staked nft
     uint256 public stakedCounter;
     // token panalty
@@ -16,6 +17,7 @@ contract HouseStaking {
     // APY
     mapping(uint256 => uint256) APYConfig;
     mapping(address => StakedNft[]) stakedNfts;
+    mapping(address => bool) public operators;
 
     address tokenAddress;
     address houseNFTAddress;
@@ -40,6 +42,8 @@ contract HouseStaking {
     event PenaltySet(address indexed updatedBy, uint256 newPenalty, uint256 timestamp);
 
     constructor(address _houseNFTAddress, address _tokenAddress) {
+        _owner = msg.sender;
+        operators[msg.sender] = true;
         APYtypes.push(1);
         APYConfig[1] = 6;
         APYtypes.push(6);
@@ -52,6 +56,20 @@ contract HouseStaking {
         houseNFTAddress = _houseNFTAddress;
     }
 
+    modifier onlyOwner() {
+        require(msg.sender == _owner, 'ERC20: Only owner can run this event');
+        _;
+    }
+
+    modifier OnlyOperator() {
+        require(operators[msg.sender], 'Only moderators can call this function.');
+        _;
+    }
+
+    function setOperator(address _address, bool _isOperator) public onlyOwner {
+        operators[_address] = _isOperator;
+    }
+
     function setAPYConfig(uint256 _type, uint256 Apy) external {
         APYConfig[_type] = Apy;
         APYtypes.push(_type);
@@ -60,7 +78,7 @@ contract HouseStaking {
     }
 
     // stake House Nft
-    function stake(uint256 _houseID, uint256 _stakingType, address _owner) external {
+    function stake(uint256 _houseID, uint256 _stakingType, address _owner) external OnlyOperator {
         IERC721 houseNFT = IERC721(houseNFTAddress);
         IHouseBusiness houseBusiness = IHouseBusiness(houseNFTAddress);
 
@@ -83,7 +101,7 @@ contract HouseStaking {
                 true
             )
         );
-        
+
         houseBusiness.setHouseStakedStatus(_houseID, true);
         stakedCounter++;
 
@@ -91,7 +109,7 @@ contract HouseStaking {
     }
 
     // Unstake House Nft
-    function unstake(uint256 _houseID, address _owner) external {
+    function unstake(uint256 _houseID, address _owner) external OnlyOperator {
         require(_houseID > 0, 'Invalid Token ID');
         StakedNft memory unstakingNft;
         uint256 counter;
@@ -120,13 +138,13 @@ contract HouseStaking {
         emit NFTUnstaked(_owner, _houseID, unstakingNft.startedDate);
     }
 
-    function updateAPYConfig(uint _type, uint APY, address _owner) external {
-        require(IHouseBusiness(houseNFTAddress).member(_owner), 'member');
+    function updateAPYConfig(uint _type, uint APY) external {
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         for (uint i = 0; i < APYtypes.length; i++) {
             if (APYtypes[i] == _type) {
                 APYConfig[_type] = APY;
 
-                emit APYConfigUpdated(_type, APY, _owner, block.timestamp);
+                emit APYConfigUpdated(_type, APY, msg.sender, block.timestamp);
             }
         }
     }
@@ -161,7 +179,7 @@ contract HouseStaking {
         }
     }
 
-    function setPenalty(uint256 _penalty, address _user) external {
+    function setPenalty(uint256 _penalty, address _user) external OnlyOperator {
         require(IHouseBusiness(houseNFTAddress).member(_user), 'member');
         penalty = _penalty;
 
