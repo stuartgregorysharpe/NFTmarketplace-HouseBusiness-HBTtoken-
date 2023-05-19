@@ -142,10 +142,10 @@ contract HouseDoc {
     }
 
     // sign contract
-    function signContract(uint256 hdID, , address _newSigner) public {
+    function signContract(uint256 hdID, address _newSigner) public {
         DocContract storage singleContract = allDocContracts[hdID];
         require(
-            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner || || msg.sender == operatorAddress,
+            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner || msg.sender == operatorAddress,
             "You don't have permission to this contract"
         );
         uint256 flag = 0;

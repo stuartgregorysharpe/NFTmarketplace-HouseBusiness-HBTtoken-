@@ -9,12 +9,103 @@ const isTestNetwork = (name: string): name is 'goerli' | 'mumbai' => {
   return name === 'goerli' || name === 'mumbai';
 }
 
+const defaultHistoryType = [
+  {
+    hLabel: 'Construction',
+    connectContract: false,
+    imgNeed: false,
+    brandNeed: false,
+    descNeed: false,
+    brandTypeNeed: false,
+    yearNeed: false,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Floorplan',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: false,
+    descNeed: true,
+    brandTypeNeed: false,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Pictures',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: true,
+    descNeed: true,
+    brandTypeNeed: true,
+    yearNeed: false,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Blueprint',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: true,
+    descNeed: false,
+    brandTypeNeed: true,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Solarpanels',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: true,
+    descNeed: true,
+    brandTypeNeed: true,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Airconditioning',
+    connectContract: false,
+    imgNeed: true,
+    brandNeed: true,
+    descNeed: true,
+    brandTypeNeed: true,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  }, {
+    hLabel: 'Sonneboiler',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: true,
+    descNeed: true,
+    brandTypeNeed: false,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  },
+  {
+    hLabel: 'Housepainter',
+    connectContract: true,
+    imgNeed: true,
+    brandNeed: false,
+    descNeed: true,
+    brandTypeNeed: true,
+    yearNeed: true,
+    checkMark: false,
+    value: 0
+  }
+]
+
 async function main() {
   if (!isTestNetwork(network.name)) {
     console.log('main net')
     return;
   }
   console.log('Starting deployments');
+ 
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
   const tokenAddress = '0xa8C19667794191A730B3983eB3a8087CfF2b788e';
@@ -31,11 +122,6 @@ async function main() {
   await HouseNFT.deployed();
   // const HouseNFT = HouseNFTFactory.attach(houseBusiness) as HouseBusiness;
   console.log('This is the House NFT address: ', HouseNFT.address);
-
-  const MarketplaceFactory = await ethers.getContractFactory('Marketplace');
-  const Marketplace = (await MarketplaceFactory.deploy()) as Marketplace;
-  await Marketplace.deployed();
-  console.log("This is the Marketplace address: ", Marketplace.address);
 
   const HouseDocFactory = await ethers.getContractFactory('HouseDoc');
   const HouseDoc = (await HouseDocFactory.deploy(HouseNFT.address)) as HouseDoc;
@@ -60,10 +146,7 @@ async function main() {
   let tx = await HouseNFT.connect(deployer).setHouseDocContractAddress(HouseDoc.address);
   await tx.wait();
 
-  tx = await Marketplace.connect(deployer).setStakingContractAddress(StakingContract.address);
-  await tx.wait();
-
-  tx = await HouseNFT.connect(deployer).setMarketplaceAddress(Marketplace.address);
+  tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
   tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
@@ -82,6 +165,22 @@ async function main() {
     House.address, HouseNFT.address, HouseDoc.address, StakingContract.address
   ]);
   await tx.wait();
+  for (var i = 0; i < defaultHistoryType.length; i++) {
+    tx = await HouseNFT.connect(deployer).addHistoryType(
+      i,
+      defaultHistoryType[i].hLabel,
+      defaultHistoryType[i].connectContract,
+      defaultHistoryType[i].imgNeed,
+      defaultHistoryType[i].brandNeed,
+      defaultHistoryType[i].descNeed,
+      defaultHistoryType[i].brandTypeNeed,
+      defaultHistoryType[i].yearNeed,
+      defaultHistoryType[i].checkMark,
+      0,
+      true
+    )
+    await tx.wait();
+  }
 
   if (fs.existsSync(addressFile)) {
     fs.rmSync(addressFile);
@@ -90,7 +189,6 @@ async function main() {
   fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
-  writeAddr(addressFile, network.name, Marketplace.address, 'Marketplace');
   writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDocu');
 
   console.log('Deployments done, waiting for etherscan verifications');
@@ -99,7 +197,6 @@ async function main() {
   await new Promise((f) => setTimeout(f, 60000));
 
   await verify(HouseNFT.address, [House.address]);
-  await verify(Marketplace.address, []);
   await verify(HouseDoc.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
   await verify(Operator.address, [House.address]);

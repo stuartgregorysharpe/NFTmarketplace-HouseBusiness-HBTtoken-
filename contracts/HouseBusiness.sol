@@ -65,7 +65,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool otherInfo;
         uint256 value;
     }
-
+   
     struct LabelPercent {
         uint256 connectContract;
         uint256 image;
@@ -89,6 +89,15 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     event HouseMinted(address indexed minter, string name, string tokenURI, string tokenType, string initialDesc);
     event PayableSet(address indexed owner, uint256 indexed tokenId, address buyer, bool nftPayable);
+    event AllowListAdded(address indexed currentOwner, uint256 indexed tokenId, address allowed);
+    event AllowListRemoved(address indexed currentOwner, uint256 indexed tokenId, address allowed);
+    event HistoryTypeRemoved(address indexed member, uint256 indexed hIndex, uint256 hTypeCounter);
+    event HousePriceChanged(uint256 indexed tokenId, address indexed owner, uint256 price);
+    event TokenWithdrawn(address indexed sender, uint256 amount);
+    event EthWithdrawn(address indexed sender, uint256 amount);
+    event HouseStakedStatusSet(uint256 indexed tokenId, bool status);
+    event RoyaltyCreatorSet(address indexed member, uint256 royalty);
+    event RoyaltyMarketSet(address indexed member, uint256 royalty);
     event HistoryAdded(
         address indexed owner,
         uint256 indexed tokenId,
@@ -130,19 +139,13 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string label,
         bool connectContract,
         bool imgNeed,
-        bool brand,
-        bool description,
-        bool brandType,
+        bool brandNeed,
+        bool descNeed,
+        bool brandTypeNeed,
         bool yearNeed,
-        bool otherInfo,
+        bool checkMark,
         uint256 value
     );
-    event HistoryTypeRemoved(
-        address indexed member,
-        uint256 indexed hIndex,
-        uint256 hTypeCounter
-    );
-
     event ContractDisconnected(
         address indexed owner,
         uint256 indexed tokenId,
@@ -156,17 +159,15 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address creator,
         uint256 price
     );
-    event HouseStakedStatusSet(uint256 indexed tokenId, bool status);
-    event HousePriceChanged(uint256 indexed tokenId, address indexed owner, uint256 price);
-    event TokenPriceChanged(uint256 indexed tokenId, uint256 newPrice);
-    event AllowListAdded(address indexed currentOwner, uint256 indexed tokenId, address allowed);
-    event AllowListRemoved(address indexed currentOwner, uint256 indexed tokenId, address allowed);
-    event EthWithdrawn(address indexed sender, uint256 amount);
-    event TokenWithdrawn(address indexed sender, uint256 amount);
 
     constructor(address _tokenAddress) ERC721('HouseBusiness', 'HUBS') {
         (collectionName, collectionSymbol) = (name(), symbol());
         member[msg.sender] = true;
+        royaltyCreator = 6;
+        royaltyMarket = 2;
+        minPrice = 10 ** 16;
+        maxPrice = 10 ** 18;
+        allowFee = 10 ** 17;
         _token = IERC20(_tokenAddress);
     }
 
@@ -200,6 +201,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         houseDoc = IHouseDoc(_address);
     }
 
+    function setLabelPercents(LabelPercent memory newLabelPercent) external onlyMember {
+        labelPercent = newLabelPercent;
+    }
+
+    function setAllowFee(uint256 _allowFee) external onlyMember {
+        allowFee = _allowFee;
+    }
+
     function setConfigToken(address _tokenAddress) external {
         _token = IERC20(_tokenAddress);
     }
@@ -216,6 +225,18 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit PayableSet(msg.sender, _tokenId, _buyer, _nftPayable);
     }
 
+    function setRoyaltyCreator(uint256 _royalty) external onlyMember {
+        royaltyCreator = _royalty;
+
+        emit RoyaltyCreatorSet(msg.sender, _royalty);
+    }
+
+    function setRoyaltyMarket(uint256 _royalty) external onlyMember {
+        royaltyMarket = _royalty;
+
+        emit RoyaltyMarketSet(msg.sender, _royalty);
+    }
+
     /**
      * @dev disconnects contract from house history
      */
@@ -226,6 +247,28 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         history.contractId = 0;
 
         emit ContractDisconnected(msg.sender, _tokenId, _hIndex, _contractId);
+    }
+
+    // withdraw token
+    function withdrawToken(uint256 _amount) external payable onlyMember {
+        _token.transfer(msg.sender, _amount);
+
+        emit TokenWithdrawn(msg.sender, _amount);
+    }
+
+    // withdraw ETH
+    function withdrawETH(uint256 _amount) external payable onlyMember {
+        payable(msg.sender).transfer(_amount);
+
+        emit EthWithdrawn(msg.sender, _amount);
+    }
+
+    function addMember(address _newMember) external onlyMember {
+        member[_newMember] = true;
+    }
+
+    function removeMember(address _newMember) external onlyMember {
+        member[_newMember] = false;
     }
 
     function mintHouse(
@@ -386,7 +429,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
         uint256 housePrice = getHousePrice(_houseId);
 
-        require(msg.value >= housePrice, 'Insufficient payment.');
+        require(msg.value >= housePrice, 'Insufficient value.');
         require(house.nftPayable, 'House is not for sale.');
         require(_contributor.currentOwner != address(0), 'House does not exist.');
         require(_contributor.currentOwner != _buyer, 'You are already the owner of this house.');
@@ -436,7 +479,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     ) external {
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         if (_contractId != 0) {
-            require(houseDoc.getContractById(_contractId) == msg.sender, 'cowner');
+            require(houseDoc.getContractById(_contractId) == msg.sender, 'You are owner of that contract');
         }
 
         History[] storage houseHist = houseHistories[_houseId];
@@ -506,20 +549,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
     }
 
-    // withdraw token
-    function withdrawToken(uint256 _amount) external payable onlyMember {
-        _token.transfer(msg.sender, _amount);
-
-        emit TokenWithdrawn(msg.sender, _amount);
-    }
-
-    // withdraw ETH
-    function withdrawETH(uint256 _amount) external payable onlyMember {
-        payable(msg.sender).transfer(_amount);
-
-        emit EthWithdrawn(msg.sender, _amount);
-    }
-
     function _burn(uint256 _houseId) internal override(ERC721, ERC721URIStorage) {
         super._burn(_houseId);
     }
@@ -559,19 +588,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return tempHouses;
     }
 
-    // Get History Type
     function getAllHistoryTypes() external view returns (HistoryType[] memory) {
         HistoryType[] memory tempHistoryType = new HistoryType[](hTypeCounter);
         for (uint256 i = 0; i < hTypeCounter; i++) {
             tempHistoryType[i] = historyTypes[i];
         }
         return tempHistoryType;
-    }
-
-    // Returns price of a house with `tokenId`
-    function getTokenPrice(uint256 _tokenId) external view returns (uint256) {
-        require(msg.sender == stakingContractAddress, 'sc');
-        return allHouses[_tokenId].price;
     }
 
     // Get Overall total information
@@ -615,3 +637,4 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return price;
     }
 }
+
