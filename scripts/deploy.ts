@@ -13,88 +13,88 @@ const defaultHistoryType = [
   {
     hLabel: 'Construction',
     connectContract: false,
-    imgNeed: false,
-    brandNeed: false,
-    descNeed: false,
-    brandTypeNeed: false,
-    yearNeed: false,
-    checkMark: false,
+    image: false,
+    brand: false,
+    description: false,
+    brandType: false,
+    year: false,
+    otherInfo: true,
     value: 0
   },
   {
     hLabel: 'Floorplan',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: false,
-    descNeed: true,
-    brandTypeNeed: false,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: false,
+    description: true,
+    brandType: false,
+    year: true,
+    otherInfo: false,
     value: 0
   },
   {
     hLabel: 'Pictures',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: true,
-    descNeed: true,
-    brandTypeNeed: true,
-    yearNeed: false,
-    checkMark: false,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: false,
+    otherInfo: false,
     value: 0
   },
   {
     hLabel: 'Blueprint',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: true,
-    descNeed: false,
-    brandTypeNeed: true,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: true,
+    description: false,
+    brandType: true,
+    year: true,
+    otherInfo: false,
     value: 0
   },
   {
     hLabel: 'Solarpanels',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: true,
-    descNeed: true,
-    brandTypeNeed: true,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
     value: 0
   },
   {
     hLabel: 'Airconditioning',
     connectContract: false,
-    imgNeed: true,
-    brandNeed: true,
-    descNeed: true,
-    brandTypeNeed: true,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
     value: 0
   }, {
     hLabel: 'Sonneboiler',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: true,
-    descNeed: true,
-    brandTypeNeed: false,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: false,
+    year: true,
+    otherInfo: false,
     value: 0
   },
   {
     hLabel: 'Housepainter',
     connectContract: true,
-    imgNeed: true,
-    brandNeed: false,
-    descNeed: true,
-    brandTypeNeed: true,
-    yearNeed: true,
-    checkMark: false,
+    image: true,
+    brand: false,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
     value: 0
   }
 ]
@@ -144,20 +144,23 @@ async function main() {
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
+  tx = await HouseNFT.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
+  await tx.wait();
+
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
   for (var i = 0; i < defaultHistoryType.length; i++) {
-    tx = await HouseNFT.connect(deployer).addHistoryType(
+    tx = await HouseNFT.connect(deployer).addOrEditHistoryType(
       i,
       defaultHistoryType[i].hLabel,
       defaultHistoryType[i].connectContract,
-      defaultHistoryType[i].imgNeed,
-      defaultHistoryType[i].brandNeed,
-      defaultHistoryType[i].descNeed,
-      defaultHistoryType[i].brandTypeNeed,
-      defaultHistoryType[i].yearNeed,
-      defaultHistoryType[i].checkMark,
+      defaultHistoryType[i].image,
+      defaultHistoryType[i].brand,
+      defaultHistoryType[i].description,
+      defaultHistoryType[i].brandType,
+      defaultHistoryType[i].year,
+      defaultHistoryType[i].otherInfo,
       0,
       true
     )

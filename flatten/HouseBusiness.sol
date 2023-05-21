@@ -1709,6 +1709,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool descNeed;
         bool brandTypeNeed;
         bool yearNeed;
+        bool otherInfo;
         bool checkMark;
         uint256 value;
     }
@@ -1767,7 +1768,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string brandType,
         uint256 yearField
     );
-    event HistoryTypeUpdated(
+    event HistoryTypeAdded(
         address indexed member,
         uint256 indexed hID,
         string label,
@@ -1778,9 +1779,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool brandTypeNeed,
         bool yearNeed,
         bool checkMark,
-        uint256 value,
-        uint256 hTypeCounter,
-        bool flag
+        uint256 value
     );
     event ContractDisconnected(
         address indexed owner,
@@ -2099,47 +2098,29 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     // Add History Type
-    function addHistoryType(
+    function addOrEditHistoryType(
         uint256 _historyIndex,
-        string memory _label,
-        bool _connectContract,
-        bool _imgNeed,
-        bool _brandNeed,
-        bool _descNeed,
-        bool _brandTypeNeed,
-        bool _yearNeed,
-        bool _checkMark,
-        uint256 _value,
+        HistoryType memory histroyType,
         bool flag
     ) external onlyMember {
-        historyTypes[_historyIndex] = HistoryType({
-            hLabel: _label,
-            connectContract: _connectContract,
-            imgNeed: _imgNeed,
-            brandNeed: _brandNeed,
-            descNeed: _descNeed,
-            brandTypeNeed: _brandTypeNeed,
-            yearNeed: _yearNeed,
-            checkMark: _checkMark,
-            value: _value
-        });
-        if (flag) hTypeCounter++;
+        historyTypes[_historyIndex] = histroyType;
+        if (flag) {
+            hTypeCounter++;
 
-        emit HistoryTypeUpdated(
-            msg.sender,
-            _historyIndex,
-            _label,
-            _connectContract,
-            _imgNeed,
-            _brandNeed,
-            _descNeed,
-            _brandTypeNeed,
-            _yearNeed,
-            _checkMark,
-            _value,
-            hTypeCounter,
-            flag
-        );
+            emit HistoryTypeAdded(
+                msg.sender,
+                _historyIndex,
+                histroyType.hLabel,
+                histroyType.connectContract,
+                histroyType.imgNeed,
+                histroyType.brandNeed,
+                histroyType.descNeed,
+                histroyType.brandTypeNeed,
+                histroyType.yearNeed,
+                histroyType.checkMark,
+                histroyType.value
+            );
+        } 
     }
 
     // Remove History Type
