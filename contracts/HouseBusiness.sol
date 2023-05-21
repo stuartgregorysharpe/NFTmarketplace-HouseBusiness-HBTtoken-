@@ -630,7 +630,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 (bytes(temp[i].houseBrand).length > 0? labelPercent.brand: 0) +
                 (bytes(temp[i].desc).length > 0 ? labelPercent.desc : 0) +
                 (bytes(temp[i].brandType).length > 0 ? labelPercent.brandType : 0) +
-                (temp[i].yearField > 0 ? labelPercent.year : 0) +
+                (temp[i].yearField > 0 ? labelPercent.year : 0) + 
                 (bytes(temp[i].otherInfo).length > 0 ? labelPercent.otherInfo : 0);
             price += (historyTypes[temp[i].historyTypeId].value * percent) / 100;
         }
