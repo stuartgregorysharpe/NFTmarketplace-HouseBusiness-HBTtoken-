@@ -90,7 +90,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string name,
         string tokenURI,
         string tokenType,
-        string initialDesc
+        uint256 year
     );
     event PayableSet(
         address indexed owner,
@@ -320,7 +320,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
-        string memory _initialDesc
+        uint256 _year
     ) external {
         uint256 houseID = houseCounter + 1;
 
@@ -359,9 +359,9 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 houseImg: "",
                 houseBrand: "",
                 desc: "",
-                otherInfo: _initialDesc,
-                brandType: "",
-                yearField: 0
+                otherInfo: "",
+                brandType: _tokenType,
+                yearField: _year
             })
         );
         houseCounter++;
@@ -371,7 +371,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             _name,
             _tokenURI,
             _tokenType,
-            _initialDesc
+            _year
         );
     }
 
