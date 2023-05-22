@@ -16,9 +16,9 @@ const defaultHistoryType = [
     image: false,
     brand: false,
     description: false,
-    brandType: false,
-    year: false,
-    otherInfo: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
     value: 0
   },
   {
