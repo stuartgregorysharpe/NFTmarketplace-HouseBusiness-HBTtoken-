@@ -62,7 +62,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool brandTypeNeed;
         bool yearNeed;
         bool otherInfo;
-        bool otherInfo;
         uint256 value;
     }
    
@@ -146,19 +145,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string desc,
         string brandType,
         uint256 yearField
-    );
-    event HistoryTypeAdded(
-        address indexed member,
-        uint256 indexed hID,
-        string label,
-        bool connectContract,
-        bool imgNeed,
-        bool brand,
-        bool description,
-        bool brandType,
-        bool yearNeed,
-        bool otherInfo,
-        uint256 value
     );
     event HistoryTypeAdded(
         address indexed member,
@@ -432,6 +418,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // Add allow list
     function addAllowList(uint256 _tokenId, address _allowed) external payable {
+        require(ownerOf(_tokenId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         require(msg.value >= allowFee, "Insufficient value.");
         allowedList[_tokenId][_allowed] = true;
         emit AllowListAdded(msg.sender, _tokenId, _allowed);
@@ -439,10 +426,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // Remove allow list
     function removeAllowList(uint256 _tokenId, address _allowed) external {
-        require(
-            ownerOf(_tokenId) == msg.sender,
-            "Only the owner can remove from the allowlist."
-        );
+        require(ownerOf(_tokenId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         allowedList[_tokenId][_allowed] = false;
         emit AllowListRemoved(msg.sender, _tokenId, _allowed);
     }
@@ -534,50 +518,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         );
     }
 
-    // Add History Type
-    function addHistoryType(
-        uint256 _historyIndex,
-        string memory _label,
-        bool _connectContract,
-        bool _imgNeed,
-        bool _brandNeed,
-        bool _descNeed,
-        bool _brandTypeNeed,
-        bool _yearNeed,
-        bool _checkMark,
-        uint256 _value,
-        bool flag
-    ) external onlyMember {
-        historyTypes[_historyIndex] = HistoryType({
-            hLabel: _label,
-            connectContract: _connectContract,
-            imgNeed: _imgNeed,
-            brandNeed: _brandNeed,
-            descNeed: _descNeed,
-            brandTypeNeed: _brandTypeNeed,
-            yearNeed: _yearNeed,
-            checkMark: _checkMark,
-            value: _value
-        });
-        if (flag) hTypeCounter++;
-
-        emit HistoryTypeUpdated(
-            msg.sender,
-            _historyIndex,
-            _label,
-            _connectContract,
-            _imgNeed,
-            _brandNeed,
-            _descNeed,
-            _brandTypeNeed,
-            _yearNeed,
-            _checkMark,
-            _value,
-            hTypeCounter,
-            flag
-        );
-    }
-
     // Remove History Type
     function removeHistoryType(uint256 _hIndex) external onlyMember {
         for (uint i = _hIndex; i < hTypeCounter; i++) {
@@ -590,7 +530,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function changeHousePrice(uint256 houseId, uint256 newPrice) external {
         require(
-            allHouses[houseId].contributor.currentOwner == msg.sender,
+            allHouses[houseId].contributor.currentOwner == msg.sender || operatorAddress == msg.sender,
             'Caller is not owner or house does not exist'
         );
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
