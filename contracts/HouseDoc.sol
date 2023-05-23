@@ -132,40 +132,41 @@ contract HouseDoc {
     }
 
     // Add Contract Signer
-    function addContractSigner(uint256 _ccID, address _contractSigner) public {
-        DocContract storage singleContract = allDocContracts[_ccID];
+    function addContractSigner(uint256 _hdID, address _contractSigner) public {
+        DocContract storage singleContract = allDocContracts[_hdID];
         require(singleContract.owner == msg.sender || operatorAddress == msg.sender, "Only contract owner can add contract signer");
         require(singleContract.owner != _contractSigner, "Owner can't be signer");
         singleContract.contractSigner = _contractSigner;
 
-        emit ContractSignerAdded(msg.sender, _ccID, _contractSigner);
+        emit ContractSignerAdded(msg.sender, _hdID, _contractSigner);
     }
 
     // sign contract
     function signContract(uint256 hdID, address _newSigner) public {
+        address newSigner = msg.sender == operatorAddress ? _newSigner : msg.sender;
         DocContract storage singleContract = allDocContracts[hdID];
         require(
             msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner || msg.sender == operatorAddress,
             "You don't have permission to this contract"
         );
         uint256 flag = 0;
-        if (_newSigner == singleContract.creator) {
+        if (newSigner == singleContract.creator) {
             singleContract.creatorApproval = true;
             if (singleContract.signerApproval == true) {
                 singleContract.status = "signed";
                 singleContract.creatorSignDate = block.timestamp;
                 flag = 1;
 
-                emit ContractSigned(_newSigner, hdID, "signed");
+                emit ContractSigned(newSigner, hdID, "signed");
             }
-        } else if (_newSigner == singleContract.contractSigner) {
+        } else if (newSigner == singleContract.contractSigner) {
             singleContract.signerApproval = true;
             if (singleContract.creatorApproval == true) {
                 singleContract.status = "signed";
                 singleContract.signerSignDate = block.timestamp;
                 flag = 2;
 
-                emit ContractSigned(_newSigner, hdID, "signed");
+                emit ContractSigned(newSigner, hdID, "signed");
             }
         }
         if (flag == 1) {
@@ -182,17 +183,17 @@ contract HouseDoc {
             }
         } else {
             address _notifyReceiver;
-            if (_newSigner == singleContract.creator) {
+            if (newSigner == singleContract.creator) {
                 _notifyReceiver = singleContract.contractSigner;
             } else {
                 _notifyReceiver = singleContract.creator;
             }
 
-            string memory stringAddress = addressToString(_newSigner);
+            string memory stringAddress = addressToString(newSigner);
             string memory notifyMsg = append("New signing request from ", stringAddress);
 
             Notify memory newNotify = Notify({
-                nSender: _newSigner,
+                nSender: newSigner,
                 nReceiver: _notifyReceiver,
                 hdID: hdID,
                 notifySentTime: 0,

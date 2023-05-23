@@ -313,13 +313,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _tokenType,
         uint256 _year
     ) external {
+        address dest = msg.sender == operatorAddress ? _dest : msg.sender;
         uint256 houseID = houseCounter + 1;
 
         // ensure token with id doesn"t already exist
         require(!_exists(houseID), "Token already exists.");
 
         // mint the token
-        _mint(_dest, houseID);
+        _mint(dest, houseID);
         _setTokenURI(houseID, _tokenURI);
 
         allHouses[houseID] = House({
@@ -333,7 +334,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             staked: false,
             soldStatus: false,
             contributor: Contributor({
-                currentOwner: _dest,
+                currentOwner: dest,
                 previousOwner: address(0),
                 buyer: address(0),
                 creator: tx.origin
@@ -368,6 +369,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     // by a token by passing in the token"s id
     function buyHouseNft(uint256 _houseId, address _buyer) public payable {
+        address buyer = msg.sender == operatorAddress ? _buyer : msg.sender;
         House memory house = allHouses[_houseId];
         Contributor memory _contributor = house.contributor;
 
@@ -376,12 +378,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(msg.value >= housePrice, 'Insufficient value.');
         require(house.nftPayable, 'House is not for sale.');
         require(_contributor.currentOwner != address(0), 'House does not exist.');
-        require(_contributor.currentOwner != _buyer, 'You are already the owner of this house.');
+        require(_contributor.currentOwner != buyer, 'You are already the owner of this house.');
 
         if (_contributor.buyer != address(0)) {
-            require(_contributor.buyer == _buyer, 'You are not authorized to buy this house.');
+            require(_contributor.buyer == buyer, 'You are not authorized to buy this house.');
         }
-        _contributor.buyer = _buyer;
+        _contributor.buyer = buyer;
 
         // calculate the payouts
         uint256 creatorCut = (housePrice * royaltyCreator) / 100;
@@ -393,11 +395,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         payable(_contributor.creator).transfer(creatorCut);
 
         // transfer the token to the new owner
-        _transfer(_contributor.currentOwner, _buyer, _houseId);
+        _transfer(_contributor.currentOwner, buyer, _houseId);
 
         // update the house details
         _contributor.previousOwner = _contributor.currentOwner;
-        _contributor.currentOwner = _buyer;
+        _contributor.currentOwner = buyer;
         allHouses[_houseId].nftPayable = false;
         allHouses[_houseId].soldStatus = true;
         allHouses[_houseId].numberOfTransfers++;
@@ -406,7 +408,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         soldedCounter++;
 
         // emit an event
-        emit HouseNftBought(_houseId, _buyer, _contributor.previousOwner, _contributor.creator, housePrice);
+        emit HouseNftBought(_houseId, buyer, _contributor.previousOwner, _contributor.creator, housePrice);
         emit HouseNftBought(
             _houseId,
             msg.sender,
