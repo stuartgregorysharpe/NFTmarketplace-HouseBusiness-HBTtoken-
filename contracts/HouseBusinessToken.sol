@@ -13,15 +13,6 @@ contract HouseBusinessToken is Context, ERC20 {
         _mint(_owner, 10 ** 26);
     }
 
-    modifier onlyOwner() {
-        require(_msgSender() == _owner, 'ERC20: Only owner can run this event');
-        _;
-    }
-
-    function setOperator(address _address, bool _isOperator) public onlyOwner() {
-        operators[_address] = _isOperator;
-    }
-
     function mint(address to, uint256 amount) public virtual {
         _mint(to, amount);
     }

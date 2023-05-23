@@ -12,6 +12,9 @@ contract MainCleanContract {
     // houseNFT contract address
     address public houseNFTAddress;
 
+    // Operator address
+    address public operatorAddress;
+
     // define contract struct
     struct CleanContract {
         uint256 contractId;
@@ -46,8 +49,6 @@ contract MainCleanContract {
     mapping(uint256 => CleanContract) allCleanContracts;
     // notifications
     mapping(address => Notify[]) allNotifies;
-    // the operators for external calls
-    mapping(address => bool) public operators;
 
     event CleanContractCreated(
         uint256 indexed ccID,
@@ -70,7 +71,6 @@ contract MainCleanContract {
     constructor(address addr) {
         houseNFTAddress = addr;
         _owner = msg.sender;
-        operators[msg.sender] = true;
     }
 
     modifier onlyOwner() {
@@ -78,13 +78,8 @@ contract MainCleanContract {
         _;
     }
 
-    modifier OnlyOperator() {
-        require(operators[msg.sender], 'Only moderators can call this function.');
-        _;
-    }
-
-    function setOperator(address _address, bool _isOperator) public onlyOwner {
-        operators[_address] = _isOperator;
+    function setOperatorAddress(address _address) public onlyOwner {
+        operatorAddress = _address;
     }
 
     // write Contract
@@ -98,10 +93,10 @@ contract MainCleanContract {
         uint256 _agreedPrice,
         string memory _currency,
         address _user
-    ) public OnlyOperator {
+    ) public {
         require(_dateFrom < _dateTo, 'Start date must be before end date');
         require(_agreedPrice > 0, 'Agreed price must be greater than 0');
-        require(_user != _contractSigner, "Owner can't be signer");
+        require(_user != _contractSigner && msg.sender != _contractSigner, "Owner can't be signer");
 
         ccCounter++;
 
@@ -137,20 +132,20 @@ contract MainCleanContract {
     }
 
     // Add Contract Signer
-    function addContractSigner(uint256 _ccID, address _contractSigner, address _owner) public OnlyOperator {
+    function addContractSigner(uint256 _ccID, address _contractSigner) public {
         CleanContract storage singleContract = allCleanContracts[_ccID];
-        require(singleContract.owner == _owner, 'Only contract owner can add contract signer');
+        require(singleContract.owner == msg.sender || operatorAddress == msg.sender, 'Only contract owner can add contract signer');
         require(singleContract.owner != _contractSigner, "Owner can't be signer");
         singleContract.contractSigner = _contractSigner;
 
-        emit ContractSignerAdded(_owner, _ccID, _contractSigner);
+        emit ContractSignerAdded(singleContract.owner, _ccID, _contractSigner);
     }
 
     // sign contract
-    function signContract(uint256 ccID, address _newSigner) public OnlyOperator {
+    function signContract(uint256 ccID, address _newSigner) public {
         CleanContract storage singleContract = allCleanContracts[ccID];
         require(
-            _newSigner == singleContract.creator || _newSigner == singleContract.contractSigner,
+            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner || msg.sender == operatorAddress,
             "You don't have permission to this contract"
         );
         uint256 flag = 0;
@@ -214,7 +209,7 @@ contract MainCleanContract {
         string memory _notifyContent,
         uint256 ccID,
         address _notifier
-    ) external OnlyOperator {
+    ) external {
         CleanContract storage cContract = allCleanContracts[ccID];
         require(cContract.contractSigner != address(0), 'Please add contract signer.');
         Notify[] storage notifies = allNotifies[cContract.contractSigner];
