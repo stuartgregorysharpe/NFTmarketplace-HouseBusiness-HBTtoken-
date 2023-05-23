@@ -159,13 +159,6 @@ async function main() {
   tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
-  await tx.wait();
-
-  tx = await Operator.connect(deployer).authorizeContracts([
-    House.address, HouseNFT.address, HouseDoc.address, StakingContract.address
-  ]);
-  await tx.wait();
   for (var i = 0; i < defaultHistoryType.length; i++) {
     tx = await HouseNFT.connect(deployer).addOrEditHistoryType(
       i,

@@ -93,22 +93,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string tokenType,
         uint256 year
     );
-    event PayableSet(
-        address indexed owner,
-        uint256 indexed tokenId,
-        address buyer,
-        bool nftPayable
-    );
-    event AllowListAdded(
-        address indexed currentOwner,
-        uint256 indexed tokenId,
-        address allowed
-    );
-    event AllowListRemoved(
-        address indexed currentOwner,
-        uint256 indexed tokenId,
-        address allowed
-    );
     event HistoryTypeRemoved(
         address indexed member,
         uint256 indexed hIndex,
@@ -119,11 +103,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         address indexed owner,
         uint256 price
     );
-    event TokenWithdrawn(address indexed sender, uint256 amount);
-    event EthWithdrawn(address indexed sender, uint256 amount);
-    event HouseStakedStatusSet(uint256 indexed tokenId, bool status);
-    event RoyaltyCreatorSet(address indexed member, uint256 royalty);
-    event RoyaltyMarketSet(address indexed member, uint256 royalty);
     event HistoryAdded(
         address indexed owner,
         uint256 indexed tokenId,
@@ -214,8 +193,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     function setHouseStakedStatus(uint256 _tokenId, bool _status) external {
         require(msg.sender == stakingContractAddress, 'Unauthorized: not a Staking contract');
         allHouses[_tokenId].staked = _status;
-
-        emit HouseStakedStatusSet(_tokenId, _status);
     }
 
     function setMinMaxHousePrice(uint256 _min, uint256 _max)
@@ -256,20 +233,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         if (allHouses[_tokenId].contributor.buyer != _buyer)
             allHouses[_tokenId].contributor.buyer = _buyer;
         allHouses[_tokenId].nftPayable = _nftPayable;
-
-        emit PayableSet(msg.sender, _tokenId, _buyer, _nftPayable);
     }
 
     function setRoyaltyCreator(uint256 _royalty) external onlyMember {
         royaltyCreator = _royalty;
-
-        emit RoyaltyCreatorSet(msg.sender, _royalty);
     }
 
     function setRoyaltyMarket(uint256 _royalty) external onlyMember {
         royaltyMarket = _royalty;
-
-        emit RoyaltyMarketSet(msg.sender, _royalty);
     }
 
     /**
@@ -287,15 +258,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // withdraw token
     function withdrawToken(uint256 _amount) external payable onlyMember {
         _token.transfer(msg.sender, _amount);
-
-        emit TokenWithdrawn(msg.sender, _amount);
     }
 
     // withdraw ETH
     function withdrawETH(uint256 _amount) external payable onlyMember {
         payable(msg.sender).transfer(_amount);
-
-        emit EthWithdrawn(msg.sender, _amount);
     }
 
     function addMember(address _newMember) external onlyMember {
@@ -423,14 +390,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(ownerOf(_tokenId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         require(msg.value >= allowFee, "Insufficient value.");
         allowedList[_tokenId][_allowed] = true;
-        emit AllowListAdded(msg.sender, _tokenId, _allowed);
     }
 
     // Remove allow list
     function removeAllowList(uint256 _tokenId, address _allowed) external {
         require(ownerOf(_tokenId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         allowedList[_tokenId][_allowed] = false;
-        emit AllowListRemoved(msg.sender, _tokenId, _allowed);
     }
 
     // Add history of house
@@ -518,6 +483,62 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             _brandType,
             _yearField
         );
+    }
+
+    function addOrEditHistoryType(
+        uint256 _historyIndex,
+        string memory _label,
+        bool _connectContract,
+        bool _image,
+        bool _brand,
+        bool _description,
+        bool _brandType,
+        bool _year,
+        bool _otherInfo,
+        uint256 _value,
+        bool flag
+    ) external onlyMember {
+        historyTypes[_historyIndex] = HistoryType({
+            hLabel: _label,
+            connectContract: _connectContract,
+            imgNeed: _image,
+            brandNeed: _brand,
+            descNeed: _description,
+            brandTypeNeed: _brandType,
+            yearNeed: _year,
+            otherInfo: _otherInfo,
+            value: _value
+        });
+        if (flag) {
+            hTypeCounter++;
+            emit HistoryTypeAdded(
+                msg.sender,
+                _historyIndex,
+                _label,
+                _connectContract,
+                _image,
+                _brand,
+                _description,
+                _brandType,
+                _year,
+                _otherInfo,
+                _value
+            );
+        } else {
+            emit HistoryTypeUpdated(
+                msg.sender,
+                _historyIndex,
+                _label,
+                _connectContract,
+                _image,
+                _brand,
+                _description,
+                _brandType,
+                _year,
+                _otherInfo,
+                _value
+            );
+        }
     }
 
     // Remove History Type
