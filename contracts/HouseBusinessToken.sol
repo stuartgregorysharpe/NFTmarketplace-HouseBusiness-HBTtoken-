@@ -7,11 +7,9 @@ pragma solidity ^0.8.0;
 
 contract HouseBusinessToken is Context, ERC20 {
     address private _owner;
-    mapping(address => bool) public operators;
 
     constructor() ERC20('House Business Token', 'HBT') {
         _owner = msg.sender;
-        operators[msg.sender] = true;
         _mint(_owner, 10 ** 26);
     }
 
@@ -20,16 +18,11 @@ contract HouseBusinessToken is Context, ERC20 {
         _;
     }
 
-    modifier OnlyOperator() {
-        require(operators[msg.sender], 'Only moderators can call this function.');
-        _;
-    }
-
     function setOperator(address _address, bool _isOperator) public onlyOwner() {
         operators[_address] = _isOperator;
     }
 
-    function mint(address to, uint256 amount) public virtual OnlyOperator {
+    function mint(address to, uint256 amount) public virtual {
         _mint(to, amount);
     }
 

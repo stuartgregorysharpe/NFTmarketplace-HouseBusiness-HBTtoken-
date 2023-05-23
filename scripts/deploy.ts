@@ -65,9 +65,6 @@ async function main() {
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await House.connect(deployer).setOperatorAddress(Operator.address);
-  await tx.wait();
-
   tx = await CContract.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
