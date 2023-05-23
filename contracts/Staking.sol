@@ -6,6 +6,7 @@ import './interfaces/IHouseBusiness.sol';
 pragma solidity ^0.8.7;
 
 contract HouseStaking {
+    address private _owner;
     // total number of staked nft
     uint256 public stakedCounter;
     // token panalty
@@ -40,6 +41,7 @@ contract HouseStaking {
     event PenaltySet(address indexed updatedBy, uint256 newPenalty, uint256 timestamp);
 
     constructor(address _houseNFTAddress, address _tokenAddress) {
+        _owner = msg.sender;
         APYtypes.push(1);
         APYConfig[1] = 6;
         APYtypes.push(6);
@@ -83,7 +85,7 @@ contract HouseStaking {
                 true
             )
         );
-        
+
         houseBusiness.setHouseStakedStatus(_houseID, true);
         stakedCounter++;
 
@@ -120,13 +122,13 @@ contract HouseStaking {
         emit NFTUnstaked(_owner, _houseID, unstakingNft.startedDate);
     }
 
-    function updateAPYConfig(uint _type, uint APY, address _owner) external {
-        require(IHouseBusiness(houseNFTAddress).member(_owner), 'member');
+    function updateAPYConfig(uint _type, uint APY) external {
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         for (uint i = 0; i < APYtypes.length; i++) {
             if (APYtypes[i] == _type) {
                 APYConfig[_type] = APY;
 
-                emit APYConfigUpdated(_type, APY, _owner, block.timestamp);
+                emit APYConfigUpdated(_type, APY, msg.sender, block.timestamp);
             }
         }
     }
@@ -161,11 +163,11 @@ contract HouseStaking {
         }
     }
 
-    function setPenalty(uint256 _penalty, address _user) external {
-        require(IHouseBusiness(houseNFTAddress).member(_user), 'member');
+    function setPenalty(uint256 _penalty) external {
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         penalty = _penalty;
 
-        emit PenaltySet(_user, _penalty, block.timestamp);
+        emit PenaltySet(msg.sender, _penalty, block.timestamp);
     }
 
     function calcDiv(uint256 a, uint256 b) public pure returns (uint256) {

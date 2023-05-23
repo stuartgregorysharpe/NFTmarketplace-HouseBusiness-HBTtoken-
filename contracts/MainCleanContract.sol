@@ -4,11 +4,16 @@ pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 contract MainCleanContract {
+    address private _owner;
+
     // total number of contract
     uint256 public ccCounter;
 
     // houseNFT contract address
     address public houseNFTAddress;
+
+    // Operator address
+    address public operatorAddress;
 
     // define contract struct
     struct CleanContract {
@@ -65,6 +70,16 @@ contract MainCleanContract {
 
     constructor(address addr) {
         houseNFTAddress = addr;
+        _owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, 'ERC20: Only owner can run this event');
+        _;
+    }
+
+    function setOperatorAddress(address _address) public onlyOwner {
+        operatorAddress = _address;
     }
 
     // write Contract
@@ -76,17 +91,18 @@ contract MainCleanContract {
         uint256 _dateFrom,
         uint256 _dateTo,
         uint256 _agreedPrice,
-        string memory _currency
+        string memory _currency,
+        address _user
     ) public {
-        require(_dateFrom < _dateTo, "Start date must be before end date");
-        require(_agreedPrice > 0, "Agreed price must be greater than 0");
-        require(msg.sender != _contractSigner, "Owner can't be signer");
+        require(_dateFrom < _dateTo, 'Start date must be before end date');
+        require(_agreedPrice > 0, 'Agreed price must be greater than 0');
+        require(_user != _contractSigner && msg.sender != _contractSigner, "Owner can't be signer");
 
         ccCounter++;
 
         allCleanContracts[ccCounter].contractId = ccCounter;
-        allCleanContracts[ccCounter].owner = msg.sender;
-        allCleanContracts[ccCounter].creator = msg.sender;
+        allCleanContracts[ccCounter].owner = _user;
+        allCleanContracts[ccCounter].creator = _user;
         allCleanContracts[ccCounter].contractURI = _contractURI;
         allCleanContracts[ccCounter].companyName = _companyName;
         allCleanContracts[ccCounter].contractType = _contractType;
@@ -94,15 +110,15 @@ contract MainCleanContract {
         allCleanContracts[ccCounter].dateTo = _dateTo;
         allCleanContracts[ccCounter].agreedPrice = _agreedPrice;
         allCleanContracts[ccCounter].currency = _currency;
-        allCleanContracts[ccCounter].status = "pending";
+        allCleanContracts[ccCounter].status = 'pending';
         allCleanContracts[ccCounter].contractSigner = _contractSigner;
         allCleanContracts[ccCounter].creatorApproval = false;
         allCleanContracts[ccCounter].signerApproval = false;
 
         emit CleanContractCreated(
             ccCounter,
-            msg.sender,
-            msg.sender,
+            _user,
+            _user,
             _companyName,
             _contractType,
             _contractSigner,
@@ -111,45 +127,45 @@ contract MainCleanContract {
             _dateTo,
             _agreedPrice,
             _currency,
-            "pendig"
+            'pendig'
         );
     }
 
     // Add Contract Signer
     function addContractSigner(uint256 _ccID, address _contractSigner) public {
         CleanContract storage singleContract = allCleanContracts[_ccID];
-        require(singleContract.owner == msg.sender, "Only contract owner can add contract signer");
+        require(singleContract.owner == msg.sender || operatorAddress == msg.sender, 'Only contract owner can add contract signer');
         require(singleContract.owner != _contractSigner, "Owner can't be signer");
         singleContract.contractSigner = _contractSigner;
 
-        emit ContractSignerAdded(msg.sender, _ccID, _contractSigner);
+        emit ContractSignerAdded(singleContract.owner, _ccID, _contractSigner);
     }
 
     // sign contract
-    function signContract(uint256 ccID) public {
+    function signContract(uint256 ccID, address _newSigner) public {
         CleanContract storage singleContract = allCleanContracts[ccID];
         require(
-            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner,
+            msg.sender == singleContract.creator || msg.sender == singleContract.contractSigner || msg.sender == operatorAddress,
             "You don't have permission to this contract"
         );
         uint256 flag = 0;
-        if (msg.sender == singleContract.creator) {
+        if (_newSigner == singleContract.creator) {
             singleContract.creatorApproval = true;
             if (singleContract.signerApproval == true) {
-                singleContract.status = "signed";
+                singleContract.status = 'signed';
                 singleContract.creatorSignDate = block.timestamp;
                 flag = 1;
 
-                emit ContractSigned(msg.sender, ccID, "signed");
+                emit ContractSigned(_newSigner, ccID, 'signed');
             }
-        } else if (msg.sender == singleContract.contractSigner) {
+        } else if (_newSigner == singleContract.contractSigner) {
             singleContract.signerApproval = true;
             if (singleContract.creatorApproval == true) {
-                singleContract.status = "signed";
+                singleContract.status = 'signed';
                 singleContract.signerSignDate = block.timestamp;
                 flag = 2;
 
-                emit ContractSigned(msg.sender, ccID, "signed");
+                emit ContractSigned(_newSigner, ccID, 'signed');
             }
         }
         if (flag == 1) {
@@ -166,17 +182,17 @@ contract MainCleanContract {
             }
         } else {
             address _notifyReceiver;
-            if (msg.sender == singleContract.creator) {
+            if (_newSigner == singleContract.creator) {
                 _notifyReceiver = singleContract.contractSigner;
             } else {
                 _notifyReceiver = singleContract.creator;
             }
 
-            string memory stringAddress = addressToString(msg.sender);
-            string memory notifyMsg = append("New signing request from ", stringAddress);
+            string memory stringAddress = addressToString(_newSigner);
+            string memory notifyMsg = append('New signing request from ', stringAddress);
 
             Notify memory newNotify = Notify({
-                nSender: msg.sender,
+                nSender: _newSigner,
                 nReceiver: _notifyReceiver,
                 ccID: ccID,
                 notifySentTime: 0,
@@ -188,18 +204,23 @@ contract MainCleanContract {
     }
 
     // send sign notification
-    function sendNotify(address _notifyReceiver, string memory _notifyContent, uint256 ccID) external {
+    function sendNotify(
+        address _notifyReceiver,
+        string memory _notifyContent,
+        uint256 ccID,
+        address _notifier
+    ) external {
         CleanContract storage cContract = allCleanContracts[ccID];
-        require(cContract.contractSigner != address(0), "Please add contract signer.");
+        require(cContract.contractSigner != address(0), 'Please add contract signer.');
         Notify[] storage notifies = allNotifies[cContract.contractSigner];
         if (notifies.length >= 5) {
             require(
                 notifies[notifies.length - 1].notifySentTime + 24 * 3600 <= block.timestamp,
-                "You can send notify once per day."
+                'You can send notify once per day.'
             );
         }
         Notify memory newNotify = Notify({
-            nSender: msg.sender,
+            nSender: _notifier,
             nReceiver: _notifyReceiver,
             ccID: ccID,
             notifySentTime: block.timestamp,
@@ -208,7 +229,7 @@ contract MainCleanContract {
         });
         allNotifies[_notifyReceiver].push(newNotify);
 
-        emit NotifySent(msg.sender, _notifyReceiver, ccID, block.timestamp, _notifyContent);
+        emit NotifySent(_notifier, _notifyReceiver, ccID, block.timestamp, _notifyContent);
     }
 
     function getAllCleanContracts() external view returns (CleanContract[] memory) {
@@ -229,18 +250,18 @@ contract MainCleanContract {
      *
      * NOTE only houseNFT contract can call
      */
-    function getContractById(uint256 contractId) external view returns (address _owner) {
-        require(msg.sender == houseNFTAddress, "only NFT");
-        return _owner = allCleanContracts[contractId].owner;
+    function getContractById(uint256 contractId) external view returns (address _contractOwner) {
+        require(msg.sender == houseNFTAddress, 'only NFT');
+        return allCleanContracts[contractId].owner;
     }
 
     // declare this function for use in the following 3 functions
     function toString(bytes memory data) internal pure returns (string memory) {
-        bytes memory alphabet = "0123456789abcdef";
+        bytes memory alphabet = '0123456789abcdef';
 
         bytes memory str = new bytes(2 + data.length * 2);
-        str[0] = "0";
-        str[1] = "x";
+        str[0] = '0';
+        str[1] = 'x';
         for (uint256 i = 0; i < data.length; i++) {
             str[2 + i * 2] = alphabet[uint256(uint8(data[i] >> 4))];
             str[3 + i * 2] = alphabet[uint256(uint8(data[i] & 0x0f))];
@@ -261,10 +282,10 @@ contract MainCleanContract {
      * @dev modifies ownership of `contractId` from `from` to `to`
      */
     function transferContractOwnership(uint256 contractId, address from, address to) external {
-        require(msg.sender == houseNFTAddress, "Only house contract");
+        require(msg.sender == houseNFTAddress, 'Only house contract');
 
         CleanContract storage singleContract = allCleanContracts[contractId];
-        require(singleContract.owner == from, "Only owner can call this function");
+        require(singleContract.owner == from, 'Only owner can call this function');
         singleContract.owner = to;
     }
 }

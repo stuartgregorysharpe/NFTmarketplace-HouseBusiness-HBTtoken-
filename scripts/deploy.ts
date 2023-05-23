@@ -18,7 +18,7 @@ async function main() {
   console.log('Starting deployments');
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
-  const tokenAddress = '0x7E687b50cBB1D58be37Cae9a8D2aa920973d97d7';
+  const tokenAddress = '0xa8C19667794191A730B3983eB3a8087CfF2b788e';
   const houseBusiness = '0xEFfdCe06C3cC709f46cbaC457a335aa62AA4dA0F';
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
@@ -48,19 +48,32 @@ async function main() {
   await ThirdPartyContract.deployed();
   console.log('This is the third party address; ', ThirdPartyContract.address);
 
+  const operatorFactory = await ethers.getContractFactory('Operator');
+  const Operator = (await operatorFactory.deploy(House.address)) as Operator;
+  await Operator.deployed();
+  console.log('This is the Operator address: ', Operator.address);
+
   let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
   await tx.wait();
 
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
+  tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
+  await tx.wait();
+
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await House.connect(deployer).assignOperator(Operator.address);  
+  tx = await CContract.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  tx = await Operator.connect(deployer).authorizeContracts([House.address, HouseNFT.address, CContract.address]);
+  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
+  await tx.wait();
+
+  tx = await Operator.connect(deployer).authorizeContracts([
+    House.address, HouseNFT.address, CContract.address, StakingContract.address
+  ]);
   await tx.wait();
 
   if (fs.existsSync(addressFile)) {
@@ -85,6 +98,7 @@ async function main() {
   await verify(HouseNFT.address, [House.address]);
   await verify(CContract.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }
