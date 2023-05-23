@@ -59,22 +59,24 @@ async function main() {
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
-  tx = await HouseNFT.connect(deployer).setOperator(Operator.address, true);
+  tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await House.connect(deployer).setOperator(Operator.address, true);
+  tx = await House.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  tx = await CContract.connect(deployer).setOperator(Operator.address, true);
+  tx = await CContract.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  tx = await StakingContract.connect(deployer).setOperator(Operator.address, true);
+  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  tx = await Operator.connect(deployer).authorizeContracts([House.address, HouseNFT.address, CContract.address]);
+  tx = await Operator.connect(deployer).authorizeContracts([
+    House.address, HouseNFT.address, CContract.address, StakingContract.address
+  ]);
   await tx.wait();
 
   if (fs.existsSync(addressFile)) {
