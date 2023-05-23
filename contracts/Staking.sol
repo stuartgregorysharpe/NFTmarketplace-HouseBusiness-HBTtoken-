@@ -17,7 +17,6 @@ contract HouseStaking {
     // APY
     mapping(uint256 => uint256) APYConfig;
     mapping(address => StakedNft[]) stakedNfts;
-    mapping(address => bool) public operators;
 
     address tokenAddress;
     address houseNFTAddress;
@@ -43,7 +42,6 @@ contract HouseStaking {
 
     constructor(address _houseNFTAddress, address _tokenAddress) {
         _owner = msg.sender;
-        operators[msg.sender] = true;
         APYtypes.push(1);
         APYConfig[1] = 6;
         APYtypes.push(6);
@@ -56,20 +54,6 @@ contract HouseStaking {
         houseNFTAddress = _houseNFTAddress;
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == _owner, 'ERC20: Only owner can run this event');
-        _;
-    }
-
-    modifier OnlyOperator() {
-        require(operators[msg.sender], 'Only moderators can call this function.');
-        _;
-    }
-
-    function setOperator(address _address, bool _isOperator) public onlyOwner {
-        operators[_address] = _isOperator;
-    }
-
     function setAPYConfig(uint256 _type, uint256 Apy) external {
         APYConfig[_type] = Apy;
         APYtypes.push(_type);
@@ -78,7 +62,7 @@ contract HouseStaking {
     }
 
     // stake House Nft
-    function stake(uint256 _houseID, uint256 _stakingType, address _owner) external OnlyOperator {
+    function stake(uint256 _houseID, uint256 _stakingType, address _owner) external {
         IERC721 houseNFT = IERC721(houseNFTAddress);
         IHouseBusiness houseBusiness = IHouseBusiness(houseNFTAddress);
 
@@ -109,7 +93,7 @@ contract HouseStaking {
     }
 
     // Unstake House Nft
-    function unstake(uint256 _houseID, address _owner) external OnlyOperator {
+    function unstake(uint256 _houseID, address _owner) external {
         require(_houseID > 0, 'Invalid Token ID');
         StakedNft memory unstakingNft;
         uint256 counter;
@@ -179,11 +163,11 @@ contract HouseStaking {
         }
     }
 
-    function setPenalty(uint256 _penalty, address _user) external OnlyOperator {
-        require(IHouseBusiness(houseNFTAddress).member(_user), 'member');
+    function setPenalty(uint256 _penalty) external {
+        require(IHouseBusiness(houseNFTAddress).member(msg.sender), 'member');
         penalty = _penalty;
 
-        emit PenaltySet(_user, _penalty, block.timestamp);
+        emit PenaltySet(msg.sender, _penalty, block.timestamp);
     }
 
     function calcDiv(uint256 a, uint256 b) public pure returns (uint256) {

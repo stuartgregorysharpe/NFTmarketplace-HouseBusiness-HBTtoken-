@@ -250,9 +250,9 @@ contract MainCleanContract {
      *
      * NOTE only houseNFT contract can call
      */
-    function getContractById(uint256 contractId) external view returns (address _owner) {
+    function getContractById(uint256 contractId) external view returns (address _contractOwner) {
         require(msg.sender == houseNFTAddress, 'only NFT');
-        return _owner = allCleanContracts[contractId].owner;
+        return allCleanContracts[contractId].owner;
     }
 
     // declare this function for use in the following 3 functions
