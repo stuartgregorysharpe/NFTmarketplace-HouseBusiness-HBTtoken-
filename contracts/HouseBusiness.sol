@@ -726,7 +726,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function approveDelegator(address to, uint256 tokenId) public {
         address owner = ownerOf(tokenId);
-        require(to == owner);
+        require(msg.sender == owner || msg.sender == operatorAddress, 'Unauthorized');
         _approve(to, tokenId);
     }
 
