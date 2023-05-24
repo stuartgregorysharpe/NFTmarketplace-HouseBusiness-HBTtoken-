@@ -1,3 +1,3 @@
 This file contains the latest test deployment addresses in the Goerli network<br/>ERC-20: [https://mumbai.polygonscan.com/address/0xa8C19667794191A730B3983eB3a8087CfF2b788e](https://mumbai.polygonscan.io/address/0xa8C19667794191A730B3983eB3a8087CfF2b788e)
-HouseNFT: [https://mumbai.polygonscan.com/address/0x6E264c287d789CC5c8CF569b88900ba746207935](https://mumbai.polygonscan.io/address/0x6E264c287d789CC5c8CF569b88900ba746207935)
-HouseDocu: [https://mumbai.polygonscan.com/address/0x99B5930f6DD34Aa4A136dcD43319Ff6bc735791d](https://mumbai.polygonscan.io/address/0x99B5930f6DD34Aa4A136dcD43319Ff6bc735791d)
+HouseNFT: [https://mumbai.polygonscan.com/address/0x842a8D42Fd8Bd315207B23d8Dcba24731CA6b728](https://mumbai.polygonscan.io/address/0x842a8D42Fd8Bd315207B23d8Dcba24731CA6b728)
+HouseDocu: [https://mumbai.polygonscan.com/address/0x1D40898258F66Bd68ba4d4787CB356425fDC73De](https://mumbai.polygonscan.io/address/0x1D40898258F66Bd68ba4d4787CB356425fDC73De)
