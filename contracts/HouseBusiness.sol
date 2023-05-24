@@ -603,11 +603,14 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HistoryTypeRemoved(msg.sender, _hIndex, hTypeCounter, block.timestamp);
     }
 
-    function changeHousePrice(uint256 houseId, uint256 newPrice, address _tokenOwner) external {
-        require(allHouses[houseId].contributor.currentOwner == msg.sender || operatorAddress == msg.sender, 'Not-exist token');
-        require(newPrice >= minPrice && newPrice <= maxPrice, 'Invalid price range');
-
+    function changeHousePrice(uint256 houseId, uint256 newPrice) external {
         allHouses[houseId].price = newPrice;
+
+        require(
+            (allHouses[houseId].contributor.currentOwner == msg.sender) || (operatorAddress == msg.sender),
+            'Unauthorized'
+        );
+        require(newPrice >= minPrice && newPrice <= maxPrice, 'Invalid price range');
 
         emit HousePriceChanged(houseId, allHouses[houseId].contributor.currentOwner, newPrice);
     }

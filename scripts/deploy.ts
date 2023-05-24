@@ -22,9 +22,9 @@ async function main() {
   const houseBusiness = '0xEFfdCe06C3cC709f46cbaC457a335aa62AA4dA0F';
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
-  // const House = (await tokenFactory.deploy()) as HouseBusinessToken;
-  // await House.deployed();
-  const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
+  const House = (await tokenFactory.deploy()) as HouseBusinessToken;
+  await House.deployed();
+  // const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
   console.log('This is the token address: ', House.address);
 
   const HouseNFTFactory = await ethers.getContractFactory('HouseBusiness');
@@ -59,17 +59,17 @@ async function main() {
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
-  tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
+  tx = await HouseNFT.connect(deployer).setOperatorAddress(deployer.address);
   await tx.wait();
 
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await CContract.connect(deployer).setOperatorAddress(Operator.address);
+  tx = await CContract.connect(deployer).setOperatorAddress(deployer.address);
   await tx.wait();
 
-  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
-  await tx.wait();
+  // tx = await StakingContract.connect(deployer).setOperatorAddress(deployer.address);
+  // await tx.wait();
 
   tx = await Operator.connect(deployer).authorizeContracts([
     House.address, HouseNFT.address, CContract.address, StakingContract.address
