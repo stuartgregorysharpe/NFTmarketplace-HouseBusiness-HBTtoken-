@@ -52,6 +52,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string otherInfo;
         string brandType;
         uint256 yearField;
+        bool flag;
     }
     struct HistoryType {
         string hLabel;
@@ -93,16 +94,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string tokenType,
         uint256 year
     );
-    event HistoryTypeRemoved(
-        address indexed member,
-        uint256 indexed hIndex,
-        uint256 hTypeCounter
-    );
-    event HousePriceChanged(
-        uint256 indexed tokenId,
-        address indexed owner,
-        uint256 price
-    );
     event HistoryAdded(
         address indexed owner,
         uint256 indexed tokenId,
@@ -124,38 +115,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string desc,
         string brandType,
         uint256 yearField
-    );
-    event HistoryTypeAdded(
-        address indexed member,
-        uint256 indexed hID,
-        string label,
-        bool connectContract,
-        bool imgNeed,
-        bool brand,
-        bool description,
-        bool brandType,
-        bool yearNeed,
-        bool otherInfo,
-        uint256 value
-    );
-    event HistoryTypeUpdated(
-        address indexed member,
-        uint256 indexed hID,
-        string label,
-        bool connectContract,
-        bool imgNeed,
-        bool brand,
-        bool description,
-        bool brandType,
-        bool yearNeed,
-        bool otherInfo,
-        uint256 value
-    );
-    event ContractDisconnected(
-        address indexed owner,
-        uint256 indexed tokenId,
-        uint256 indexed hIndex,
-        uint256 contractId
     );
     event HouseNftBought(
         uint256 indexed tokenId,
@@ -251,8 +210,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         History storage history = houseHistories[_tokenId][_hIndex];
         require(history.contractId == _contractId, "id");
         history.contractId = 0;
-
-        emit ContractDisconnected(msg.sender, _tokenId, _hIndex, _contractId);
     }
 
     // withdraw token
@@ -278,7 +235,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _name,
         string memory _tokenURI,
         string memory _tokenType,
-        uint256 _year
+        uint256 _year,
+        bool _flag
     ) external {
         address dest = msg.sender == operatorAddress ? _dest : msg.sender;
         uint256 houseID = houseCounter + 1;
@@ -320,7 +278,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 desc: "",
                 otherInfo: "",
                 brandType: _tokenType,
-                yearField: _year
+                yearField: _year,
+                flag: _flag
             })
         );
         houseCounter++;
@@ -408,7 +367,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _otherInfo,
         string memory _desc,
         string memory _brandType,
-        uint256 _yearField
+        uint256 _yearField,
+        bool _flag
     ) external {
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         if (_contractId != 0) {
@@ -432,7 +392,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 desc: _desc,
                 otherInfo: _otherInfo,
                 brandType: _brandType,
-                yearField: _yearField
+                yearField: _yearField,
+                flag: _flag
             })
         );
 
@@ -459,7 +420,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string memory _otherInfo,
         string memory _desc,
         string memory _brandType,
-        uint256 _yearField
+        uint256 _yearField,
+        bool _flag
     ) external {
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         History storage _houseHistory = houseHistories[_houseId][_historyIndex];
@@ -470,6 +432,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _houseHistory.desc = _desc;
         _houseHistory.brandType = _brandType;
         _houseHistory.yearField = _yearField;
+        _houseHistory.flag = _flag;
 
         // transfer the token from owner to the caller of the function (buyer)
         emit HistoryEdited(
@@ -511,34 +474,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         });
         if (flag) {
             hTypeCounter++;
-            emit HistoryTypeAdded(
-                msg.sender,
-                _historyIndex,
-                _label,
-                _connectContract,
-                _image,
-                _brand,
-                _description,
-                _brandType,
-                _year,
-                _otherInfo,
-                _value
-            );
-        } else {
-            emit HistoryTypeUpdated(
-                msg.sender,
-                _historyIndex,
-                _label,
-                _connectContract,
-                _image,
-                _brand,
-                _description,
-                _brandType,
-                _year,
-                _otherInfo,
-                _value
-            );
-        }
+        } 
     }
 
     // Remove History Type
@@ -547,8 +483,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             historyTypes[i] = historyTypes[i + 1];
         }
         hTypeCounter--;
-
-        emit HistoryTypeRemoved(msg.sender, _hIndex, hTypeCounter);
     }
 
     function changeHousePrice(uint256 houseId, uint256 newPrice) external {
@@ -559,8 +493,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(newPrice >= minPrice && newPrice <= maxPrice, 'Price must be within the limits');
 
         allHouses[houseId].price = newPrice;
-
-        emit HousePriceChanged(houseId, msg.sender, newPrice);
     }
 
     function _burn(uint256 _houseId) internal override(ERC721, ERC721URIStorage) {
@@ -678,7 +610,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 (bytes(temp[i].houseBrand).length > 0? labelPercent.brand: 0) +
                 (bytes(temp[i].desc).length > 0 ? labelPercent.desc : 0) +
                 (bytes(temp[i].brandType).length > 0 ? labelPercent.brandType : 0) +
-                (temp[i].yearField > 0 ? labelPercent.year : 0) +
+                (temp[i].yearField != 1 ? labelPercent.year : 0) +
                 (bytes(temp[i].otherInfo).length > 0 ? labelPercent.otherInfo : 0);
             price += (historyTypes[temp[i].historyTypeId].value * percent) / 100;
         }
