@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/utils/Context.sol';
-
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 pragma solidity ^0.8.0;
 
 contract HouseBusinessToken is Context, ERC20 {
+    
     address private _owner;
 
-    constructor() ERC20('House Business Token', 'HBT') {
+    constructor() ERC20("House Business Token", "HBT") {
         _owner = msg.sender;
         _mint(_owner, 10 ** 26);
     }

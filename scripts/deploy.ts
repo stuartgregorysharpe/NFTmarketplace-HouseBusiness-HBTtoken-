@@ -2,7 +2,6 @@ import hre, { ethers, network } from 'hardhat';
 import fs from 'fs';
 
 import { verify, writeAddr } from './util';
-// import { HouseBusiness, HouseBusinessToken, HouseStaking, MainCleanContract, ThirdParty } from '../typechain/pulse';
 
 const addressFile = './contract_addresses/address.md';
 
@@ -10,12 +9,103 @@ const isTestNetwork = (name: string): name is 'goerli' | 'mumbai' => {
   return name === 'goerli' || name === 'mumbai';
 }
 
+const defaultHistoryType = [
+  {
+    hLabel: 'Construction',
+    connectContract: false,
+    image: false,
+    brand: false,
+    description: false,
+    brandType: true,
+    year: true,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Floorplan',
+    connectContract: true,
+    image: true,
+    brand: false,
+    description: true,
+    brandType: false,
+    year: true,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Pictures',
+    connectContract: true,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: false,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Blueprint',
+    connectContract: true,
+    image: true,
+    brand: true,
+    description: false,
+    brandType: true,
+    year: true,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Solarpanels',
+    connectContract: true,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Airconditioning',
+    connectContract: false,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
+    value: 0
+  }, {
+    hLabel: 'Sonneboiler',
+    connectContract: true,
+    image: true,
+    brand: true,
+    description: true,
+    brandType: false,
+    year: true,
+    otherInfo: false,
+    value: 0
+  },
+  {
+    hLabel: 'Housepainter',
+    connectContract: true,
+    image: true,
+    brand: false,
+    description: true,
+    brandType: true,
+    year: true,
+    otherInfo: false,
+    value: 0
+  }
+]
+
 async function main() {
   if (!isTestNetwork(network.name)) {
     console.log('main net')
     return;
   }
   console.log('Starting deployments');
+ 
   const accounts = await hre.ethers.getSigners();
   const deployer = accounts[0];
   const tokenAddress = '0xa8C19667794191A730B3983eB3a8087CfF2b788e';
@@ -33,10 +123,10 @@ async function main() {
   // const HouseNFT = HouseNFTFactory.attach(houseBusiness) as HouseBusiness;
   console.log('This is the House NFT address: ', HouseNFT.address);
 
-  const CContractFactory = await ethers.getContractFactory('MainCleanContract');
-  const CContract = (await CContractFactory.deploy(HouseNFT.address)) as MainCleanContract;
-  await CContract.deployed();
-  console.log('This is the CContract address: ', CContract.address);
+  const HouseDocFactory = await ethers.getContractFactory('HouseDoc');
+  const HouseDoc = (await HouseDocFactory.deploy(HouseNFT.address)) as HouseDoc;
+  await HouseDoc.deployed();
+  console.log('This is the HouseDoc address: ', HouseDoc.address);
 
   const StakingFactory = await ethers.getContractFactory('HouseStaking');
   const StakingContract = (await StakingFactory.deploy(HouseNFT.address, House.address)) as HouseStaking;
@@ -53,50 +143,56 @@ async function main() {
   await Operator.deployed();
   console.log('This is the Operator address: ', Operator.address);
 
-  let tx = await HouseNFT.connect(deployer).setCContractAddress(CContract.address);
+  let tx = await HouseNFT.connect(deployer).setHouseDocContractAddress(HouseDoc.address);
   await tx.wait();
 
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
   tx = await HouseNFT.connect(deployer).setOperatorAddress(deployer.address);
+  tx = await HouseNFT.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
   await tx.wait();
 
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await CContract.connect(deployer).setOperatorAddress(deployer.address);
+  tx = await HouseDoc.connect(deployer).setOperatorAddress(deployer.address);
+  tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
 
-  // tx = await StakingContract.connect(deployer).setOperatorAddress(deployer.address);
-  // await tx.wait();
-
-  tx = await Operator.connect(deployer).authorizeContracts([
-    House.address, HouseNFT.address, CContract.address, StakingContract.address
-  ]);
-  await tx.wait();
+  for (var i = 0; i < defaultHistoryType.length; i++) {
+    tx = await HouseNFT.connect(deployer).addOrEditHistoryType(
+      i,
+      defaultHistoryType[i].hLabel,
+      defaultHistoryType[i].connectContract,
+      defaultHistoryType[i].image,
+      defaultHistoryType[i].brand,
+      defaultHistoryType[i].description,
+      defaultHistoryType[i].brandType,
+      defaultHistoryType[i].year,
+      defaultHistoryType[i].otherInfo,
+      0,
+      true
+    )
+    await tx.wait();
+  }
 
   if (fs.existsSync(addressFile)) {
     fs.rmSync(addressFile);
   }
 
-  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Mumbai network\n');
+  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
-  writeAddr(addressFile, network.name, CContract.address, 'CleanContract');
-  writeAddr(addressFile, network.name, StakingContract.address, 'StakingContract');
-  writeAddr(addressFile, network.name, ThirdPartyContract.address, 'ThirdPartyContract');
-  writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
-
+  writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDocu');
 
   console.log('Deployments done, waiting for etherscan verifications');
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  await verify(House.address, []);
   await verify(HouseNFT.address, [House.address]);
-  await verify(CContract.address, [HouseNFT.address]);
+  await verify(HouseDoc.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
   await verify(Operator.address, [House.address]);
 

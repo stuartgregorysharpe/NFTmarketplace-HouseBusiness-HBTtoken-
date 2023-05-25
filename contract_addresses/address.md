@@ -1,7 +1,3 @@
-This file contains the latest test deployment addresses in the Mumbai network
-ERC-20: [https://mumbai.polygonscan.com/address/0x590e1603741308221DAfE611E1212DB871C3c626](https://mumbai.polygonscan.io/address/0x590e1603741308221DAfE611E1212DB871C3c626)
-HouseNFT: [https://mumbai.polygonscan.com/address/0x22719c76E452317fF16c7f4d6eCCFDFE0EEBa0c4](https://mumbai.polygonscan.io/address/0x22719c76E452317fF16c7f4d6eCCFDFE0EEBa0c4)
-CleanContract: [https://mumbai.polygonscan.com/address/0xaCB4Ec89105FDb151460129649A13a2d8F25AD1D](https://mumbai.polygonscan.io/address/0xaCB4Ec89105FDb151460129649A13a2d8F25AD1D)
-StakingContract: [https://mumbai.polygonscan.com/address/0xB41fC1Df90AeCbc9F141f4B0AF96FdD1162570Eb](https://mumbai.polygonscan.io/address/0xB41fC1Df90AeCbc9F141f4B0AF96FdD1162570Eb)
-ThirdPartyContract: [https://mumbai.polygonscan.com/address/0x6f73E20BBD0e6a7310399E086f2214C89883a6a2](https://mumbai.polygonscan.io/address/0x6f73E20BBD0e6a7310399E086f2214C89883a6a2)
-OperatorContract: [https://mumbai.polygonscan.com/address/0xf9EDF1D9E2a0c7092957b4d5801c4E8915bFa41f](https://mumbai.polygonscan.io/address/0xf9EDF1D9E2a0c7092957b4d5801c4E8915bFa41f)
+This file contains the latest test deployment addresses in the Goerli network<br/>ERC-20: [https://mumbai.polygonscan.com/address/0xa8C19667794191A730B3983eB3a8087CfF2b788e](https://mumbai.polygonscan.io/address/0xa8C19667794191A730B3983eB3a8087CfF2b788e)
+HouseNFT: [https://mumbai.polygonscan.com/address/0x55fbA89a4888E367c59f5ab7c1e7108B93A2E5d2](https://mumbai.polygonscan.io/address/0x55fbA89a4888E367c59f5ab7c1e7108B93A2E5d2)
+HouseDocu: [https://mumbai.polygonscan.com/address/0xF402D4621870CDE84a926A71C905e7bce2dA32b3](https://mumbai.polygonscan.io/address/0xF402D4621870CDE84a926A71C905e7bce2dA32b3)
