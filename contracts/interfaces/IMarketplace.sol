@@ -11,7 +11,7 @@ interface IMarketplace {
         bool descNeed;
         bool brandTypeNeed;
         bool yearNeed;
-        bool checkMark;
+        bool otherInfo;
         uint256 value;
     }
 
@@ -22,11 +22,27 @@ interface IMarketplace {
         uint256 desc;
         uint256 brandType;
         uint256 year;
-        uint256 checkMark;
+        uint256 otherInfo;
+    }
+
+    struct LabelValue {
+        uint256 connectContract;
+        uint256 image;
+        uint256 brand;
+        uint256 desc;
+        uint256 brandType;
+        uint256 year;
+        uint256 otherInfo;
     }
 
     function getHistoryTypeById(uint256 _typeId) external view returns (HistoryType memory);
-    function getMinMaxHousePrice() external view returns(uint256, uint256);
-    function getRoyalties() external view returns(uint256, uint256);
-    function getLabelPercents() external view returns(LabelPercent memory);
+
+    function getMinMaxHousePrice() external view returns (uint256, uint256);
+
+    function getRoyalties() external view returns (uint256, uint256);
+
+    function getLabelPercents() external view returns (LabelPercent memory);
+
+    function getLabelValue() external view returns (LabelValue memory);
+
 }
