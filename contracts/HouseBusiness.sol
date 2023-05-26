@@ -240,8 +240,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     // by a token by passing in the token"s id
     function buyHouseNft(uint256 _houseId, address _buyer) public payable {
         address buyer = msg.sender == operatorAddress ? _buyer : msg.sender;
-        House memory house = allHouses[_houseId];
-        Contributor memory _contributor = house.contributor;
+        House storage house = allHouses[_houseId];
+        Contributor storage _contributor = house.contributor;
 
         uint256 housePrice = getHousePrice(_houseId);
         (uint256 royaltyCreator, uint256 royaltyMarket) = marketplace.getRoyalties();
@@ -459,15 +459,19 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return price;
     }
 
-    function getAllowFee(uint256 _houseId, uint256[] memory _hIds) public view returns (uint256) {
+ 
+
+    function addAllowUser(uint256 _houseId, uint256[] memory _hIds) public payable {
         uint256 _allowFee = 0;
         
         for (uint256 i = 0; i < _hIds.length; i++) {
-            History memory temp = houseHistories[_houseId][_hIds[i]];
+            require(_hIds[i] < houseHistories[_houseId].length, "Index out of bounds");
+            History storage temp = houseHistories[_houseId][_hIds[i]];
             temp.allowedUser = msg.sender;
             IMarketplace.HistoryType memory historyTypes = marketplace.getHistoryTypeById(temp.historyTypeId);
             _allowFee += historyTypes.eValue;
         }
-        return _allowFee;
+
+        payable(allHouses[_houseId].contributor.currentOwner).transfer(_allowFee);
     }
 }
