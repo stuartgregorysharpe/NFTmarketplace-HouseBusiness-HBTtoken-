@@ -41,6 +41,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         bool soldStatus;
         Contributor contributor;
     }
+
     struct History {
         uint256 hID;
         uint256 houseID;
@@ -53,6 +54,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         string brandType;
         uint256 yearField;
         bool flag;
+        address allowedUser;
     }
 
     mapping(address => bool) public member;
@@ -213,7 +215,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             })
         });
 
-        // new house history push into the House struct
         houseHistories[houseID].push(
             History({
                 hID: 0,
@@ -226,9 +227,11 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 otherInfo: '',
                 brandType: _tokenType,
                 yearField: _year,
-                flag: _flag
+                flag: _flag,
+                allowedUser: msg.sender
             })
         );
+
         houseCounter++;
 
         emit HouseMinted(msg.sender, _name, _tokenURI, _tokenType, _year);
@@ -279,20 +282,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         emit HouseNftBought(_houseId, buyer, _contributor.previousOwner, _contributor.creator, housePrice);
     }
 
-    // Add allow list
-    function addAllowList(uint256 _houseId, address _allowed) external payable {
-        require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
-        uint256 allowFee = getAllowFee(_houseId);
-        require(msg.value >= allowFee, 'Insufficient value.');
-        allowedList[_houseId][_allowed] = true;
-    }
-
-    // Remove allow list
-    function removeAllowList(uint256 _houseId, address _allowed) external {
-        require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
-        allowedList[_houseId][_allowed] = false;
-    }
-
     // Add history of house
     function addHistory(
         uint256 _houseId,
@@ -326,7 +315,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 otherInfo: _otherInfo,
                 brandType: _brandType,
                 yearField: _yearField,
-                flag: _flag
+                flag: _flag,
+                allowedUser: msg.sender
             })
         );
 
@@ -445,16 +435,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _approve(to, tokenId);
     }
 
-    function checkAllowedList(uint256 _houseId, address allowed) external view returns (bool) {
-        return allowedList[_houseId][allowed];
-    }
-
     function getHistory(uint256 _houseId) external view returns (History[] memory) {
         return houseHistories[_houseId];
-    }
-
-    function getTest() public view returns (IMarketplace.LabelPercent memory) {
-        return marketplace.getLabelPercents();
     }
 
     function getHousePrice(uint256 _houseId) public view returns (uint256) {
@@ -472,27 +454,20 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 (temp[i].yearField != 1 ? labelPercent.year : 0) +
                 (bytes(temp[i].otherInfo).length > 0 ? labelPercent.otherInfo : 0);
             IMarketplace.HistoryType memory historyTypes = marketplace.getHistoryTypeById(temp[i].historyTypeId);
-            price += (historyTypes.value * percent) / 100;
+            price += (historyTypes.mValue * percent) / 100;
         }
         return price;
     }
 
-    function getAllowFee(uint256 _houseId) public view returns (uint256) {
-        IMarketplace.LabelValue memory labelValue = marketplace.getLabelValue();
+    function getAllowFee(uint256 _houseId, uint256[] memory _hIds) public view returns (uint256) {
         uint256 _allowFee = 0;
-
-        History[] memory temp = houseHistories[_houseId];
-        for (uint256 i = 0; i < temp.length; i++) {
-            uint256 tempFee = (temp[i].contractId > 0 ? labelValue.connectContract : 0) +
-                (bytes(temp[i].houseImg).length > 0 ? labelValue.image : 0) +
-                (bytes(temp[i].houseBrand).length > 0 ? labelValue.brand : 0) +
-                (bytes(temp[i].desc).length > 0 ? labelValue.desc : 0) +
-                (bytes(temp[i].brandType).length > 0 ? labelValue.brandType : 0) +
-                (temp[i].yearField != 1 ? labelValue.year : 0) +
-                (bytes(temp[i].otherInfo).length > 0 ? labelValue.otherInfo : 0);
-            _allowFee += tempFee;
+        
+        for (uint256 i = 0; i < _hIds.length; i++) {
+            History memory temp = houseHistories[_houseId][_hIds[i]];
+            temp.allowedUser = msg.sender;
+            IMarketplace.HistoryType memory historyTypes = marketplace.getHistoryTypeById(temp.historyTypeId);
+            _allowFee += historyTypes.eValue;
         }
-
         return _allowFee;
     }
 }

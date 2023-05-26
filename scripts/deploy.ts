@@ -19,7 +19,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Floorplan',
@@ -30,7 +31,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Pictures',
@@ -41,7 +43,8 @@ const defaultHistoryType = [
     brandType: true,
     year: false,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Blueprint',
@@ -52,7 +55,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Solarpanels',
@@ -63,7 +67,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Airconditioning',
@@ -74,7 +79,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   }, {
     hLabel: 'Sonneboiler',
     connectContract: true,
@@ -84,7 +90,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   },
   {
     hLabel: 'Housepainter',
@@ -95,7 +102,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0,
+    eValue: 0
   }
 ]
 
@@ -189,7 +197,8 @@ async function main() {
       defaultHistoryType[i].brandType,
       defaultHistoryType[i].year,
       defaultHistoryType[i].otherInfo,
-      0,
+      defaultHistoryType[i].mValue,
+      defaultHistoryType[i].eValue,
       true
       )
       await tx.wait();

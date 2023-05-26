@@ -17,7 +17,8 @@ contract Marketplace {
         bool brandTypeNeed;
         bool yearNeed;
         bool otherInfo;
-        uint256 value;
+        uint256 mValue;
+        uint256 eValue;
     }
     struct LabelPercent {
         uint256 connectContract;
@@ -29,18 +30,7 @@ contract Marketplace {
         uint256 otherInfo;
     }
 
-    struct LabelValue {
-        uint256 connectContract;
-        uint256 image;
-        uint256 brand;
-        uint256 desc;
-        uint256 brandType;
-        uint256 year;
-        uint256 otherInfo;
-    }
-
     LabelPercent public labelPercent;
-    LabelValue public labelValue;
 
     mapping(address => bool) public member;
     mapping(uint256 => HistoryType) historyTypes;
@@ -81,10 +71,6 @@ contract Marketplace {
         labelPercent = newLabelPercent;
     }
 
-    function setLabelValue(LabelValue memory newLabelValue) external onlyMember {
-        labelValue = newLabelValue;
-    }
-
     function addMember(address _newMember) external onlyMember {
         member[_newMember] = true;
     }
@@ -103,7 +89,8 @@ contract Marketplace {
         bool _brandType,
         bool _year,
         bool _otherInfo,
-        uint256 _value,
+        uint256 _mValue,
+        uint256 _eValue,
         bool flag
     ) external onlyMember {
         historyTypes[_historyIndex] = HistoryType({
@@ -115,7 +102,8 @@ contract Marketplace {
             brandTypeNeed: _brandType,
             yearNeed: _year,
             otherInfo: _otherInfo,
-            value: _value
+            mValue: _mValue,
+            eValue: _eValue
         });
         if (flag) {
             hTypeCounter++;
@@ -145,9 +133,5 @@ contract Marketplace {
 
     function getLabelPercents() external view returns (LabelPercent memory) {
         return labelPercent;
-    }
-
-    function getLabelValue() external view returns (LabelValue memory) {
-        return labelValue;
     }
 }

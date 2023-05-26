@@ -12,20 +12,11 @@ interface IMarketplace {
         bool brandTypeNeed;
         bool yearNeed;
         bool otherInfo;
-        uint256 value;
+        uint256 mValue;
+        uint256 eValue;
     }
 
     struct LabelPercent {
-        uint256 connectContract;
-        uint256 image;
-        uint256 brand;
-        uint256 desc;
-        uint256 brandType;
-        uint256 year;
-        uint256 otherInfo;
-    }
-
-    struct LabelValue {
         uint256 connectContract;
         uint256 image;
         uint256 brand;
@@ -42,7 +33,4 @@ interface IMarketplace {
     function getRoyalties() external view returns (uint256, uint256);
 
     function getLabelPercents() external view returns (LabelPercent memory);
-
-    function getLabelValue() external view returns (LabelValue memory);
-
 }
