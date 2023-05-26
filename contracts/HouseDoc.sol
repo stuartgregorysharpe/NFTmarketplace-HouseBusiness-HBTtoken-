@@ -243,9 +243,13 @@ contract HouseDoc {
      *
      * NOTE only houseNFT contract can call
      */
-    function getContractById(uint256 contractId) external view returns (address _contractOwner) {
+    function getContractOwnerById(uint256 contractId) external view returns (address _contractOwner) {
         require(msg.sender == houseNFTAddress, "only NFT");
         _contractOwner = allDocContracts[contractId].owner;
+    }
+
+    function getContractById(uint256 contractId) external view returns (DocContract memory) {
+        return allDocContracts[contractId];
     }
 
     // declare this function for use in the following 3 functions

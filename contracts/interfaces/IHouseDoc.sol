@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 
 interface IHouseDoc {
     // map house's token id to house
-    function getContractById(uint256 contractId) external view returns (address);
+    function getContractOwnerById(uint256 contractId) external view returns (address);
 
     // modifies ownership of `contractId` from `from` to `to`
     function transferContractOwnership(

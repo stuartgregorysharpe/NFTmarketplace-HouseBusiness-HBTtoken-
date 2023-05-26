@@ -308,7 +308,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     ) external {
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, 'Unauthorized.');
         if (_contractId != 0) {
-            require(houseDoc.getContractById(_contractId) == msg.sender, 'You are owner of that contract');
+            require(houseDoc.getContractOwnerById(_contractId) == msg.sender, 'You are owner of that contract');
         }
 
         History[] storage houseHist = houseHistories[_houseId];
