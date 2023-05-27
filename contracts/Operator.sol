@@ -12,21 +12,14 @@ contract Operator is Ownable {
     IHBToken HBToken;
     IERC20 hbToken;
 
-    // IHouseBusiness HouseBusiness;
-    // IMainCleanContract CContract;
-
     // Token balances that can be used as gas fee from the account users
     mapping(address => uint256) private _balances;
 
     // Authorized contract addresses which will be called from this contract
     mapping(address => bool) private _authorizedContracts;
 
-    // Utility tokens and NFT address
-    address public houseBusinessToken;
-
     constructor(address _houseBusinessToken) {
         // Init contract instances
-        houseBusinessToken = _houseBusinessToken;
         HBToken = IHBToken(_houseBusinessToken);
         hbToken = IERC20(_houseBusinessToken);
     }
@@ -36,7 +29,6 @@ contract Operator is Ownable {
      * @param _houseBusinessToken HouseBusinessToken address
      */
     function setHBToken(address _houseBusinessToken) external onlyOwner {
-        houseBusinessToken = _houseBusinessToken;
         HBToken = IHBToken(_houseBusinessToken);
         hbToken = IERC20(_houseBusinessToken);
     }

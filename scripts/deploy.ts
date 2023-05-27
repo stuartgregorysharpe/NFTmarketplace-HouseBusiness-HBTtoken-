@@ -149,17 +149,21 @@ async function main() {
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
 
-  tx = await HouseNFT.connect(deployer).setOperatorAddress(deployer.address);
+  tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
   tx = await HouseNFT.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
   await tx.wait();
 
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
 
-  tx = await HouseDoc.connect(deployer).setOperatorAddress(deployer.address);
   tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
-
+  
+  tx = await Operator.connect(deployer).authorizeContracts([
+    House.address, HouseNFT.address, HouseDoc.address, StakingContract.address
+  ]);
+  await tx.wait();
+ 
   for (var i = 0; i < defaultHistoryType.length; i++) {
     tx = await HouseNFT.connect(deployer).addOrEditHistoryType(
       i,
@@ -181,19 +185,24 @@ async function main() {
     fs.rmSync(addressFile);
   }
 
-  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
+  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Mumbai network\n');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
-  writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDocu');
+  writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDoc');
+  writeAddr(addressFile, network.name, StakingContract.address, 'StakingContract');
+  writeAddr(addressFile, network.name, ThirdPartyContract.address, 'ThirdPartyContract');
+  writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
 
   console.log('Deployments done, waiting for etherscan verifications');
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
+  await verify(House.address, []);
   await verify(HouseNFT.address, [House.address]);
   await verify(HouseDoc.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  await verify(ThirdPartyContract.address, []);
   await verify(Operator.address, [House.address]);
 
   console.log('All done');
