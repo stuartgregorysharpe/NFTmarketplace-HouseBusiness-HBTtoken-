@@ -226,7 +226,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 brandType: _tokenType,
                 yearField: _year,
                 flag: _flag,
-                allowedUser: msg.sender
+                allowedUser: address(0)
             })
         );
 
@@ -314,7 +314,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 brandType: _brandType,
                 yearField: _yearField,
                 flag: _flag,
-                allowedUser: msg.sender
+                allowedUser: address(0)
             })
         );
 
