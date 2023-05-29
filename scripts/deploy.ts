@@ -1,4 +1,5 @@
 import hre, { ethers, network } from 'hardhat';
+import { BigNumber } from 'ethers';
 import fs from 'fs';
 
 import { verify, writeAddr } from './util';
@@ -19,8 +20,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Floorplan',
@@ -31,8 +32,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Pictures',
@@ -43,8 +44,8 @@ const defaultHistoryType = [
     brandType: true,
     year: false,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Blueprint',
@@ -55,8 +56,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Solarpanels',
@@ -67,8 +68,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Airconditioning',
@@ -79,8 +80,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   }, {
     hLabel: 'Sonneboiler',
     connectContract: true,
@@ -90,8 +91,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Housepainter',
@@ -102,8 +103,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    mValue: 0,
-    eValue: 0
+    mValue: 0.5,
+    eValue: 0.01
   }
 ]
 
@@ -197,8 +198,8 @@ async function main() {
       defaultHistoryType[i].brandType,
       defaultHistoryType[i].year,
       defaultHistoryType[i].otherInfo,
-      defaultHistoryType[i].mValue,
-      defaultHistoryType[i].eValue,
+      BigNumber.from(`${Number(defaultHistoryType[i].mValue) * 10 ** 18}`),
+      BigNumber.from(`${Number(defaultHistoryType[i].eValue) * 10 ** 18}`),
       true
       )
       await tx.wait();
@@ -220,11 +221,11 @@ async function main() {
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  await verify(HouseNFT.address, [House.address]);
-  await verify(Marketplace.address, []);
-  await verify(HouseDoc.address, [HouseNFT.address]);
-  await verify(StakingContract.address, [HouseNFT.address, House.address]);
-  await verify(Operator.address, [House.address]);
+  // await verify(HouseNFT.address, [House.address]);
+  // await verify(Marketplace.address, []);
+  // await verify(HouseDoc.address, [HouseNFT.address]);
+  // await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  // await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }

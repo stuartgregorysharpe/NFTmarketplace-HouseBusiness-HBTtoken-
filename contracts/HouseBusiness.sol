@@ -36,6 +36,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 price;
         uint256 numberOfTransfers;
         bool nftPayable;
+        bool nftViewable;
         bool staked;
         bool soldStatus;
         Contributor contributor;
@@ -143,10 +144,19 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(_exists(_houseId));
         // check that token"s owner should be equal to the caller of the function
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, "Unauthorized.");
-        require(allHouses[_houseId].price > 0, "Pricing has not been set at this time.");
+        uint256 housePrice = getHousePrice(_houseId);
+        require(housePrice > 0, "Pricing has not been set at this time.");
 
         if (allHouses[_houseId].contributor.buyer != _buyer) allHouses[_houseId].contributor.buyer = _buyer;
         allHouses[_houseId].nftPayable = _nftPayable;
+    }
+
+    function setViewable(uint256 _houseId, bool _viewable) external {
+        // require that token should exist
+        require(_exists(_houseId));
+        // check that token"s owner should be equal to the caller of the function
+        require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, "Unauthorized.");
+        allHouses[_houseId].nftViewable = _viewable;
     }
 
     /**
@@ -203,6 +213,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
             price: 0,
             numberOfTransfers: 0,
             nftPayable: false,
+            nftViewable: false,
             staked: false,
             soldStatus: false,
             contributor: Contributor({
@@ -252,7 +263,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         if (_contributor.buyer != address(0)) {
             require(_contributor.buyer == buyer, "You are not authorized to buy this house.");
         }
-        _contributor.buyer = buyer;
+        _contributor.buyer = address(0);
 
         // calculate the payouts
         uint256 creatorCut = (housePrice * royaltyCreator) / 100;
@@ -270,6 +281,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _contributor.previousOwner = _contributor.currentOwner;
         _contributor.currentOwner = buyer;
         allHouses[_houseId].nftPayable = false;
+        allHouses[_houseId].nftViewable = false;
         allHouses[_houseId].soldStatus = true;
         allHouses[_houseId].numberOfTransfers++;
 
@@ -470,6 +482,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     }
 
     function addAllowUser(uint256 _houseId, uint256[] memory _hIds) external payable {
+        House storage house = allHouses[_houseId];
+        require(house.nftViewable, "Can not view datapoint yet");
         uint256 _allowFee = getAllowFee(_houseId, _hIds);
 
         require(msg.value >= _allowFee, "Insufficient value.");
