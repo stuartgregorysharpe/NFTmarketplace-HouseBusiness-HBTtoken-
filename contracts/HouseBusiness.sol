@@ -319,7 +319,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
         // emit an event
         emit HouseNftBought(_houseId, buyer, _contributor.previousOwner, _contributor.creator, housePrice);
-        emit HouseNftBought(_houseId, msg.sender, _contributor.previousOwner, _contributor.creator, housePrice);
     }
 
     // Add allow list
