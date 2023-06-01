@@ -144,8 +144,6 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         require(_exists(_houseId));
         // check that token"s owner should be equal to the caller of the function
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, "Unauthorized.");
-        uint256 housePrice = getHousePrice(_houseId);
-        require(housePrice > 0, "Pricing has not been set at this time.");
 
         if (allHouses[_houseId].contributor.buyer != _buyer) allHouses[_houseId].contributor.buyer = _buyer;
         allHouses[_houseId].nftPayable = _nftPayable;
@@ -252,7 +250,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         House storage house = allHouses[_houseId];
         Contributor storage _contributor = house.contributor;
 
-        uint256 housePrice = getHousePrice(_houseId);
+        uint256 housePrice = house.price;
+        if (house.price == 0) {
+            housePrice = getExtraPrice(_houseId);
+        }
         (uint256 royaltyCreator, uint256 royaltyMarket) = marketplace.getRoyalties();
 
         require(msg.value >= housePrice, "Insufficient value.");
@@ -449,11 +450,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return houseHistories[_houseId];
     }
 
-    function getHousePrice(uint256 _houseId) public view returns (uint256) {
+    function getExtraPrice(uint256 _houseId) public view returns (uint256) {
         IMarketplace.LabelPercent memory labelPercent = marketplace.getLabelPercents();
-        House memory house = allHouses[_houseId];
 
-        uint256 price = house.price;
+        uint256 price = 0;
         History[] memory temp = houseHistories[_houseId];
         for (uint256 i = 0; i < temp.length; i++) {
             uint256 percent = (temp[i].contractId > 0 ? labelPercent.connectContract : 0) +

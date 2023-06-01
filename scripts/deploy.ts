@@ -178,6 +178,9 @@ async function main() {
   tx = await Marketplace.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
   await tx.wait();
   console.log('addMember')
+  tx = await Marketplace.connect(deployer).setLabelPercents([20, 15, 15, 15, 15, 10, 10]);
+  await tx.wait();
+  console.log('setLabelPercents')
   
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
