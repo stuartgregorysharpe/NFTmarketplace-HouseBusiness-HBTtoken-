@@ -1,4 +1,5 @@
 import hre, { ethers, network } from 'hardhat';
+import { BigNumber } from 'ethers';
 import fs from 'fs';
 
 import { verify, writeAddr } from './util';
@@ -19,7 +20,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Floorplan',
@@ -30,7 +32,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Pictures',
@@ -41,7 +44,8 @@ const defaultHistoryType = [
     brandType: true,
     year: false,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Blueprint',
@@ -52,7 +56,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Solarpanels',
@@ -63,7 +68,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Airconditioning',
@@ -74,7 +80,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   }, {
     hLabel: 'Sonneboiler',
     connectContract: true,
@@ -84,7 +91,8 @@ const defaultHistoryType = [
     brandType: false,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   },
   {
     hLabel: 'Housepainter',
@@ -95,7 +103,8 @@ const defaultHistoryType = [
     brandType: true,
     year: true,
     otherInfo: false,
-    value: 0
+    mValue: 0.5,
+    eValue: 0.01
   }
 ]
 
@@ -123,6 +132,11 @@ async function main() {
   // const HouseNFT = HouseNFTFactory.attach(houseBusiness) as HouseBusiness;
   console.log('This is the House NFT address: ', HouseNFT.address);
 
+  const MarketplaceFactory = await ethers.getContractFactory('Marketplace');
+  const Marketplace = (await MarketplaceFactory.deploy()) as Marketplace;
+  await Marketplace.deployed();
+  console.log('This is the Marketplace address: ', Marketplace.address);
+
   const HouseDocFactory = await ethers.getContractFactory('HouseDoc');
   const HouseDoc = (await HouseDocFactory.deploy(HouseNFT.address)) as HouseDoc;
   await HouseDoc.deployed();
@@ -145,22 +159,39 @@ async function main() {
 
   let tx = await HouseNFT.connect(deployer).setHouseDocContractAddress(HouseDoc.address);
   await tx.wait();
-
+  console.log('setHouseDocContractAddress')
+  
   tx = await HouseNFT.connect(deployer).setStakingContractAddress(StakingContract.address);
   await tx.wait();
-
+  console.log('setStakingContractAddress')
+  
   tx = await HouseNFT.connect(deployer).setOperatorAddress(Operator.address);
+  await tx.wait();
+  console.log('setOperatorAddress')
+  tx = await HouseNFT.connect(deployer).setMarketplaceAddress(Marketplace.address);
+  await tx.wait();
+  console.log('setMarketplaceAddress')
   tx = await HouseNFT.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
   await tx.wait();
-
+  console.log('addMember')
+  
+  tx = await Marketplace.connect(deployer).addMember("0x320933f4c6949611104ed0910B35395d8A4eD946");
+  await tx.wait();
+  console.log('addMember')
+  tx = await Marketplace.connect(deployer).setLabelPercents([20, 15, 15, 15, 15, 10, 10]);
+  await tx.wait();
+  console.log('setLabelPercents')
+  
   tx = await House.connect(deployer).transfer(StakingContract.address, ethers.utils.parseEther('100000'));
   await tx.wait();
-
+  console.log('addMember')
+  
   tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
-
+  console.log('setOperatorAddress')
+  
   for (var i = 0; i < defaultHistoryType.length; i++) {
-    tx = await HouseNFT.connect(deployer).addOrEditHistoryType(
+    tx = await Marketplace.connect(deployer).addOrEditHistoryType(
       i,
       defaultHistoryType[i].hLabel,
       defaultHistoryType[i].connectContract,
@@ -170,10 +201,12 @@ async function main() {
       defaultHistoryType[i].brandType,
       defaultHistoryType[i].year,
       defaultHistoryType[i].otherInfo,
-      0,
+      BigNumber.from(`${Number(defaultHistoryType[i].mValue) * 10 ** 18}`),
+      BigNumber.from(`${Number(defaultHistoryType[i].eValue) * 10 ** 18}`),
       true
-    )
-    await tx.wait();
+      )
+      await tx.wait();
+      console.log('addOrEditHistoryType', i)
   }
 
   if (fs.existsSync(addressFile)) {
@@ -183,17 +216,19 @@ async function main() {
   fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
-  writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDocu');
+  writeAddr(addressFile, network.name, Marketplace.address, 'Marketplace');
+  writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDoc');
 
   console.log('Deployments done, waiting for etherscan verifications');
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  await verify(HouseNFT.address, [House.address]);
-  await verify(HouseDoc.address, [HouseNFT.address]);
-  await verify(StakingContract.address, [HouseNFT.address, House.address]);
-  await verify(Operator.address, [House.address]);
+  // await verify(HouseNFT.address, [House.address]);
+  // await verify(Marketplace.address, []);
+  // await verify(HouseDoc.address, [HouseNFT.address]);
+  // await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  // await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }
