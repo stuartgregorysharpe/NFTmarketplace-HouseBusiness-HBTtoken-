@@ -209,6 +209,32 @@ contract HouseDoc {
         return contracts;
     }
 
+    function getDocContracts(address addr) external view returns (DocContract[] memory) {
+        uint256 matchCount = 0;
+        for (uint256 i = 0; i < hdCounter; i++) {
+            if (
+                allDocContracts[i + 1].creator == addr ||
+                allDocContracts[i + 1].owner == addr ||
+                allDocContracts[i + 1].contractSigner == addr
+            ) {
+                matchCount++;
+            }
+        }
+        DocContract[] memory contracts = new DocContract[](matchCount);
+        uint256 index = 0;
+        for (uint256 i = 0; i < hdCounter; i++) {
+            if (
+                allDocContracts[i + 1].creator == addr ||
+                allDocContracts[i + 1].owner == addr ||
+                allDocContracts[i + 1].contractSigner == addr
+            ) {
+                contracts[index++] = allDocContracts[i + 1];
+            }
+        }
+
+        return contracts;
+    }
+
     // get my all notifies
     function getAllNotifies(address _address) external view returns (Notify[] memory) {
         return allNotifies[_address];
@@ -219,9 +245,13 @@ contract HouseDoc {
      *
      * NOTE only houseNFT contract can call
      */
-    function getContractById(uint256 contractId) external view returns (address _contractOwner) {
+    function getContractOwnerById(uint256 contractId) external view returns (address _contractOwner) {
         require(msg.sender == houseNFTAddress, "only NFT");
         _contractOwner = allDocContracts[contractId].owner;
+    }
+
+    function getContractById(uint256 contractId) external view returns (DocContract memory) {
+        return allDocContracts[contractId];
     }
 
     // declare this function for use in the following 3 functions
