@@ -227,8 +227,8 @@ contract HouseStaking {
     }
 
     // Gaddress _rewardOwneret All staked Nfts
-    function getAllMyStakedNFTs() external view returns (StakedNft[] memory) {
-        return stakedNfts[msg.sender];
+    function getAllMyStakedNFTs(address _staker) external view returns (StakedNft[] memory) {
+        return stakedNfts[_staker];
     }
 
     // Get All APYs
