@@ -188,6 +188,11 @@ async function main() {
   
   tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
+  console.log('setOperatorAddress');
+
+  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
+  await tx.wait();
+  console.log('setOperatorAddress');
   
   tx = await Operator.connect(deployer).authorizeContracts([
     House.address, HouseNFT.address, HouseDoc.address, StakingContract.address

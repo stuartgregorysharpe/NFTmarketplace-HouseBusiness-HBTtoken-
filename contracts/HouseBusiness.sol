@@ -485,7 +485,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return _allowFee;
     }
 
-    function addAllowUser(uint256 _houseId, uint256[] memory _hIds) external payable {
+    function addAllowUser(uint256 _houseId, uint256[] memory _hIds, address _user) external payable {
+        address user = msg.sender == operatorAddress ? _user : msg.sender;
         House storage house = allHouses[_houseId];
         require(house.nftViewable, "Can not view datapoint yet");
         uint256 _allowFee = getAllowFee(_houseId, _hIds);
@@ -495,7 +496,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         for (uint256 i = 0; i < _hIds.length; i++) {
             require(_hIds[i] < houseHistories[_houseId].length, "Index out of bounds");
             History storage temp = houseHistories[_houseId][_hIds[i]];
-            temp.allowedUser = msg.sender;
+            temp.allowedUser = user;
         }
 
         payable(allHouses[_houseId].contributor.currentOwner).transfer(_allowFee);
