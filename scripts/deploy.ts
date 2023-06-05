@@ -233,11 +233,11 @@ async function main() {
 
   await verify(House.address, []);
   await verify(HouseNFT.address, [House.address]);
+  await verify(Marketplace.address, []);
   await verify(HouseDoc.address, [HouseNFT.address]);
   await verify(StakingContract.address, [HouseNFT.address, House.address]);
   await verify(ThirdPartyContract.address, []);
   await verify(Operator.address, [House.address]);
-  await verify(Marketplace.address, []);
 
   console.log('All done');
 }
