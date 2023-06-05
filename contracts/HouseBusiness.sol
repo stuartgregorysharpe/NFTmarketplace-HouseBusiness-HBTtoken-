@@ -454,6 +454,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return houseHistories[_houseId];
     }
 
+    // Returns price of a house with `tokenId`
+    function getTokenPrice(uint256 _tokenId) external view returns (uint256) {
+        require(msg.sender == stakingContractAddress, 'sc');
+        return allHouses[_tokenId].price;
+    }
+
     function getExtraPrice(uint256 _houseId) public view returns (uint256) {
         IMarketplace.LabelPercent memory labelPercent = marketplace.getLabelPercents();
 
