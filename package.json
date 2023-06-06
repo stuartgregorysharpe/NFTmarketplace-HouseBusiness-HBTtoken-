@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "",
   "scripts": {
+    "deploy-mumbai": "npx hardhat run scripts/deploy.ts --network mumbai",
     "generate:typechain": "npm run generate:oz-typechain && npm run generate:own-typechain",
     "generate:oz-typechain": "npx typechain --target ethers-v5 --out-dir typechain/openzeppelin \"./artifacts/@openzeppelin/**/+([a-zA-Z0-9_]).json\"",
     "generate:own-typechain": "npx typechain --target ethers-v5 --out-dir typechain/pulse \"./artifacts/contracts/**/+([a-zA-Z0-9_]).json\""

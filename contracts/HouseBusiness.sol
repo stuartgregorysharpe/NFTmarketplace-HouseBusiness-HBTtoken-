@@ -62,7 +62,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     mapping(uint256 => History[]) public houseHistories;
 
     address stakingContractAddress;
-    address operatorAddress;
+    address public operatorAddress;
 
     event HouseMinted(address indexed minter, string name, string tokenURI, string tokenType, uint256 year);
     event HistoryAdded(
@@ -95,7 +95,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 price
     );
 
-    constructor(address _tokenAddress) ERC721("HouseBusiness", "HUBS") {
+    constructor(address _tokenAddress) ERC721('HouseBusiness', 'HUBS') {
         (collectionName, collectionSymbol) = (name(), symbol());
         member[msg.sender] = true;
         minPrice = 10 ** 16;
@@ -103,8 +103,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
     modifier onlyMember() {
-        require(member[msg.sender], "Only Member");
+        require(member[msg.sender], 'Only Member');
         _;
     }
 
@@ -197,7 +201,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         uint256 houseID = houseCounter + 1;
 
         // ensure token with id doesn"t already exist
-        require(!_exists(houseID), "Token already exists.");
+        require(!_exists(houseID), 'Token already exists.');
 
         // mint the token
         _mint(dest, houseID);
@@ -228,10 +232,10 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
                 houseID: houseID,
                 contractId: 0,
                 historyTypeId: 0,
-                houseImg: "",
-                houseBrand: "",
-                desc: "",
-                otherInfo: "",
+                houseImg: '',
+                houseBrand: '',
+                desc: '',
+                otherInfo: '',
                 brandType: _tokenType,
                 yearField: _year,
                 flag: _flag,
@@ -442,12 +446,18 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
 
     function approveDelegator(address to, uint256 tokenId) public {
         address owner = ownerOf(tokenId);
-        require(to == owner);
+        require(msg.sender == owner || msg.sender == operatorAddress, 'Unauthorized');
         _approve(to, tokenId);
     }
 
     function getHistory(uint256 _houseId) external view returns (History[] memory) {
         return houseHistories[_houseId];
+    }
+
+    // Returns price of a house with `tokenId`
+    function getTokenPrice(uint256 _tokenId) external view returns (uint256) {
+        require(msg.sender == stakingContractAddress, 'sc');
+        return allHouses[_tokenId].price;
     }
 
     function getExtraPrice(uint256 _houseId) public view returns (uint256) {
@@ -481,7 +491,8 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         return _allowFee;
     }
 
-    function addAllowUser(uint256 _houseId, uint256[] memory _hIds) external payable {
+    function addAllowUser(uint256 _houseId, uint256[] memory _hIds, address _user) external payable {
+        address user = msg.sender == operatorAddress ? _user : msg.sender;
         House storage house = allHouses[_houseId];
         require(house.nftViewable, "Can not view datapoint yet");
         uint256 _allowFee = getAllowFee(_houseId, _hIds);
@@ -491,7 +502,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         for (uint256 i = 0; i < _hIds.length; i++) {
             require(_hIds[i] < houseHistories[_houseId].length, "Index out of bounds");
             History storage temp = houseHistories[_houseId][_hIds[i]];
-            temp.allowedUser = msg.sender;
+            temp.allowedUser = user;
         }
 
         payable(allHouses[_houseId].contributor.currentOwner).transfer(_allowFee);

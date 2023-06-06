@@ -121,9 +121,9 @@ async function main() {
   const houseBusiness = '0xEFfdCe06C3cC709f46cbaC457a335aa62AA4dA0F';
 
   const tokenFactory = await ethers.getContractFactory('HouseBusinessToken');
-  // const House = (await tokenFactory.deploy()) as HouseBusinessToken;
-  // await House.deployed();
-  const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
+  const House = (await tokenFactory.deploy()) as HouseBusinessToken;
+  await House.deployed();
+  // const House = tokenFactory.attach(tokenAddress) as HouseBusinessToken;
   console.log('This is the token address: ', House.address);
 
   const HouseNFTFactory = await ethers.getContractFactory('HouseBusiness');
@@ -188,8 +188,17 @@ async function main() {
   
   tx = await HouseDoc.connect(deployer).setOperatorAddress(Operator.address);
   await tx.wait();
-  console.log('setOperatorAddress')
+  console.log('setOperatorAddress');
+
+  tx = await StakingContract.connect(deployer).setOperatorAddress(Operator.address);
+  await tx.wait();
+  console.log('setOperatorAddress');
   
+  tx = await Operator.connect(deployer).authorizeContracts([
+    House.address, HouseNFT.address, HouseDoc.address, StakingContract.address
+  ]);
+  await tx.wait();
+ 
   for (var i = 0; i < defaultHistoryType.length; i++) {
     tx = await Marketplace.connect(deployer).addOrEditHistoryType(
       i,
@@ -213,22 +222,27 @@ async function main() {
     fs.rmSync(addressFile);
   }
 
-  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Goerli network<br/>');
+  fs.appendFileSync(addressFile, 'This file contains the latest test deployment addresses in the Mumbai network\n');
   writeAddr(addressFile, network.name, House.address, 'ERC-20');
   writeAddr(addressFile, network.name, HouseNFT.address, 'HouseNFT');
-  writeAddr(addressFile, network.name, Marketplace.address, 'Marketplace');
   writeAddr(addressFile, network.name, HouseDoc.address, 'HouseDoc');
+  writeAddr(addressFile, network.name, StakingContract.address, 'StakingContract');
+  writeAddr(addressFile, network.name, ThirdPartyContract.address, 'ThirdPartyContract');
+  writeAddr(addressFile, network.name, Operator.address, 'OperatorContract');
+  writeAddr(addressFile, network.name, Marketplace.address, 'Marketplace');
 
   console.log('Deployments done, waiting for etherscan verifications');
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  // await verify(HouseNFT.address, [House.address]);
-  // await verify(Marketplace.address, []);
-  // await verify(HouseDoc.address, [HouseNFT.address]);
-  // await verify(StakingContract.address, [HouseNFT.address, House.address]);
-  // await verify(Operator.address, [House.address]);
+  await verify(House.address, []);
+  await verify(HouseNFT.address, [House.address]);
+  await verify(Marketplace.address, []);
+  await verify(HouseDoc.address, [HouseNFT.address]);
+  await verify(StakingContract.address, [HouseNFT.address, House.address]);
+  await verify(ThirdPartyContract.address, []);
+  await verify(Operator.address, [House.address]);
 
   console.log('All done');
 }

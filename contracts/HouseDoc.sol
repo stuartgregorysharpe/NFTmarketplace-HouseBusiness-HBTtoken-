@@ -3,6 +3,8 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
+import 'hardhat/console.sol';
+
 contract HouseDoc {
     address private _owner;
     // total number of contract
@@ -96,7 +98,7 @@ contract HouseDoc {
         address user = msg.sender == operatorAddress ? _user : msg.sender;
         require(_dateFrom < _dateTo, "Start date must be before end date");
         require(_agreedPrice > 0, "Agreed price must be greater than 0");
-        require(msg.sender != _contractSigner, "Owner can't be signer");
+        require(_user != _contractSigner, "Owner can't be signer");
 
         hdCounter++;
 
