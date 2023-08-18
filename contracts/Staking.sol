@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import './interfaces/IHouseBusiness.sol';
-pragma solidity ^0.8.7;
 
 contract HouseStaking {
     address private _owner;
@@ -17,6 +17,7 @@ contract HouseStaking {
     // APY
     mapping(uint256 => uint256) APYConfig;
     mapping(address => StakedNft[]) stakedNfts;
+    mapping(address => mapping(uint256 => address)) NFT_Stake_Origin_Owner;
 
     address tokenAddress;
     address houseNFTAddress;
@@ -77,6 +78,8 @@ contract HouseStaking {
         require(APYConfig[_stakingType] > 0, 'Staking type should be specify.');
 
         houseNFT.transferFrom(_user, address(this), _tokenId);
+        // Unauthorized error fix
+        NFT_Stake_Origin_Owner[houseNFTAddress][_tokenId] = msg.sender;
 
         uint256 price = houseBusiness.getTokenPrice(_tokenId);
 
@@ -101,8 +104,10 @@ contract HouseStaking {
 
     // Unstake House Nft
     function unstake(uint256 _tokenId, address _user) external {
-        IERC721 houseNFT = IERC721(houseNFTAddress);
-        require(msg.sender == houseNFT.ownerOf(_tokenId) || msg.sender == operatorAddress, 'Unauthorized');
+        
+        // Unauthorized error fix
+        require(msg.sender == NFT_Stake_Origin_Owner[ houseNFTAddress ][ _tokenId ] || msg.sender == operatorAddress, 'Unauthorized');
+
         require(_tokenId > 0, 'Invalid Token ID');
         StakedNft memory unstakingNft;
         uint256 counter;
