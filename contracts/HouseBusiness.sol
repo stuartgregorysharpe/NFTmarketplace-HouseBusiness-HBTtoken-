@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.7;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -103,7 +103,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         _token = IERC20(_tokenAddress);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
@@ -169,6 +169,12 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         History storage history = houseHistories[_houseId][_hIndex];
         require(history.contractId == _contractId, "id");
         history.contractId = 0;
+    }
+
+    function connectContract(uint256 _houseId, uint256 _hIndex, uint256 _contractId) external {
+        require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, "Unauthorized.");
+        History storage history = houseHistories[_houseId][_hIndex];
+        history.contractId = _contractId;
     }
 
     // withdraw token
@@ -312,7 +318,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
     ) external {
         require(ownerOf(_houseId) == msg.sender || operatorAddress == msg.sender, "Unauthorized.");
         if (_contractId != 0) {
-            require(houseDoc.getContractOwnerById(_contractId) == msg.sender, "You are owner of that contract");
+            require(houseDoc.getContractOwnerById(_contractId) == msg.sender, "You are not owner of that contract");
         }
 
         History[] storage houseHist = houseHistories[_houseId];
@@ -400,7 +406,7 @@ contract HouseBusiness is ERC721, ERC721URIStorage {
         super._burn(_houseId);
     }
 
-    function _afterTokenTransfer(address from, address to, uint256 houseId, uint256 batchSize) internal override {
+    function _afterTokenTransfer(address from, address to, uint256 houseId, uint256) internal override {
         House storage house = allHouses[houseId];
         // update the token"s previous owner
         house.contributor.previousOwner = house.contributor.currentOwner;
