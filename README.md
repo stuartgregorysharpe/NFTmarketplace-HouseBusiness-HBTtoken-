@@ -5,7 +5,7 @@ Welcome to the official smart contract repository for the House Business NFT Mar
 # House Business NFT Marketplace
 ![Screenshot_62](https://github.com/stuartgregorysharpe/NFT.MarketPlace-HouseBusiness/assets/137684294/589bc891-5ee7-46bc-996d-3f1d1687db8e)
 
-# Here is Front end: [https://github.com/](https://github.com/stuartgregorysharpe/NFTmarketplace-HouseBusinessFrontEnd-React)
+# Here is Front end: https://github.com/stuartgregorysharpe/NFTmarketplace-HouseBusinessFrontEnd-React
 
 # Features
 Minting: Create unique, tamper-proof digital representations of real estate properties as NFTs.
