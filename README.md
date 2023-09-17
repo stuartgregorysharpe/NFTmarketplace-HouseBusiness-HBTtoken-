@@ -2,10 +2,19 @@
 Welcome to the official smart contract repository for the House Business NFT Marketplace. Our decentralized platform allows users to mint, trade, and manage real estate NFTs with a focus on transparency, security, and ease of use.
 (This repository was forked form my business repository of bitbucket)
 
-# House Business NFT Marketplace
-![Screenshot_62](https://github.com/stuartgregorysharpe/NFT.MarketPlace-HouseBusiness/assets/137684294/589bc891-5ee7-46bc-996d-3f1d1687db8e)
+## Installation
+- npm install
+- npm i --save-dev react-error-overlay@6.0.9
 
-# Here is Front end: https://github.com/stuartgregorysharpe/NFTmarketplace-HouseBusinessFrontEnd-React
+## Start
+- npm start
+  
+# House Business NFT contract
+![Screenshot_32](https://github.com/stuartgregorysharpe/NFT.MarketPlace-HouseBusiness/assets/137684294/93f1ba1f-f512-41ce-aa5d-e38b485a31d0)
+
+
+
+# Here is Front end: https://github.com/stuartgregorysharpe/NFT.MarketPlace-HouseBusiness
 
 # Features
 Minting: Create unique, tamper-proof digital representations of real estate properties as NFTs.
@@ -55,3 +64,5 @@ Contributions are always welcome! For major changes, please open an issue first 
 
 # License
 This project is licensed under the MIT License.
+
+
